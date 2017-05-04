@@ -158,6 +158,7 @@ bool DiggerMan::AllowMove(int x, int y)
  moveTo(getX(), getY() - 1);
  }
  
+ //sam will finish this code later today!
 	}*/
 
 void Squirt::doSomething()
