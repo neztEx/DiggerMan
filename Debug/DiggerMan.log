@@ -1,0 +1,11 @@
+﻿  main.cpp
+c1xx : fatal error C1083: Cannot open source file: '..\..\..\..\..\..\DiggerMan\main.cpp': No such file or directory
+  StudentWorld.cpp
+c1xx : fatal error C1083: Cannot open source file: '..\..\..\..\..\..\DiggerMan\StudentWorld.cpp': No such file or directory
+  GameWorld.cpp
+c1xx : fatal error C1083: Cannot open source file: '..\..\..\..\..\..\DiggerMan\GameWorld.cpp': No such file or directory
+  GameController.cpp
+c1xx : fatal error C1083: Cannot open source file: '..\..\..\..\..\..\DiggerMan\GameController.cpp': No such file or directory
+  Actor.cpp
+c1xx : fatal error C1083: Cannot open source file: '..\..\..\..\..\..\DiggerMan\Actor.cpp': No such file or directory
+  Generating Code...
