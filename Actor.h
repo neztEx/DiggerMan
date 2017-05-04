@@ -5,7 +5,7 @@
 //#include "GameWorld.h"
 #include "StudentWorld.h"
 
-
+//testing
 
 class StudentWorld;  //forward declaration
 
@@ -119,7 +119,9 @@ private:
 };
 
 
-
+//****************************
+//**** BOULDER CLASS  ******************
+//****************************
 
 
 class Boulder : public GraphObject {
