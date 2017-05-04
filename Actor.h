@@ -2,7 +2,7 @@
 #define ACTOR_H_
 
 #include "GraphObject.h"
-//#include "GameWorld.h"
+//#include "GameWorld.h"g
 #include "StudentWorld.h"
 
 //testing

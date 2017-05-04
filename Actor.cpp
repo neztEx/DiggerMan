@@ -105,7 +105,7 @@ void DiggerMan::doSomething()
 
 void DiggerMan::setWorld(StudentWorld * gw)
 {
-    m_sw = gw;
+    m_sw = gw; //this is to access the StudentWorld object
 }
 
 StudentWorld * DiggerMan::getWorld()
