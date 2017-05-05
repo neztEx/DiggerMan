@@ -7,6 +7,39 @@
 // Students:  Add code to this file (if you wish), Actor.h, StudentWorld.h, and StudentWorld.cpp
 //testing github commit functions
 
+
+//***********************************************************************************************
+//************** BASEOBJECT FUNCTIONS ***********************************************************
+//***********************************************************************************************
+
+
+void BaseObject::doSomething()
+{
+}
+
+bool BaseObject::AllowMove(int x, int y)
+{
+	return false;
+}
+
+void BaseObject::setWorld(StudentWorld * gw)
+{
+	m_sw = gw; //this is to access the StudentWorld object
+}
+
+StudentWorld * BaseObject::getWorld()
+{
+	return m_sw;
+}
+
+
+
+
+
+
+
+
+
 // *****************************
 // ****** DIGGERMAN FUNCTIONS  ***************
 // *****************************
@@ -103,15 +136,15 @@ void DiggerMan::doSomething()
 }
 
 
-void DiggerMan::setWorld(StudentWorld * gw)
-{
-    m_sw = gw; //this is to access the StudentWorld object
-}
-
-StudentWorld * DiggerMan::getWorld()
-{
-    return m_sw;
-}
+//void DiggerMan::setWorld(StudentWorld * gw)
+//{
+//    m_sw = gw; //this is to access the StudentWorld object
+//}
+//
+//StudentWorld * DiggerMan::getWorld()
+//{
+//    return m_sw;
+//}
 
 
 //Function that checks if Diggerman is allowed to move in the
@@ -161,6 +194,11 @@ bool DiggerMan::AllowMove(int x, int y)
  //sam will finish this code later today!
 	}*/
 
+
+//*************************************************************************************************
+//************ SQUIRT FUNCTIONS  ******************************************************************
+//*************************************************************************************************
+
 void Squirt::doSomething()
 {
     if (getTravel() > 0)
@@ -169,16 +207,29 @@ void Squirt::doSomething()
         switch (getDirection())
         {
             case up:
-                moveTo(getX(), getY() + 1);
+				if (AllowMove(getX(), getY() + 1))
+					moveTo(getX(), getY() + 1);
+				else
+					stopTravel();
                 break;
             case down:
-                moveTo(getX(), getY() - 1);
+				if (AllowMove(getX(), getY() - 1))
+					moveTo(getX(), getY() - 1);
+				else
+					stopTravel();
                 break;
             case right:
-                moveTo(getX() + 1, getY());
+				if (AllowMove(getX()+1, getY()))
+					moveTo(getX()+1, getY());
+				else
+					stopTravel();
                 break;
             case left:
                 moveTo(getX() - 1, getY());
+				if (AllowMove(getX()-1, getY()))
+					moveTo(getX()-1, getY());
+				else
+					stopTravel();
                 break;
         }
         reduceTravel();
@@ -187,6 +238,14 @@ void Squirt::doSomething()
     {
         setVisible(false);
     }
+}
+
+bool Squirt::AllowMove(int x, int y)
+{
+	if ((x >= 0) && (x <= 60) && (y >= 0) && (y <= 60))
+		return true;
+	else
+		return false;
 }
 
 int Squirt::getTravel()
@@ -202,8 +261,4 @@ void Squirt::reduceTravel()
 void Squirt::stopTravel()
 {
     travel = 0;
-}
-
-void BaseObject::doSomething()
-{
 }

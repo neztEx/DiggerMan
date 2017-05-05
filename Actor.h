@@ -9,7 +9,9 @@
 
 class StudentWorld;  //forward declaration
 
-
+//********************************************************************
+//**************** BASEOBJECT CLASS (Base class) *********************
+//********************************************************************
 
 class BaseObject : public GraphObject
 {
@@ -17,7 +19,12 @@ public:
     BaseObject(int imageID, int startX, int startY, Direction dir = right, double size = 1.0, unsigned int depth = 0)
     : GraphObject(imageID, startX, startY, dir, size, depth)
     {}
+	void setWorld(StudentWorld *gw);
+	StudentWorld *getWorld();
     virtual void doSomething();
+	virtual bool AllowMove(int x, int y);
+private:
+	StudentWorld *m_sw;
 };
 
 
@@ -37,15 +44,6 @@ public:
     }
     
     
-    
-    /*Direction dir = right, double size = 1.0, unsigned int depth = 0)
-     : m_imageID(imageID), m_visible(false), m_x(startX), m_y(startY),
-     m_destX(startX), m_destY(startY), m_brightness(1.0),
-     m_animationNumber(0), m_direction(dir), m_size(size), m_depth(depth)
-     */
-    
-    
-    
 };
 
 
@@ -53,11 +51,11 @@ public:
 //**** DIGGERMAN CLASS  ******************
 //****************************
 
-class DiggerMan : public GraphObject
+class DiggerMan : public BaseObject
 {
 public:
     DiggerMan()
-    : GraphObject(IMID_PLAYER, 30, 60, right, 1.0, 0)
+    : BaseObject(IMID_PLAYER, 30, 60, right, 1.0, 0)
     {
         setVisible(true);
         
@@ -65,18 +63,8 @@ public:
     }
     
     void doSomething();
-    void setWorld(StudentWorld *gw);
-    StudentWorld *getWorld();
     bool AllowMove(int x, int y);
     
-    /*Direction dir = right, double size = 1.0, unsigned int depth = 0)
-     : m_imageID(imageID), m_visible(false), m_x(startX), m_y(startY),
-     m_destX(startX), m_destY(startY), m_brightness(1.0),
-     m_animationNumber(0), m_direction(dir), m_size(size), m_depth(depth)
-     */
-    
-private:
-    StudentWorld *m_sw;
     
 };
 
@@ -93,27 +81,22 @@ public:
     : BaseObject(IMID_WATER_SPURT, x, y, dir, 1.0, 1)
     {
         setVisible(false);
-        travel = 4;
+        
+
+		if (AllowMove(getX(), getY())) //check if when Diggerman throws a squirt, its within
+			travel = 4;					// the limits of the oilfield. If its not then the travel
+		else                           // is set to 0. 
+			travel = 0;
         
     }
     
     void doSomething();
+	bool AllowMove(int x, int y);
     int getTravel();
     void reduceTravel();
     void stopTravel();
-    
-    /*void setWorld(GameWorld*gw);
-     GameWorld *getWorld();
-     bool AllowMove(int x, int y);*/
-    
-    /*Direction dir = right, double size = 1.0, unsigned int depth = 0)
-     : m_imageID(imageID), m_visible(false), m_x(startX), m_y(startY),
-     m_destX(startX), m_destY(startY), m_brightness(1.0),
-     m_animationNumber(0), m_direction(dir), m_size(size), m_depth(depth)
-     */
-    
+   
 private:
-    GameWorld *m_sw;
     int travel; //distance to travel
     
 };
