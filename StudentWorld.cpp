@@ -3,22 +3,22 @@
 #include <random>
 
 using namespace std;
-const int DIRT_HEIGHT = 60;
+//const int DIRT_HEIGHT = 60;
 
 //-------CUSTOM FUNCTIONS---------
-void createDirt(); //fills screen with dirt
+//void createDirt(); //fills screen with dirt
 bool digging(DiggerMan *z);
-//void createGameObjects();
+void createGameObjects();
 //--------------------------------
-Dirt *gameMap[VIEW_WIDTH][DIRT_HEIGHT];
-DiggerMan *player = new DiggerMan();
 
+//Dirt *gameMap = new gameMap;
+DiggerMan *player = new DiggerMan();
+Boulder *bl = new Boulder(20,50);
+//Dirt *gameMap[VIEW_WIDTH][DIRT_HEIGHT];
 GameWorld* createStudentWorld(string assetDir)
 {
     return new StudentWorld(assetDir);
 }
-
-
 
 // Students:  Add code to this file (if you wish), StudentWorld.h, Actor.h and Actor.cpp
 
@@ -28,7 +28,9 @@ int StudentWorld::init()
     //DIRT - creating the data structure for the dirt object w/ mineshaft
     createDirt();
     player->setWorld(this);
-    //createGameObjects();
+    bl->setWorld(this);
+    //Boulder *bl = new Boulder(20,20);
+    insertObject(bl);
     
     return GWSTATUS_CONTINUE_GAME;
 }
@@ -41,7 +43,6 @@ int StudentWorld::move()
     if (digging(player))
     {
         playSound(SOUND_DIG);
-		
     }
     for (int i = 0; i < getSizeVector(); i++)
     {
@@ -57,6 +58,7 @@ void StudentWorld::cleanUp()
     
 }
 
+//-------CUSTOM FUNCTIONS---------
 void StudentWorld::insertObject(BaseObject * o)
 {
     gameObjects.push_back(o);
@@ -73,8 +75,12 @@ BaseObject* StudentWorld::getObject(int i)
     return gameObjects.at(i);
 }
 
-//-------CUSTOM FUNCTIONS---------
-void createDirt() {
+bool StudentWorld::dirtAlive(int x,int y)
+{
+    cout << "returning dirt location" << endl;
+    return gameMap[x][y]->isVisible();
+}
+void StudentWorld::createDirt() {
     //using 2d array for coordinate system and init with a for loop
     for (int x = 0; x<VIEW_WIDTH; x++) {
         for (int y = 0; y<DIRT_HEIGHT; y++) {
@@ -89,14 +95,13 @@ void createDirt() {
     }
 };
 
-
 // Function that checks all the positions
 // that the diggerman is occupying and
 // if is in the same position than one
 // dirt object it sets the visibility of the
 // dirt to false. Returns true when it changes
 // at least one dirt's visibility from true to false
-bool digging(DiggerMan *z)
+bool StudentWorld::digging(DiggerMan *z)
 {
     bool dig = false;
     for(int x=0;x<4;x++)
@@ -118,16 +123,15 @@ bool digging(DiggerMan *z)
     return dig;
 }
 
-/*
- void createGameObjects() {
-	random_device rd; //obtain a random number from hardware
-	mt19937 eng(rd()); //seed the generator
-	uniform_int_distribution<> distr(0, 59); //define the range
- 
-	int count = 2;
-	for (int i = 0; i <= count; i++) {
- Boulder *bli = new Boulder(distr(eng), distr(eng));
- //gameObjects.push_back(bli);
- //       if()
-	}
- /*/
+void StudentWorld::createGameObjects() {
+//    random_device rd; //obtain a random number from hardware
+//    mt19937 eng(rd()); //seed the generator
+//    uniform_int_distribution<> distr(0, 59); //define the range
+//    
+//    int count = 2;
+//    for (int i = 0; i <= count; i++) {
+//        Boulder *bli = new Boulder(distr(eng), distr(eng));
+//        insertObject(bli);
+//    }
+}
+

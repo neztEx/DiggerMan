@@ -9,7 +9,7 @@
 
 
 //***********************************************************************************************
-//************** BASEOBJECT FUNCTIONS ***********************************************************
+//************** BASE OBJECT FUNCTIONS ***********************************************************
 //***********************************************************************************************
 
 
@@ -32,18 +32,9 @@ StudentWorld * BaseObject::getWorld()
 	return m_sw;
 }
 
-
-
-
-
-
-
-
-
 // *****************************
 // ****** DIGGERMAN FUNCTIONS  ***************
 // *****************************
-
 
 void DiggerMan::doSomething()
 {
@@ -126,15 +117,8 @@ void DiggerMan::doSomething()
                 break;
             case 122: // if press 'z'
                 break;
-                
-                
-                
         }
-        
-        
-        
     }
-    
 }
 
 
@@ -164,37 +148,46 @@ bool DiggerMan::AllowMove(int x, int y)
 
 
 
-/*
+//*************************************************************************************************
+//************ BOULDER FUNCTIONS  ******************************************************************
+//*************************************************************************************************
+
  
-	void Boulder::doSomething() {
- 
- if (isVisible() == false) { //if boulder is dead we do nothing
- return;
- }
- if (stableState == true) {
- for (int i = 0; i < 4; i++) {
- if (StudentWorld.gameMap[getX() + i][getY() - 1]->isVisible() == true) //checks to see if the dirt under the rock is visible
- return;
- else {
- stableState = false;
- waitingState = true;
- }
- }
- }
- if (waitingState == true) {
- tickCounter++;
- if (tickCounter == 30) {
- waitingState = false;
- fallingState = true;
- return;
- }
- }
- if (fallingState == true) {
- moveTo(getX(), getY() - 1);
- }
- 
- //sam will finish this code later today!
-	}*/
+void Boulder::doSomething()
+{
+    if (isVisible() == false) //if boulder is dead we do nothing
+    {
+        return;
+    }
+    if (stableState == true) {
+        cout << "stable" << endl;
+        cout << "returns getWorld function: " << getWorld()->dirtAlive(getX(),getY() - 1) << endl;
+
+        for (int i = 0; i < 4; i++) {
+            if (getWorld()->dirtAlive(getX() + i,getY() - 1) == true) //checks to see if the dirt under the rock is visible
+                return;
+            else {
+                stableState = false;
+                waitingState = true;
+            }
+        }
+    }
+    if (waitingState == true) {
+        cout << "waiting" << endl;
+
+        tickCounter++;
+        if (tickCounter == 30) {
+            waitingState = false;
+            fallingState = true;
+            return;
+        }
+    }
+    if (fallingState == true)
+    {
+        cout << "falling" << endl;
+        moveTo(getX(), getY() - 1);
+    }
+}
 
 
 //*************************************************************************************************
@@ -227,7 +220,6 @@ void Squirt::doSomething()
 					stopTravel();
                 break;
             case left:
-                moveTo(getX() - 1, getY());
 				if (AllowMove(getX()-1, getY()))
 					moveTo(getX()-1, getY());
 				else

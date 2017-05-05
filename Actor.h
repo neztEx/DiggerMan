@@ -33,17 +33,14 @@ private:
 //**** DIRT CLASS  *******************
 //****************************
 
-class Dirt: public GraphObject
+class Dirt: public BaseObject
 {
 public:
     Dirt(int x, int y)
-    : GraphObject(IMID_DIRT, x, y, right, .25, 3)
+    : BaseObject(IMID_DIRT, x, y, right, .25, 3)
     {
         setVisible(true);
-        
     }
-    
-    
 };
 
 
@@ -58,14 +55,10 @@ public:
     : BaseObject(IMID_PLAYER, 30, 60, right, 1.0, 0)
     {
         setVisible(true);
-        
-        
     }
     
     void doSomething();
     bool AllowMove(int x, int y);
-    
-    
 };
 
 
@@ -107,10 +100,12 @@ private:
 //****************************
 
 
-class Boulder : public GraphObject {
+class Boulder : public BaseObject{
     
 public:
-    Boulder(int x, int y) : GraphObject(IMID_BOULDER, x, y, down, 1.0, 1) {
+    Boulder(int x, int y)
+    : BaseObject(IMID_BOULDER, x, y, down, 1.0, 1)
+    {
         setVisible(true);
     }
     void doSomething();
