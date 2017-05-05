@@ -41,6 +41,7 @@ int StudentWorld::move()
     if (digging(player))
     {
         playSound(SOUND_DIG);
+		
     }
     for (int i = 0; i < getSizeVector(); i++)
     {

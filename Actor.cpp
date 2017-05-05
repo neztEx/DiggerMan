@@ -114,6 +114,8 @@ void DiggerMan::doSomething()
             }
                 cout << "never gets here" << endl;
                 getWorld()->insertObject(new Squirt(xS, yS, getDirection()));
+				getWorld()->playSound(SOUND_PLAYER_SQUIRT);
+		
                 
                 break;
             case KEY_PRESS_TAB:
