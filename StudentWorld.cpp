@@ -13,7 +13,7 @@ void createGameObjects();
 
 //Dirt *gameMap = new gameMap;
 DiggerMan *player = new DiggerMan();
-Boulder *bl = new Boulder(20,50);
+//Boulder *bl = new Boulder(20,50);
 //Dirt *gameMap[VIEW_WIDTH][DIRT_HEIGHT];
 GameWorld* createStudentWorld(string assetDir)
 {
@@ -28,9 +28,10 @@ int StudentWorld::init()
     //DIRT - creating the data structure for the dirt object w/ mineshaft
     createDirt();
     player->setWorld(this);
-    bl->setWorld(this);
+    createGameObjects();
+   // bl->setWorld(this);
     //Boulder *bl = new Boulder(20,20);
-    insertObject(bl);
+    //insertObject(bl);
     
     return GWSTATUS_CONTINUE_GAME;
 }
@@ -124,14 +125,15 @@ bool StudentWorld::digging(DiggerMan *z)
 }
 
 void StudentWorld::createGameObjects() {
-//    random_device rd; //obtain a random number from hardware
-//    mt19937 eng(rd()); //seed the generator
-//    uniform_int_distribution<> distr(0, 59); //define the range
-//    
-//    int count = 2;
-//    for (int i = 0; i <= count; i++) {
-//        Boulder *bli = new Boulder(distr(eng), distr(eng));
-//        insertObject(bli);
-//    }
+    random_device rd; //obtain a random number from hardware
+    mt19937 eng(rd()); //seed the generator
+    uniform_int_distribution<> distr(0, 59); //define the range
+    
+    int count = 2;
+    for (int i = 0; i <= count; i++) {
+        Boulder *bl = new Boulder(distr(eng), distr(eng));
+        bl->setWorld(this);
+        insertObject(bl);
+    }
 }
 
