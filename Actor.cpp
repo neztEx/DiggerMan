@@ -32,6 +32,10 @@ StudentWorld * BaseObject::getWorld()
 	return m_sw;
 }
 
+//void BaseObject::updateTickCounter()(){
+  //  tickCounter++;
+//}
+
 // *****************************
 // ****** DIGGERMAN FUNCTIONS  ***************
 // *****************************
@@ -180,6 +184,7 @@ void Boulder::doSomething()
         if (tickCounter == 30) {
             waitingState = false;
             fallingState = true;
+            getWorld()->playSound(13);
             return;
         }
     }

@@ -5,8 +5,6 @@
 //#include "GameWorld.h"g
 #include "StudentWorld.h"
 
-//testing
-
 class StudentWorld;  //forward declaration
 
 //********************************************************************
@@ -16,6 +14,8 @@ class StudentWorld;  //forward declaration
 class BaseObject : public GraphObject
 {
 public:
+    enum state{alive, dead};
+    
     BaseObject(int imageID, int startX, int startY, Direction dir = right, double size = 1.0, unsigned int depth = 0)
     : GraphObject(imageID, startX, startY, dir, size, depth)
     {}
@@ -23,8 +23,12 @@ public:
 	StudentWorld *getWorld();
     virtual void doSomething();
 	virtual bool AllowMove(int x, int y);
+    //virtual void updateTickCounter();
+
 private:
 	StudentWorld *m_sw;
+    //int tickCounter = 0;
+
 };
 
 
@@ -103,6 +107,8 @@ private:
 class Boulder : public BaseObject{
     
 public:
+    enum state{};
+    
     Boulder(int x, int y)
     : BaseObject(IMID_BOULDER, x, y, down, 1.0, 1)
     {
