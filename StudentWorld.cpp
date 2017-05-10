@@ -47,7 +47,7 @@ int StudentWorld::move()
     }
     for (int i = 0; i < getSizeVector(); i++)
     {
-        cout << "into the vector" << endl;
+        //cout << "vector doSomething" << endl;
         getObject(i)->doSomething();
     }
     
@@ -78,7 +78,8 @@ BaseObject* StudentWorld::getObject(int i)
 
 bool StudentWorld::dirtAlive(int x,int y)
 {
-    cout << "returning dirt location" << endl;
+    cout << "returning dirt location " << gameMap[x][y]->isVisible() << endl;
+    
     return gameMap[x][y]->isVisible();
 }
 void StudentWorld::createDirt() {
@@ -129,7 +130,7 @@ void StudentWorld::createGameObjects() {
     mt19937 eng(rd()); //seed the generator
     uniform_int_distribution<> distr(0, 59); //define the range
     
-    int count = 2;
+    int count = 0;
     for (int i = 0; i <= count; i++) {
         Boulder *bl = new Boulder(distr(eng), distr(eng));
         bl->setWorld(this);

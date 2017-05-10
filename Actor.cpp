@@ -163,14 +163,15 @@ void Boulder::doSomething()
         cout << "stable" << endl;
         cout << "returns getWorld function: " << getWorld()->dirtAlive(getX(),getY() - 1) << endl;
 
-        for (int i = 0; i < 4; i++) {
-            if (getWorld()->dirtAlive(getX() + i,getY() - 1) == true) //checks to see if the dirt under the rock is visible
-                return;
-            else {
+            if (getWorld()->dirtAlive(getX(),getY() - 1) == false && getWorld()->dirtAlive(getX()+1,getY() - 1) == false &&  getWorld()->dirtAlive(getX()+2,getY() - 1) == false && getWorld()->dirtAlive(getX()+3,getY() - 1) == false)
+            {
                 stableState = false;
                 waitingState = true;
+                return;  //checks to see if the dirt under the rock is visible
             }
-        }
+            else {
+                return;
+            }
     }
     if (waitingState == true) {
         cout << "waiting" << endl;
@@ -184,8 +185,22 @@ void Boulder::doSomething()
     }
     if (fallingState == true)
     {
-        cout << "falling" << endl;
-        moveTo(getX(), getY() - 1);
+
+        if(getWorld()->dirtAlive(getX(), getY()-1) == false)
+        {
+            moveTo(getX(), getY() - 1);
+            cout << "animate" << endl;
+            return;
+        }
+        else
+        {
+            cout << "falling state is false" << endl;
+            fallingState = false;
+            stableState = true;
+            tickCounter = 0;
+            return;
+        }
+        
     }
 }
 
