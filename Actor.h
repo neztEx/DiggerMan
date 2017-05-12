@@ -6,7 +6,7 @@
 #include "StudentWorld.h"
 
 class StudentWorld;  //forward declaration
-
+//enum state;
 //********************************************************************
 //**************** BASEOBJECT CLASS (Base class) *********************
 //********************************************************************
@@ -14,19 +14,28 @@ class StudentWorld;  //forward declaration
 class BaseObject : public GraphObject
 {
 public:
-    enum state{alive, dead};
-    
-    BaseObject(int imageID, int startX, int startY, Direction dir = right, double size = 1.0, unsigned int depth = 0)
-    : GraphObject(imageID, startX, startY, dir, size, depth)
-    {}
+   
+	enum state { alive, dead };
+	enum name {boulder, diggerman, barrelOil, squirt, goldNugget, sonarKit, waterPool, regProt, hardProt  };
+	BaseObject(int imageID, int startX, int startY, Direction dir = right, double size = 1.0, unsigned int depth = 0)
+		: GraphObject(imageID, startX, startY, dir, size, depth)
+    {
+		m_state = alive;
+	}
 	void setWorld(StudentWorld *gw);
 	StudentWorld *getWorld();
     virtual void doSomething();
 	virtual bool AllowMove(int x, int y);
+	void setState(state d);
+	state getState();
+	void setName(name n);
+	name getName();
     //virtual void updateTickCounter();
 
 private:
 	StudentWorld *m_sw;
+	state m_state;
+	name m_name;
     //int tickCounter = 0;
 
 };
@@ -59,6 +68,7 @@ public:
     : BaseObject(IMID_PLAYER, 30, 60, right, 1.0, 0)
     {
         setVisible(true);
+		setName(diggerman);
     }
     
     void doSomething();
@@ -78,6 +88,7 @@ public:
     : BaseObject(IMID_WATER_SPURT, x, y, dir, 1.0, 1)
     {
         setVisible(false);
+		setName(squirt);
         
 
 		if (AllowMove(getX(), getY())) //check if when Diggerman throws a squirt, its within
@@ -113,6 +124,7 @@ public:
     : BaseObject(IMID_BOULDER, x, y, down, 1.0, 1)
     {
         setVisible(true);
+		setName(boulder);
     }
     void doSomething();
     

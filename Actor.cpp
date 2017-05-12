@@ -22,6 +22,28 @@ bool BaseObject::AllowMove(int x, int y)
 	return false;
 }
 
+void BaseObject::setState(state d)
+{
+	m_state = d;
+}
+
+BaseObject::state BaseObject::getState()
+{
+	return m_state;
+}
+
+void BaseObject::setName(name n)
+{
+	m_name = n;
+}
+
+BaseObject::name BaseObject::getName()
+{
+	return m_name;
+}
+
+
+
 void BaseObject::setWorld(StudentWorld * gw)
 {
 	m_sw = gw; //this is to access the StudentWorld object
@@ -203,6 +225,9 @@ void Boulder::doSomething()
             fallingState = false;
             stableState = true;
             tickCounter = 0;
+			setVisible(false);
+			setState(dead);
+			
             return;
         }
         
@@ -251,6 +276,7 @@ void Squirt::doSomething()
     else
     {
         setVisible(false);
+		setState(dead);
     }
 }
 

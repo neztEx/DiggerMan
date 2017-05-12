@@ -1,14 +1,16 @@
 #include "StudentWorld.h"
 #include <string>
 #include <random>
+#include "Actor.h"
+#include <algorithm>
 
 using namespace std;
 //const int DIRT_HEIGHT = 60;
 
 //-------CUSTOM FUNCTIONS---------
 //void createDirt(); //fills screen with dirt
-bool digging(DiggerMan *z);
-void createGameObjects();
+//bool digging(DiggerMan *z);
+//void createGameObjects();
 //--------------------------------
 
 //Dirt *gameMap = new gameMap;
@@ -50,6 +52,7 @@ int StudentWorld::move()
         //cout << "vector doSomething" << endl;
         getObject(i)->doSomething();
     }
+	UpdateVector();
     
     return GWSTATUS_CONTINUE_GAME;
 }
@@ -130,11 +133,108 @@ void StudentWorld::createGameObjects() {
     mt19937 eng(rd()); //seed the generator
     uniform_int_distribution<> distr(0, 59); //define the range
     
-    int count = 0;
+    int count = 2;
     for (int i = 0; i <= count; i++) {
         Boulder *bl = new Boulder(distr(eng), distr(eng));
         bl->setWorld(this);
         insertObject(bl);
     }
+}
+
+
+
+
+//Function that fills the 2D array used to detect t
+// the position occupied by the objects in the map
+// The function calls the vector were all the objects are
+// stored. Then based in the location of the objects, fills
+// the 2d array assigning the positions that each object
+// is occupying in the map the number that each object has in
+// the vector. 
+void StudentWorld::fillObjectCoord(DiggerMan *z)
+{
+	//first clean the grid
+	for (int x = 0; x < VIEW_WIDTH; x++) {
+		for (int y = 0; y < VIEW_HEIGHT; y++) {
+			ObjectCoord[x][y] = nullptr;
+		}
+	}
+	// then load the grid with the position of the objects in the map
+	int xcoord, ycoord;
+	for (int i = 0; i < getSizeVector(); i++)
+	{
+
+		xcoord = getObject(i)->getX();
+		ycoord = getObject(i)->getY();
+		for (int x = 0; x < 4; x++)
+		{
+			for (int y = 0; y < 4; y++)
+			{
+				*ObjectCoord[xcoord + x][ycoord + y] = i;
+			}
+		}
+	}
+	//lastly add the diggerman to the grid
+	xcoord = z->getX();
+	ycoord = z->getY();
+	for (int x = 0; x < 4; x++)
+	{
+		for (int y = 0; y < 4; y++)
+		{
+			*ObjectCoord[xcoord + x][ycoord + y] = getSizeVector(); // the diggerman will have the last number in the grid
+		}
+	}
+}
+
+
+//This function updates the vector checking the state
+// of each object in it. If the states is equal to 'dead'
+// then it will swap the the object with the one in the 
+// last position of the vector, then it deletes the last
+// one. 
+void StudentWorld::UpdateVector()
+{
+	
+	cout << "FIRST SIZE:::" << getSizeVector() << endl;
+	bool swaped;
+	int deleteitems = 0;
+	for (int i = 0; i < getSizeVector(); i++)
+	{
+		if ((deleteitems + i) >= getSizeVector()) //we reach the end of the vector
+			break;	
+		swaped = false;
+		if (getObject(i)->getState() == BaseObject::dead ) //check the first element in the vector
+		{
+			deleteitems++; //increase the elements to be deleted
+			if ((deleteitems + i) == getSizeVector()) //we reach the end of the vector
+				break;
+			else
+			{
+				while (!swaped)
+				{
+					if (getObject(getSizeVector() - deleteitems)->getState() == BaseObject::alive) //check if the last one is alive 
+					{
+						iter_swap(gameObjects.begin() + i, gameObjects.begin() + (getSizeVector() - deleteitems));
+						swaped = true;
+					}
+					else
+					{
+						if (deleteitems == getSizeVector())
+							break; //all the items has the state of dead
+						deleteitems++; //encounter a new dead object
+					}
+				}
+			}
+		}
+	}
+	// for loop that deletes the items 
+	for (int i = 0; i < deleteitems; i++)
+	{
+		gameObjects.pop_back();
+	}
+	
+	//for testing 
+	cout << "size of the vector is:: " << getSizeVector() << endl; 
+
 }
 
