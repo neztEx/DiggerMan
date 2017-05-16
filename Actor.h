@@ -16,7 +16,7 @@ class BaseObject : public GraphObject
 public:
    
 	enum state { alive, dead };
-	enum name {boulder, diggerman, barrelOil, squirt, goldNugget, sonarKit, waterPool, regProt, hardProt  };
+	enum name {boulder, diggerman, barrelOil, squirt, goldNugget, sonarKit, waterPool, regProt, hardProt, none  };
 	BaseObject(int imageID, int startX, int startY, Direction dir = right, double size = 1.0, unsigned int depth = 0)
 		: GraphObject(imageID, startX, startY, dir, size, depth)
     {
@@ -30,13 +30,19 @@ public:
 	state getState();
 	void setName(name n);
 	name getName();
+	void setSpace(); //fill the x_space and y_space arrays
+	bool ObjectInMap(int x, int y);// checks if the map is in the x,y coord provided
     //virtual void updateTickCounter();
+	name HittingSomething(int x, int y); //Send coord x,y and check if there is another object in the oilfield
+	
 
 private:
 	StudentWorld *m_sw;
 	state m_state;
 	name m_name;
-    //int tickCounter = 0;
+	int x_space[4]; //array to store the x_coordenates that the object is occupying
+	int y_space[4]; //array to store the y_coordenates that the object is occupying
+    
 
 };
 
@@ -72,7 +78,9 @@ public:
     }
     
     void doSomething();
-    bool AllowMove(int x, int y);
+    bool AllowMove(int x, int y, Direction dir);
+	bool HitPlayer(int x, int y);//hit within a radious of 3.0 
+	
 };
 
 
@@ -89,12 +97,12 @@ public:
     {
         setVisible(false);
 		setName(squirt);
-        
+		//travel = 4;
 
-		if (AllowMove(getX(), getY())) //check if when Diggerman throws a squirt, its within
-			travel = 4;					// the limits of the oilfield. If its not then the travel
-		else                           // is set to 0. 
-			travel = 0;
+		//if (AllowMove(getX(), getY())) //check if when Diggerman throws a squirt, its within
+		//	travel = 4;					// the limits of the oilfield. If its not then the travel
+		//else                           // is set to 0. 
+		//	travel = 0;
         
     }
     
@@ -103,6 +111,7 @@ public:
     int getTravel();
     void reduceTravel();
     void stopTravel();
+	void initialize(StudentWorld *m_gw);
    
 private:
     int travel; //distance to travel
@@ -125,6 +134,7 @@ public:
     {
         setVisible(true);
 		setName(boulder);
+		setSpace();
     }
     void doSomething();
     
@@ -135,6 +145,34 @@ private:
     int tickCounter = 0;
     
 };
+
+
+//****************************
+//**** WATER_POOL CLASS  ******************
+//****************************
+
+class WaterPool : public BaseObject
+{
+public:
+	WaterPool(int x, int y)
+		: BaseObject(IMID_WATER_POOL, x, y, right, 1.0, 0)
+	{
+		setVisible(true);
+		setName(waterPool);
+	}
+
+	void doSomething();
+	void initialize(StudentWorld *m_gw);
+	void addCounter();
+	int getTickCounter();
+	
+private: 
+	int tickCounter=0;
+	int T; //max ticks that object can be visible
+};
+
+
+
 
 // Students:  Add code to this file, Actor.cpp, StudentWorld.h, and StudentWorld.cpp
 

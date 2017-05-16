@@ -37,13 +37,18 @@ public:
     bool dirtAlive(int x, int y);
     bool digging(DiggerMan *z);
     void createGameObjects();
-	void fillObjectCoord(DiggerMan *z);
+	//void fillObjectCoord(DiggerMan *z);
 	void UpdateVector();
+	DiggerMan* getPlayer();
+	void setPlayer( DiggerMan *z);
 
 private:
     vector<BaseObject*> gameObjects;
     Dirt *gameMap[VIEW_WIDTH][DIRT_HEIGHT];
-	int *ObjectCoord[VIEW_WIDTH][VIEW_HEIGHT]; //2d ARRAy that keeps track of the position of all the objects in the map
+	//int numObjects; //store de num of objects in map
+	DiggerMan *m_player;
+	//int *ObjectCoord[VIEW_WIDTH][VIEW_HEIGHT]; //2d ARRAy that keeps track of the position of all the objects in the map
+	//BaseObject::name *ObjectCoord[VIEW_WIDTH][VIEW_HEIGHT];
 };
 
 #endif // STUDENTWORLD_H_

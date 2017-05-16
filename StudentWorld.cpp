@@ -7,16 +7,10 @@
 using namespace std;
 //const int DIRT_HEIGHT = 60;
 
-//-------CUSTOM FUNCTIONS---------
-//void createDirt(); //fills screen with dirt
-//bool digging(DiggerMan *z);
-//void createGameObjects();
-//--------------------------------
+//declaration of player
+//DiggerMan *player = new DiggerMan();
 
-//Dirt *gameMap = new gameMap;
-DiggerMan *player = new DiggerMan();
-//Boulder *bl = new Boulder(20,50);
-//Dirt *gameMap[VIEW_WIDTH][DIRT_HEIGHT];
+
 GameWorld* createStudentWorld(string assetDir)
 {
     return new StudentWorld(assetDir);
@@ -29,11 +23,10 @@ int StudentWorld::init()
 {
     //DIRT - creating the data structure for the dirt object w/ mineshaft
     createDirt();
-    player->setWorld(this);
+	DiggerMan *player = new DiggerMan();
+	setPlayer(player);
+    getPlayer()->setWorld(this);
     createGameObjects();
-   // bl->setWorld(this);
-    //Boulder *bl = new Boulder(20,20);
-    //insertObject(bl);
     
     return GWSTATUS_CONTINUE_GAME;
 }
@@ -42,8 +35,9 @@ int StudentWorld::move()
     // This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
     // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
     decLives();
-    player->doSomething();
-    if (digging(player))
+	//fillObjectCoord(player);
+    getPlayer()->doSomething();
+    if (digging(getPlayer()))
     {
         playSound(SOUND_DIG);
     }
@@ -65,7 +59,8 @@ void StudentWorld::cleanUp()
 //-------CUSTOM FUNCTIONS---------
 void StudentWorld::insertObject(BaseObject * o)
 {
-    gameObjects.push_back(o);
+	o->setWorld(this);
+	gameObjects.push_back(o);
 }
 
 int StudentWorld::getSizeVector()
@@ -75,13 +70,12 @@ int StudentWorld::getSizeVector()
 
 BaseObject* StudentWorld::getObject(int i)
 {
-    
     return gameObjects.at(i);
 }
 
 bool StudentWorld::dirtAlive(int x,int y)
 {
-    cout << "returning dirt location " << gameMap[x][y]->isVisible() << endl;
+   // cout << "returning dirt location " << gameMap[x][y]->isVisible() << endl;
     
     return gameMap[x][y]->isVisible();
 }
@@ -138,7 +132,11 @@ void StudentWorld::createGameObjects() {
         Boulder *bl = new Boulder(distr(eng), distr(eng));
         bl->setWorld(this);
         insertObject(bl);
+		
     }
+	WaterPool *w1 = new WaterPool(6, 10);
+	w1->initialize(this);
+	insertObject(w1);
 }
 
 
@@ -151,8 +149,11 @@ void StudentWorld::createGameObjects() {
 // the 2d array assigning the positions that each object
 // is occupying in the map the number that each object has in
 // the vector. 
+
+/*
 void StudentWorld::fillObjectCoord(DiggerMan *z)
 {
+	
 	//first clean the grid
 	for (int x = 0; x < VIEW_WIDTH; x++) {
 		for (int y = 0; y < VIEW_HEIGHT; y++) {
@@ -164,28 +165,33 @@ void StudentWorld::fillObjectCoord(DiggerMan *z)
 	for (int i = 0; i < getSizeVector(); i++)
 	{
 
+		
 		xcoord = getObject(i)->getX();
 		ycoord = getObject(i)->getY();
 		for (int x = 0; x < 4; x++)
 		{
 			for (int y = 0; y < 4; y++)
 			{
-				*ObjectCoord[xcoord + x][ycoord + y] = i;
+				//cout << "GETS IN FILLING!!!!!!" << endl;
+				//cout << xcoord + x << "  " << ycoord + y << "   " << i << endl;
+				*(ObjectCoord[xcoord + x][ycoord + y]) = getObject(i)->getName();
 			}
 		}
 	}
 	//lastly add the diggerman to the grid
 	xcoord = z->getX();
 	ycoord = z->getY();
+	//int sizevec = getSizeVector();
 	for (int x = 0; x < 4; x++)
 	{
 		for (int y = 0; y < 4; y++)
 		{
-			*ObjectCoord[xcoord + x][ycoord + y] = getSizeVector(); // the diggerman will have the last number in the grid
+			//cout << xcoord + x << "  " << ycoord + y << "   " << sizevec << endl;
+			*(ObjectCoord[xcoord + x][ycoord + y]) = BaseObject::diggerman; // the diggerman will have the last number in the grid
 		}
 	}
 }
-
+*/
 
 //This function updates the vector checking the state
 // of each object in it. If the states is equal to 'dead'
@@ -194,8 +200,6 @@ void StudentWorld::fillObjectCoord(DiggerMan *z)
 // one. 
 void StudentWorld::UpdateVector()
 {
-	
-	cout << "FIRST SIZE:::" << getSizeVector() << endl;
 	bool swaped;
 	int deleteitems = 0;
 	for (int i = 0; i < getSizeVector(); i++)
@@ -234,7 +238,49 @@ void StudentWorld::UpdateVector()
 	}
 	
 	//for testing 
-	cout << "size of the vector is:: " << getSizeVector() << endl; 
+	//cout << "size of the vector is:: " << getSizeVector() << endl; 
 
 }
 
+DiggerMan * StudentWorld::getPlayer()
+{
+	return m_player;
+}
+
+void StudentWorld::setPlayer(DiggerMan * z)
+{
+	m_player = z;
+}
+
+
+/* Function that returns false if the oildfield
+// has any object in the map. Using the 2d array that
+// saves the location of all the objects in the map
+// returns true if there is nothing there
+
+
+bool StudentWorld::isMapEmpty(int x, int y)
+{
+	if (ObjectCoord[x][y] == nullptr)
+		return true;
+
+	return false;
+}
+
+
+// Function that returns which object is placed in
+// the (x,y) position.  
+BaseObject::name * StudentWorld::objectInMap(int x, int y)
+{
+	//if (*(ObjectCoord[x][y]) == getSizeVector()) //Diggerman is always stored  with the integer equals to the size of the objectsvector
+	//	return nullptr; //its the diggerman!!!
+	//else
+	//{
+	//	cout << "OBJECT TO BE SEARCHED IN POSITION:: " << &(ObjectCoord[x][y]) << endl;
+	//	return getObject(*(ObjectCoord[x][y])); //return the object in that x,y position using the getobject function
+
+	//}
+	return (ObjectCoord[x][y]);
+}
+
+*/
