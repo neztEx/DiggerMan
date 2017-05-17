@@ -258,7 +258,7 @@ bool DiggerMan::AllowMove(int x, int y, Direction Dir)
 		//return true;
     else
         return false;
-    
+    return true;
 }
 
 bool DiggerMan::HitPlayer(int x, int y)
@@ -337,6 +337,10 @@ void Boulder::doSomething()
         if(getWorld()->dirtAlive(getX(), getY()-1) == false)
         {
             moveTo(getX(), getY() - 1);
+            if(getWorld()->getPlayer()->HitPlayer(getX(), getY()) == 0){
+                getWorld()->getPlayer()->setVisible(false);
+            }
+            
 		//	cout << "animate" << endl;
             return;
         }
@@ -447,6 +451,7 @@ bool Squirt::AllowMove(int x, int y)
 	}
 	else
 		return false;
+    return true;
 }
 
 int Squirt::getTravel()
