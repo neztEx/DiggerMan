@@ -26,6 +26,7 @@ public:
 	StudentWorld *getWorld();
     virtual void doSomething();
 	virtual bool AllowMove(int x, int y);
+	virtual void Initialize();
 	void setState(state d);
 	state getState();
 	void setName(name n);
@@ -80,7 +81,13 @@ public:
     void doSomething();
     bool AllowMove(int x, int y, Direction dir);
 	bool HitPlayer(int x, int y);//hit within a radious of 3.0 
+	void Initialize(StudentWorld *m_gw);
+	void addSquirtGun();
+	void decraseSquirtGun();
+	int getSquirtNum(); 
 	
+private:
+	int squirt_num;
 };
 
 
@@ -162,6 +169,7 @@ public:
 	}
 
 	void doSomething();
+	int HittingPlayer(int x, int y);
 	void initialize(StudentWorld *m_gw);
 	void addCounter();
 	int getTickCounter();

@@ -1,6 +1,7 @@
 #include "Actor.h"
 #include "StudentWorld.h"
 #include <algorithm>
+#include <cmath>
 //#include "GameWorld.h"
 
 #include <iostream>
@@ -21,6 +22,10 @@ void BaseObject::doSomething()
 bool BaseObject::AllowMove(int x, int y)
 {
 	return false;
+}
+
+void BaseObject::Initialize()
+{
 }
 
 void BaseObject::setState(state d)
@@ -149,42 +154,48 @@ void DiggerMan::doSomething()
                 break;
             case KEY_PRESS_SPACE:
 			{
-				int xS, yS;
-				switch (getDirection())
+				if (getSquirtNum() > 0) //if diggerman has bullets of water :p
 				{
-				case up:
-					xS = getX();
-					yS = getY() + 4;
-					break;
-				case down:
-					xS = getX();
-					yS = getY() - 4;
-					break;
-				case right:
-					xS = getX() + 4;
-					yS = getY();
-					break;
-				case left:
-					xS = getX() - 4;
-					yS = getY();
-					break;
+
+					int xS, yS;
+					switch (getDirection())
+					{
+					case up:
+						xS = getX();
+						yS = getY() + 4;
+						break;
+					case down:
+						xS = getX();
+						yS = getY() - 4;
+						break;
+					case right:
+						xS = getX() + 4;
+						yS = getY();
+						break;
+					case left:
+						xS = getX() - 4;
+						yS = getY();
+						break;
+					}
+					//cout << "never gets here" << endl;
+
+					Squirt *s1 = new Squirt(xS, yS, getDirection());
+					s1->initialize(getWorld());
+					//cout << "INSIDE DIGGERMAN WITH SQUIRT" << s1->getWorld()->getSizeVector() << endl;
+					getWorld()->insertObject(s1);
+					getWorld()->playSound(SOUND_PLAYER_SQUIRT);
+					decraseSquirtGun(); // decrease de bullets
+
 				}
-				//cout << "never gets here" << endl;
-
-				Squirt *s1 = new Squirt(xS, yS, getDirection());
-				s1->initialize(getWorld());
-				//cout << "INSIDE DIGGERMAN WITH SQUIRT" << s1->getWorld()->getSizeVector() << endl;
-				getWorld()->insertObject(s1);
-				getWorld()->playSound(SOUND_PLAYER_SQUIRT);
-
-
 				break;
+			
 			}
             case KEY_PRESS_TAB:
+				cout << "x Coord: " << getX() << "y Coord: " << getY() << endl;
                 break;
             case KEY_PRESS_ESCAPE:
                 break;
-            case 90:   // if press 'Z'
+            case 90:// if press 'Z'
                 break;
             case 122: // if press 'z'
                 break;
@@ -256,6 +267,27 @@ bool DiggerMan::HitPlayer(int x, int y)
 	//if ((getX()-3)
 	
 	return false;
+}
+
+void DiggerMan::Initialize(StudentWorld * m_gw)
+{
+	setWorld(m_gw);
+	squirt_num = 5;
+}
+
+void DiggerMan::addSquirtGun()
+{
+	squirt_num = squirt_num + 5;
+}
+
+void DiggerMan::decraseSquirtGun()
+{
+	squirt_num--;
+}
+
+int DiggerMan::getSquirtNum()
+{
+	return squirt_num;
 }
 
 
@@ -450,12 +482,62 @@ void WaterPool::doSomething()
 	if ( getTickCounter()<= T) //if the number of ticks is still less than the max ticks for this level
 	{
 		addCounter();
+		if (HittingPlayer(getX(), getY()) == 0) //its touching the object
+		{
+			setVisible(false);
+			setState(dead);
+			getWorld()->getPlayer()->addSquirtGun();
+			cout << "object picked up by diggerman!!!!" << endl;
+			getWorld()->playSound(SOUND_GOT_GOODIE);
+		}
 	}
 	else
 	{
 		setVisible(false);
 		setState(dead);
 	}
+}
+
+
+// Function that check if the Player is touching or in the edge of the objects
+// returns 1 if its in the edge
+// returns 0 if is touching the object
+// returns 2 if is far of the object (no interaction)
+
+int WaterPool::HittingPlayer(int x, int y)
+{
+	if (((x - ((getWorld()->getPlayer()->getX() + 3))) == 1) || (((x+3) - (getWorld()->getPlayer()->getX())) == -1)) //its coming from left or right
+	{
+		if ((abs(y - (getWorld()->getPlayer()->getY()))) <= 4)
+		{
+			return 1;
+		}
+	}
+
+	else if (((y - ((getWorld()->getPlayer()->getY() + 3))) == 1) || (((y + 3) - (getWorld()->getPlayer()->getY())) == -1)) //its coming from up or down
+	{
+		if ((abs(x - (getWorld()->getPlayer()->getX()))) <= 4)
+		{
+			
+			return 1;
+		}
+	}
+	if (((x - ((getWorld()->getPlayer()->getX() + 3))) == 0) || (((x + 3) - (getWorld()->getPlayer()->getX())) == 0)) //its coming from left or right
+	{
+		if ((abs(y - (getWorld()->getPlayer()->getY()))) <= 4)
+		{
+			return 0;
+		}
+	}
+
+	else if (((y - ((getWorld()->getPlayer()->getY() + 3))) == 0) || (((y + 3) - (getWorld()->getPlayer()->getY())) == 0)) //its coming from up or down
+	{
+		if ((abs(x - (getWorld()->getPlayer()->getX()))) <= 4)
+		{
+			return 0;
+		}
+	}
+		return 2;
 }
 
 void WaterPool::initialize(StudentWorld * m_gw)
