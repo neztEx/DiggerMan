@@ -153,30 +153,52 @@ private:
     
 };
 
+//****************************
+//**** GOODIE CLASS  ******************
+//****************************
+
+class Goodie : public BaseObject
+{
+public:
+	Goodie(int imageID, int startX, int startY, Direction dir = right, double size = 1.0, unsigned int depth = 0)
+		: BaseObject(imageID, startX, startY, dir, size, depth)
+	{
+		setVisible(true);
+		//setName(waterPool);
+	}
+
+	void doSomething();
+	int HittingPlayer(int x, int y);
+	void addCounter();
+	int getTickCounter();
+	void setmaxT(int max);
+	int getmaxT();
+
+private:
+	int tickCounter = 0;
+	int T; //max ticks that object can be visible
+};
+
+
+
 
 //****************************
 //**** WATER_POOL CLASS  ******************
 //****************************
 
-class WaterPool : public BaseObject
+class WaterPool : public Goodie
 {
 public:
 	WaterPool(int x, int y)
-		: BaseObject(IMID_WATER_POOL, x, y, right, 1.0, 0)
+		: Goodie(IMID_WATER_POOL, x, y, right, 1.0, 0)
 	{
 		setVisible(true);
 		setName(waterPool);
 	}
 
 	void doSomething();
-	int HittingPlayer(int x, int y);
 	void initialize(StudentWorld *m_gw);
-	void addCounter();
-	int getTickCounter();
-	
-private: 
-	int tickCounter=0;
-	int T; //max ticks that object can be visible
+
 };
 
 

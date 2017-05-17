@@ -477,9 +477,88 @@ void Squirt::initialize(StudentWorld *m_gw)
 		travel = 0;
 }
 
+
+//*********************************************************************************************
+//************************ Goodie Functions ***************************************************
+//*********************************************************************************************
+
+
+void Goodie::doSomething()
+{
+}
+
+
+// Function that check if the Player is touching or in the edge of the objects
+// returns 1 if its in the edge
+// returns 0 if is touching the object
+// returns 2 if is far of the object (no interaction)
+
+int Goodie::HittingPlayer(int x, int y)
+{
+	if (((x - ((getWorld()->getPlayer()->getX() + 3))) == 1) || (((x + 3) - (getWorld()->getPlayer()->getX())) == -1)) //its coming from left or right
+	{
+		if ((abs(y - (getWorld()->getPlayer()->getY()))) <= 4)
+		{
+			return 1;
+		}
+	}
+
+	else if (((y - ((getWorld()->getPlayer()->getY() + 3))) == 1) || (((y + 3) - (getWorld()->getPlayer()->getY())) == -1)) //its coming from up or down
+	{
+		if ((abs(x - (getWorld()->getPlayer()->getX()))) <= 4)
+		{
+
+			return 1;
+		}
+	}
+	if (((x - ((getWorld()->getPlayer()->getX() + 3))) == 0) || (((x + 3) - (getWorld()->getPlayer()->getX())) == 0)) //its coming from left or right
+	{
+		if ((abs(y - (getWorld()->getPlayer()->getY()))) <= 4)
+		{
+			return 0;
+		}
+	}
+
+	else if (((y - ((getWorld()->getPlayer()->getY() + 3))) == 0) || (((y + 3) - (getWorld()->getPlayer()->getY())) == 0)) //its coming from up or down
+	{
+		if ((abs(x - (getWorld()->getPlayer()->getX()))) <= 4)
+		{
+			return 0;
+		}
+	}
+	return 2;
+}
+
+void Goodie::addCounter()
+{
+	tickCounter++;
+}
+
+int Goodie::getTickCounter()
+{
+	return tickCounter;
+}
+
+void Goodie::setmaxT(int max)
+{
+	T = max;
+}
+
+int Goodie::getmaxT()
+{
+	return T;
+}
+
+
+
+
+//********************************************************************************************
+//*************************** WaterPool FUNCTIONS ********************************************
+//********************************************************************************************
+
 void WaterPool::doSomething()
 {
-	if ( getTickCounter()<= T) //if the number of ticks is still less than the max ticks for this level
+	if ( getTickCounter()<= getmaxT()) //if the number of ticks is still less than the max ticks for this level
 	{
 		addCounter();
 		if (HittingPlayer(getX(), getY()) == 0) //its touching the object
@@ -499,62 +578,10 @@ void WaterPool::doSomething()
 }
 
 
-// Function that check if the Player is touching or in the edge of the objects
-// returns 1 if its in the edge
-// returns 0 if is touching the object
-// returns 2 if is far of the object (no interaction)
-
-int WaterPool::HittingPlayer(int x, int y)
-{
-	if (((x - ((getWorld()->getPlayer()->getX() + 3))) == 1) || (((x+3) - (getWorld()->getPlayer()->getX())) == -1)) //its coming from left or right
-	{
-		if ((abs(y - (getWorld()->getPlayer()->getY()))) <= 4)
-		{
-			return 1;
-		}
-	}
-
-	else if (((y - ((getWorld()->getPlayer()->getY() + 3))) == 1) || (((y + 3) - (getWorld()->getPlayer()->getY())) == -1)) //its coming from up or down
-	{
-		if ((abs(x - (getWorld()->getPlayer()->getX()))) <= 4)
-		{
-			
-			return 1;
-		}
-	}
-	if (((x - ((getWorld()->getPlayer()->getX() + 3))) == 0) || (((x + 3) - (getWorld()->getPlayer()->getX())) == 0)) //its coming from left or right
-	{
-		if ((abs(y - (getWorld()->getPlayer()->getY()))) <= 4)
-		{
-			return 0;
-		}
-	}
-
-	else if (((y - ((getWorld()->getPlayer()->getY() + 3))) == 0) || (((y + 3) - (getWorld()->getPlayer()->getY())) == 0)) //its coming from up or down
-	{
-		if ((abs(x - (getWorld()->getPlayer()->getX()))) <= 4)
-		{
-			return 0;
-		}
-	}
-		return 2;
-}
-
 void WaterPool::initialize(StudentWorld * m_gw)
 {
 	setWorld(m_gw);
-	T = max(100, 300 - 10 * 1); //subs 1 for the current level: getWorld()->getCurrentLevel();
+	setmaxT(max(100, 300 - 10 * 1)); //subs 1 for the current level: getWorld()->getCurrentLevel();
 
 }
-
-void WaterPool::addCounter()
-{
-	tickCounter++;
-}
-
-int WaterPool::getTickCounter()
-{
-	return tickCounter;
-}
-
 
