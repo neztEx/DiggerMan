@@ -136,8 +136,22 @@ void StudentWorld::createGameObjects() {
 		
     }
 	WaterPool *w1 = new WaterPool(6, 10);
+	//WaterPool *w1 = new WaterPool(30, 10);
 	w1->initialize(this);
 	insertObject(w1);
+	SonarKit *sk1 = new SonarKit(8, 30);
+	sk1->initialize(this);
+	insertObject(sk1);
+	//Boulder *b4 = new Boulder(15, 40);
+	//b4->setWorld(this);
+	//insertObject(b4);
+	//WaterPool *w2 = new WaterPool(34, 45);
+	////WaterPool *w1 = new WaterPool(30, 10);
+	//w2->initialize(this);
+	//insertObject(w2);
+	//SonarKit *sk2 = new SonarKit(3, 22);
+	//sk2->initialize(this);
+	//insertObject(sk2);
 }
 
 
@@ -171,9 +185,10 @@ void StudentWorld::UpdateVector()
 					}
 					else
 					{
-						if (deleteitems == getSizeVector())
+						deleteitems++;
+						if ((deleteitems + i) >= getSizeVector())
 							break; //all the items has the state of dead
-						deleteitems++; //encounter a new dead object
+					 //encounter a new dead object
 					}
 				}
 			}
@@ -184,6 +199,8 @@ void StudentWorld::UpdateVector()
 	{
 		gameObjects.pop_back();
 	}
+	
+	//cout << "size of the VEctor!!!" << getSizeVector() << endl;
 
 }
 

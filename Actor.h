@@ -24,6 +24,7 @@ public:
 	}
 	void setWorld(StudentWorld *gw);
 	StudentWorld *getWorld();
+	int HittingPlayer(int x, int y);
     virtual void doSomething();
 	virtual bool AllowMove(int x, int y);
 	virtual void Initialize();
@@ -35,6 +36,8 @@ public:
 	bool ObjectInMap(int x, int y);// checks if the map is in the x,y coord provided
     //virtual void updateTickCounter();
 	name HittingSomething(int x, int y); //Send coord x,y and check if there is another object in the oilfield
+
+	int IndexOfObject(int x, int y);
 	
 
 private:
@@ -80,14 +83,20 @@ public:
     
     void doSomething();
     bool AllowMove(int x, int y, Direction dir);
-	bool HitPlayer(int x, int y);//hit within a radious of 3.0 
 	void Initialize(StudentWorld *m_gw);
 	void addSquirtGun();
 	void decraseSquirtGun();
 	int getSquirtNum(); 
+	void addSonarKit();
+	void decreaseSonarKit();
+
+	int getSonarKit();
+
+	void discoverObjects(); //for sonarkit
 	
 private:
 	int squirt_num;
+	int sonarkit_num;
 };
 
 
@@ -168,7 +177,7 @@ public:
 	}
 
 	void doSomething();
-	int HittingPlayer(int x, int y);
+	//int HittingPlayer(int x, int y);
 	void addCounter();
 	int getTickCounter();
 	void setmaxT(int max);
@@ -190,18 +199,39 @@ class WaterPool : public Goodie
 {
 public:
 	WaterPool(int x, int y)
-		: Goodie(IMID_WATER_POOL, x, y, right, 1.0, 0)
+		: Goodie(IMID_WATER_POOL, x, y, right, 1.0, 2)
 	{
 		setVisible(true);
 		setName(waterPool);
+		setSpace();
 	}
-
+	void dummyfunction();
 	void doSomething();
 	void initialize(StudentWorld *m_gw);
 
 };
 
 
+
+//****************************
+//**** SonarKit  ******************
+//****************************
+
+class SonarKit : public Goodie
+{
+public:
+	SonarKit(int x, int y)
+		: Goodie(IMID_SONAR, x, y, right, 1.0, 2)
+	{
+		setVisible(true);
+		setName(sonarKit);
+		setSpace();
+	}
+
+	void doSomething();
+	void initialize(StudentWorld *m_gw);
+
+};
 
 
 // Students:  Add code to this file, Actor.cpp, StudentWorld.h, and StudentWorld.cpp

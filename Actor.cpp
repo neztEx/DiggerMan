@@ -73,6 +73,9 @@ bool BaseObject::ObjectInMap(int x, int y)
 	return false;
 }
 
+
+//function that returns the name of the object encountered
+
 BaseObject::name BaseObject::HittingSomething(int x, int y)
 {
 	
@@ -86,6 +89,21 @@ BaseObject::name BaseObject::HittingSomething(int x, int y)
 
 }
 
+//function that returns the vector index of the object
+// in that position, if there is nothing there returns -1
+int BaseObject::IndexOfObject(int x, int y)
+{
+
+	//change this for a nice code!!! to go thru the vector
+	for (int i = 0; i < getWorld()->getSizeVector(); i++)
+	{
+		if (getWorld()->getObject(i)->ObjectInMap(x, y))
+			return i;
+	}
+	return -1;
+
+}
+
 
 
 void BaseObject::setWorld(StudentWorld * gw)
@@ -96,6 +114,48 @@ void BaseObject::setWorld(StudentWorld * gw)
 StudentWorld * BaseObject::getWorld()
 {
 	return m_sw;
+}
+
+
+// Function that check if the Player is touching or in the edge of the objects
+// returns 1 if its in the edge
+// returns 0 if is touching the object
+// returns 2 if is far of the object (no interaction)
+
+int BaseObject::HittingPlayer(int x, int y)
+{
+	if (((x - ((getWorld()->getPlayer()->getX() + 3))) == 1) || (((x + 3) - (getWorld()->getPlayer()->getX())) == -1)) //its coming from left or right
+	{
+		if ((abs(y - (getWorld()->getPlayer()->getY()))) <= 4)
+		{
+			return 1;
+		}
+	}
+
+	else if (((y - ((getWorld()->getPlayer()->getY() + 3))) == 1) || (((y + 3) - (getWorld()->getPlayer()->getY())) == -1)) //its coming from up or down
+	{
+		if ((abs(x - (getWorld()->getPlayer()->getX()))) <= 4)
+		{
+
+			return 1;
+		}
+	}
+	if (((x - ((getWorld()->getPlayer()->getX() + 3))) == 0) || (((x + 3) - (getWorld()->getPlayer()->getX())) == 0)) //its coming from left or right
+	{
+		if ((abs(y - (getWorld()->getPlayer()->getY()))) <= 4)
+		{
+			return 0;
+		}
+	}
+
+	else if (((y - ((getWorld()->getPlayer()->getY() + 3))) == 0) || (((y + 3) - (getWorld()->getPlayer()->getY())) == 0)) //its coming from up or down
+	{
+		if ((abs(x - (getWorld()->getPlayer()->getX()))) <= 4)
+		{
+			return 0;
+		}
+	}
+	return 2;
 }
 
 //void BaseObject::updateTickCounter()(){
@@ -191,14 +251,28 @@ void DiggerMan::doSomething()
 			
 			}
             case KEY_PRESS_TAB:
-				cout << "x Coord: " << getX() << "y Coord: " << getY() << endl;
+				cout << "x Coord: " << getX() << " y Coord: " << getY() << endl;
                 break;
             case KEY_PRESS_ESCAPE:
                 break;
             case 90:// if press 'Z'
-                break;
-            case 122: // if press 'z'
-                break;
+				if (getSonarKit() > 0) // if diggerman has sonarkits
+				{
+					cout << "launching sonar kit" << endl;
+					discoverObjects();
+					decreaseSonarKit();
+				}
+				
+				break;
+            case 122:// if press 'z'
+				if (getSonarKit() > 0) // if diggerman has sonarkits
+				{
+					cout << "launching sonar kit" << endl;
+					discoverObjects();
+					decreaseSonarKit();
+				}
+				
+				break;
         }
     }
 }
@@ -261,18 +335,12 @@ bool DiggerMan::AllowMove(int x, int y, Direction Dir)
     return true;
 }
 
-bool DiggerMan::HitPlayer(int x, int y)
-{
-	//if radious is from the edges:
-	//if ((getX()-3)
-	
-	return false;
-}
 
 void DiggerMan::Initialize(StudentWorld * m_gw)
 {
 	setWorld(m_gw);
 	squirt_num = 5;
+	sonarkit_num = 100; //change to 1
 }
 
 void DiggerMan::addSquirtGun()
@@ -288,6 +356,68 @@ void DiggerMan::decraseSquirtGun()
 int DiggerMan::getSquirtNum()
 {
 	return squirt_num;
+}
+
+void DiggerMan::addSonarKit()
+{
+	sonarkit_num++;
+}
+
+void DiggerMan::decreaseSonarKit()
+{ 
+	sonarkit_num--;
+}
+
+int DiggerMan::getSonarKit()
+{
+	return sonarkit_num;
+}
+
+
+
+// function that checks in a radious of 12 units
+// from where its drooped (diggerman position) 
+// if there is any hidden object around. If its find
+// one, then it will activate the sonarkit timer in those
+// objects
+void DiggerMan::discoverObjects()
+{
+	int newX = (getX() - 12);
+	int newY = (getY() - 12);
+	for (int x = 0; x <= 28; x +=4)
+	{
+		for (int y = 0; y <= 28; y += 4)
+		{
+			if (( (x+ newX) >= 0) && ((x + newX) <= 60) && ((y+newY) >= 0) && ((y+newY) <= 60)) //if x and y are within the limits of the oilfield
+			{
+				cout << "searching in positions " << (x + newX) << " " << (y + newY) << endl;
+				if (HittingSomething((x + newX), (y + newY)) == waterPool)
+				{
+					cout << "found a waterPool" << endl;
+					//getWorld()->getObject(IndexOfObject((x + newX), (y + newY)))->se
+				}
+				/*switch (HittingSomething((x + newX), (y + newY)
+				{
+				case waterPool:
+					cout << "found a waterPool" << endl;
+					break;
+				case boulder:
+					cout << "found boulder" << endl;
+					break;
+				case sonarKit:
+					cout << "found sonarKit" << endl;
+					break;
+				case none:
+					cout << "found none" << endl;
+					break;
+				}*/
+					//else 
+					//cout << "couldn't find something" << endl;
+			}
+		}
+
+	}
+
 }
 
 
@@ -337,7 +467,7 @@ void Boulder::doSomething()
         if(getWorld()->dirtAlive(getX(), getY()-1) == false)
         {
             moveTo(getX(), getY() - 1);
-            if(getWorld()->getPlayer()->HitPlayer(getX(), getY()) == 0){
+            if(HittingPlayer(getX(), getY()) == 0){
                 getWorld()->getPlayer()->setVisible(false);
             }
             
@@ -493,47 +623,6 @@ void Goodie::doSomething()
 }
 
 
-// Function that check if the Player is touching or in the edge of the objects
-// returns 1 if its in the edge
-// returns 0 if is touching the object
-// returns 2 if is far of the object (no interaction)
-
-int Goodie::HittingPlayer(int x, int y)
-{
-	if (((x - ((getWorld()->getPlayer()->getX() + 3))) == 1) || (((x + 3) - (getWorld()->getPlayer()->getX())) == -1)) //its coming from left or right
-	{
-		if ((abs(y - (getWorld()->getPlayer()->getY()))) <= 4)
-		{
-			return 1;
-		}
-	}
-
-	else if (((y - ((getWorld()->getPlayer()->getY() + 3))) == 1) || (((y + 3) - (getWorld()->getPlayer()->getY())) == -1)) //its coming from up or down
-	{
-		if ((abs(x - (getWorld()->getPlayer()->getX()))) <= 4)
-		{
-
-			return 1;
-		}
-	}
-	if (((x - ((getWorld()->getPlayer()->getX() + 3))) == 0) || (((x + 3) - (getWorld()->getPlayer()->getX())) == 0)) //its coming from left or right
-	{
-		if ((abs(y - (getWorld()->getPlayer()->getY()))) <= 4)
-		{
-			return 0;
-		}
-	}
-
-	else if (((y - ((getWorld()->getPlayer()->getY() + 3))) == 0) || (((y + 3) - (getWorld()->getPlayer()->getY())) == 0)) //its coming from up or down
-	{
-		if ((abs(x - (getWorld()->getPlayer()->getX()))) <= 4)
-		{
-			return 0;
-		}
-	}
-	return 2;
-}
-
 void Goodie::addCounter()
 {
 	tickCounter++;
@@ -560,6 +649,11 @@ int Goodie::getmaxT()
 //********************************************************************************************
 //*************************** WaterPool FUNCTIONS ********************************************
 //********************************************************************************************
+
+void WaterPool::dummyfunction()
+{
+	cout << "test of dummy" << endl;
+}
 
 void WaterPool::doSomething()
 {
@@ -590,3 +684,29 @@ void WaterPool::initialize(StudentWorld * m_gw)
 
 }
 
+void SonarKit::doSomething()
+{
+	if (getTickCounter() <= getmaxT()) //if the number of ticks is still less than the max ticks for this level
+	{
+		addCounter();
+		if (HittingPlayer(getX(), getY()) == 0) //its touching the object
+		{
+			setVisible(false);
+			setState(dead);
+			getWorld()->getPlayer()->addSonarKit();
+			cout << "object picked up by diggerman!!!!" << endl;
+			getWorld()->playSound(SOUND_GOT_GOODIE);
+		}
+	}
+	else
+	{
+		setVisible(false);
+		setState(dead);
+	}
+}
+
+void SonarKit::initialize(StudentWorld * m_gw)
+{
+	setWorld(m_gw);
+	setmaxT(max(100, 300 - 10 * 1));
+}
