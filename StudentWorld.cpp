@@ -142,6 +142,13 @@ void StudentWorld::createGameObjects() {
 	SonarKit *sk1 = new SonarKit(8, 30);
 	sk1->initialize(this);
 	insertObject(sk1);
+	Barrel *bo1 = new Barrel(34, 45);
+	bo1->initialize(this);
+	insertObject(bo1);
+	GoldNugget *gn1 = new GoldNugget (34, 35);
+	gn1->initialize(this);
+	insertObject(gn1);
+
 	//Boulder *b4 = new Boulder(15, 40);
 	//b4->setWorld(this);
 	//insertObject(b4);

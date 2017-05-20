@@ -28,6 +28,7 @@ public:
     virtual void doSomething();
 	virtual bool AllowMove(int x, int y);
 	virtual void Initialize();
+	virtual void activateSonar();
 	void setState(state d);
 	state getState();
 	void setName(name n);
@@ -182,12 +183,29 @@ public:
 	int getTickCounter();
 	void setmaxT(int max);
 	int getmaxT();
+	void resetCounter();
 
 private:
 	int tickCounter = 0;
-	int T; //max ticks that object can be visible
+	int T=0; //max ticks that object can be visible
 };
 
+
+//****************************
+//**** HIDDEN GOODIE CLASS  ******************
+//****************************
+
+class HiddenGoodie : public Goodie
+{
+public:
+	HiddenGoodie(int imageID, int startX, int startY, Direction dir = right, double size = 1.0, unsigned int depth = 0)
+		: Goodie(imageID, startX, startY, dir, size, depth)
+	{
+		setVisible(false);
+		//setName(waterPool);
+	}
+	void activateSonar();
+};
 
 
 
@@ -205,7 +223,7 @@ public:
 		setName(waterPool);
 		setSpace();
 	}
-	void dummyfunction();
+
 	void doSomething();
 	void initialize(StudentWorld *m_gw);
 
@@ -225,6 +243,48 @@ public:
 	{
 		setVisible(true);
 		setName(sonarKit);
+		setSpace();
+	}
+
+	void doSomething();
+	void initialize(StudentWorld *m_gw);
+
+};
+
+
+
+//****************************
+//**** BARREL CLASS  ******************
+//****************************
+
+class Barrel : public HiddenGoodie
+{
+public:
+	Barrel(int x, int y)
+		: HiddenGoodie(IMID_BARREL, x, y, right, 1.0, 2)
+	{
+		setName(barrelOil);
+		setSpace();
+	}
+
+	void doSomething();
+	void initialize(StudentWorld *m_gw);
+
+};
+
+
+
+//****************************
+//**** GOLD NUGGET CLASS  ******************
+//****************************
+
+class GoldNugget : public HiddenGoodie
+{
+public:
+	GoldNugget(int x, int y)
+		: HiddenGoodie(IMID_GOLD, x, y, right, 1.0, 2)
+	{
+		setName(goldNugget);
 		setSpace();
 	}
 

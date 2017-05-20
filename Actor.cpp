@@ -28,6 +28,10 @@ void BaseObject::Initialize()
 {
 }
 
+void BaseObject::activateSonar()
+{
+}
+
 void BaseObject::setState(state d)
 {
 	m_state = d;
@@ -110,6 +114,7 @@ void BaseObject::setWorld(StudentWorld * gw)
 {
 	m_sw = gw; //this is to access the StudentWorld object
 }
+
 
 StudentWorld * BaseObject::getWorld()
 {
@@ -340,7 +345,7 @@ void DiggerMan::Initialize(StudentWorld * m_gw)
 {
 	setWorld(m_gw);
 	squirt_num = 5;
-	sonarkit_num = 100; //change to 1
+	sonarkit_num = 1; 
 }
 
 void DiggerMan::addSquirtGun()
@@ -390,11 +395,12 @@ void DiggerMan::discoverObjects()
 		{
 			if (( (x+ newX) >= 0) && ((x + newX) <= 60) && ((y+newY) >= 0) && ((y+newY) <= 60)) //if x and y are within the limits of the oilfield
 			{
-				cout << "searching in positions " << (x + newX) << " " << (y + newY) << endl;
-				if (HittingSomething((x + newX), (y + newY)) == waterPool)
+				//cout << "searching in positions " << (x + newX) << " " << (y + newY) << endl;
+			
+				if ((HittingSomething((x + newX), (y + newY)) == barrelOil) || (HittingSomething((x + newX), (y + newY)) == goldNugget))
 				{
-					cout << "found a waterPool" << endl;
-					//getWorld()->getObject(IndexOfObject((x + newX), (y + newY)))->se
+					cout << "found OBJECT IN RADAR" << endl;
+					getWorld()->getObject(IndexOfObject((x + newX), (y + newY)))->activateSonar();
 				}
 				/*switch (HittingSomething((x + newX), (y + newY)
 				{
@@ -643,17 +649,17 @@ int Goodie::getmaxT()
 	return T;
 }
 
+void Goodie::resetCounter()
+{
+	tickCounter = 0;
+}
+
 
 
 
 //********************************************************************************************
 //*************************** WaterPool FUNCTIONS ********************************************
 //********************************************************************************************
-
-void WaterPool::dummyfunction()
-{
-	cout << "test of dummy" << endl;
-}
 
 void WaterPool::doSomething()
 {
@@ -709,4 +715,103 @@ void SonarKit::initialize(StudentWorld * m_gw)
 {
 	setWorld(m_gw);
 	setmaxT(max(100, 300 - 10 * 1));
+}
+
+void Barrel::doSomething()
+{
+	if (getmaxT() > 0) //this means that the sonar kit was activated near this object
+	{
+		setVisible(true);
+		if (getTickCounter() <= getmaxT()) //if the number of ticks is still less than the max ticks for this level
+		{
+			addCounter();
+			if (HittingPlayer(getX(), getY()) == 0) //its touching the object
+			{
+				setState(dead);
+				setVisible(false);
+				//getWorld()->getPlayer()->addSonarKit();
+				cout << "object picked up by diggerman!!!!" << endl;
+				getWorld()->playSound(SOUND_FOUND_OIL);
+			}
+		}
+		if (getTickCounter() == getmaxT())
+		{
+			resetCounter();
+			setmaxT(0); //sonar is off
+		}
+	}
+
+	else if (HittingPlayer(getX(), getY()) == 1) //its on the edge
+	{
+		setVisible(true);
+	}
+	else if (HittingPlayer(getX(), getY()) == 0) // its touching the object
+	{
+		setState(dead);
+		setVisible(false);
+		//getWorld()->getPlayer()->addSonarKit();
+		cout << "object picked up by diggerman!!!!" << endl;
+		getWorld()->playSound(SOUND_FOUND_OIL);
+
+	}
+	else
+		setVisible(false);
+}
+
+void Barrel::initialize(StudentWorld * m_gw)
+{
+	setWorld(m_gw);
+	//setmaxT(max(100, 300 - 10 * 1));
+}
+
+
+void HiddenGoodie::activateSonar()
+{
+	setmaxT(50);
+}
+
+void GoldNugget::doSomething()
+{
+	if (getmaxT() > 0) //this means that the sonar kit was activated near this object
+	{
+		setVisible(true);
+		if (getTickCounter() <= getmaxT()) //if the number of ticks is still less than the max ticks for this level
+		{
+			addCounter();
+			if (HittingPlayer(getX(), getY()) == 0) //its touching the object
+			{
+				setState(dead);
+				setVisible(false);
+				//getWorld()->getPlayer()->addSonarKit();
+				cout << "object picked up by diggerman!!!!" << endl;
+				getWorld()->playSound(SOUND_GOT_GOODIE);
+			}
+		}
+		if (getTickCounter() == getmaxT())
+		{
+			resetCounter();
+			setmaxT(0); //sonar is off
+		}
+	}
+
+	else if (HittingPlayer(getX(), getY()) == 1) //its on the edge
+	{
+		setVisible(true);
+	}
+	else if (HittingPlayer(getX(), getY()) == 0) // its touching the object
+	{
+		setState(dead);
+		setVisible(false);
+		//getWorld()->getPlayer()->addSonarKit();
+		cout << "object picked up by diggerman!!!!" << endl;
+		getWorld()->playSound(SOUND_GOT_GOODIE);
+
+	}
+	else
+	setVisible(false);
+}
+
+void GoldNugget::initialize(StudentWorld * m_gw)
+{
+	setWorld(m_gw);
 }
