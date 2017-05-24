@@ -41,12 +41,15 @@ public:
 	void UpdateVector();
 	DiggerMan* getPlayer();
 	void setPlayer( DiggerMan *z);
+    void setlevel();
+    
 
 private:
     vector<BaseObject*> gameObjects;
     Dirt *gameMap[VIEW_WIDTH][DIRT_HEIGHT];
 	//int numObjects; //store de num of objects in map
 	DiggerMan *m_player;
+    int current_level_number = 0;
 	//int *ObjectCoord[VIEW_WIDTH][VIEW_HEIGHT]; //2d ARRAy that keeps track of the position of all the objects in the map
 	//BaseObject::name *ObjectCoord[VIEW_WIDTH][VIEW_HEIGHT];
 };

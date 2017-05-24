@@ -1,6 +1,6 @@
 #include "StudentWorld.h"
 #include <string>
-#include <random>
+#include <cstdlib>
 #include "Actor.h"
 #include <algorithm>
 
@@ -41,6 +41,9 @@ int StudentWorld::move()
     {
         playSound(SOUND_DIG);
     }
+    if (getPlayer()->isVisible() == false){
+        return GWSTATUS_PLAYER_DIED;
+    }
     for (int i = 0; i < getSizeVector(); i++)
     {
         //cout << "vector doSomething" << endl;
@@ -53,10 +56,21 @@ int StudentWorld::move()
 
 void StudentWorld::cleanUp()
 {
-    
-}
 
-//-------CUSTOM FUNCTIONS---------
+    for(int i = 0; i < gameObjects.size(); i++){
+        delete gameObjects[i];
+    }
+    gameObjects.clear();
+    for (int x = 0; x<VIEW_WIDTH; x++)
+    {
+        for (int y = 0; y<DIRT_HEIGHT; y++)
+        {
+            delete gameMap[x][y];
+        }
+    }
+}
+//--------------CUSTOM FUNCTIONS-------------------
+
 void StudentWorld::insertObject(BaseObject * o)
 {
 	o->setWorld(this);
@@ -122,19 +136,53 @@ bool StudentWorld::digging(DiggerMan *z)
         }
     return dig;
 }
-
+void StudentWorld::setlevel(){
+    current_level_number++;
+}
 void StudentWorld::createGameObjects() {
-    random_device rd; //obtain a random number from hardware
-    mt19937 eng(rd()); //seed the generator
-    uniform_int_distribution<> distr(0, 59); //define the range
+    int B = min(current_level_number / 2 + 2, 7); //boulders
+    int G = max(5-current_level_number / 2, 2); //gold nuggets
+    int L = min(2+current_level_number, 18); //barrels of oil
     
-    int count = 2;
-    for (int i = 0; i <= count; i++) {
-        Boulder *bl = new Boulder(distr(eng), distr(eng));
+    srand(time(NULL));
+
+    for (int i = 0; i < B; i++) {
+        int x = rand() % 60;
+        int y = rand() % 36+20; //56-20=36, plus 20 to start the range at.
+        //cout << y << endl;
+        while(x == 30 || x == 31 || x == 32 || x == 33){
+            x = rand() % 60;
+        }
+        Boulder *bl = new Boulder(x,y);
         bl->setWorld(this);
+        for(int x1 = 0; x1<4;x1++){
+            for(int y1 = 0; y1<4; y1++){
+                gameMap[x+x1][y+y1]->setVisible(false);
+            }
+        }
         insertObject(bl);
-		
     }
+    for (int i = 0; i < G; i++) {
+        int x = rand() % 60;
+        int y = rand() % 56;
+        while(x == 30 || x == 31 || x == 32 || x == 33){
+            x = rand() % 60;
+        }
+        GoldNugget *gn1 = new GoldNugget(x,y);;
+        gn1->initialize(this);
+        insertObject(gn1);
+    }
+    for (int i = 0; i < L; i++) {
+        int x = rand() % 60;
+        int y = rand() % 56;
+        while(x == 30 || x == 31 || x == 32 || x == 33){
+            x = rand() % 60;
+        }
+        Barrel *bo1 = new Barrel(x,y);
+        bo1->initialize(this);
+        insertObject(bo1);
+    }
+
 	WaterPool *w1 = new WaterPool(6, 10);
 	//WaterPool *w1 = new WaterPool(30, 10);
 	w1->initialize(this);
@@ -142,12 +190,8 @@ void StudentWorld::createGameObjects() {
 	SonarKit *sk1 = new SonarKit(8, 30);
 	sk1->initialize(this);
 	insertObject(sk1);
-	Barrel *bo1 = new Barrel(34, 45);
-	bo1->initialize(this);
-	insertObject(bo1);
-	GoldNugget *gn1 = new GoldNugget (34, 35);
-	gn1->initialize(this);
-	insertObject(gn1);
+
+
 
 	//Boulder *b4 = new Boulder(15, 40);
 	//b4->setWorld(this);
