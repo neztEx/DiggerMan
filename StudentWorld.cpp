@@ -3,12 +3,19 @@
 #include <cstdlib>
 #include "Actor.h"
 #include <algorithm>
+#include <time.h>
+#include <sstream>
 
 using namespace std;
 //const int DIRT_HEIGHT = 60;
 
 //declaration of player
 //DiggerMan *player = new DiggerMan();
+string intToString(int x);
+string twoDigits(int x);
+string threeDigits(int x);
+string sixDigits(int x);
+string formatString(int level, int lives, int health,  int squirts, int gold, int sonar, int barrelsLeft, int score);
 
 
 GameWorld* createStudentWorld(string assetDir)
@@ -26,6 +33,7 @@ int StudentWorld::init()
 	DiggerMan *player = new DiggerMan();
 	setPlayer(player);
 	getPlayer()->Initialize(this);
+	ResetBarrels();
     createGameObjects();
     
     return GWSTATUS_CONTINUE_GAME;
@@ -34,8 +42,8 @@ int StudentWorld::move()
 {
     // This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
     // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
-    decLives();
-	//fillObjectCoord(player);
+   // decLives();
+	SetDisplayText();
     getPlayer()->doSomething();
     if (digging(getPlayer()))
     {
@@ -139,11 +147,42 @@ bool StudentWorld::digging(DiggerMan *z)
 void StudentWorld::setlevel(){
     current_level_number++;
 }
+void StudentWorld::setTotalBarrels(int B)
+{
+	MaxBarrels = B;
+}
+int StudentWorld::GetTotalBarrels()
+{
+	return MaxBarrels;
+}
+void StudentWorld::DecreaseBarrels()
+{
+	MaxBarrels--;
+}
+void StudentWorld::ResetBarrels()
+{
+	MaxBarrels = 0;
+}
+void StudentWorld::SetDisplayText()
+{
+	int levels = getLevel();
+	int lives = getLives();
+	int health = getPlayer()->getHealth();
+	int squirts = getPlayer()->getSquirtNum();
+	int gold = getPlayer()->getGoldNum();
+	int sonar = getPlayer()->getSonarKit();
+	int barrelsLeft = GetTotalBarrels();
+	int score = getScore();
+	string s = formatString(levels, lives, health, squirts, gold, sonar, barrelsLeft, score);
+	setGameStatText(s);
+}
+
 void StudentWorld::createGameObjects() {
     int B = min(current_level_number / 2 + 2, 7); //boulders
     int G = max(5-current_level_number / 2, 2); //gold nuggets
     int L = min(2+current_level_number, 18); //barrels of oil
     
+	setTotalBarrels(B);
     srand(time(NULL));
 
     for (int i = 0; i < B; i++) {
@@ -265,3 +304,59 @@ void StudentWorld::setPlayer(DiggerMan * z)
 	m_player = z;
 }
 
+string intToString(int x)
+{	
+	stringstream s1;
+	s1 << x;
+	return s1.str();
+
+}
+
+string twoDigits(int x)
+{
+	string s2;
+	if (x >= 10)
+		s2 = intToString(x);
+	else
+		s2 = (" " + intToString(x));
+	return s2;
+}
+string threeDigits(int x)
+{
+	string s2;
+	int perc = x * 10;
+	if (perc >= 100)
+		s2 = intToString(perc);
+	else
+		s2 = (" " + intToString(perc));
+	return s2+"%";
+}
+
+string sixDigits(int x)
+{
+	string s2,s3;
+	s2 = intToString(x);
+	if (s2.length() < 6)
+	{
+		int numZeros = 6 - s2.length();
+		for (int i = 0; i < numZeros; i++)
+		{
+			if (s3.empty())
+				s3 = "0";
+			else
+				s3 = s3 + "0";
+		}
+		return s3 + s2;
+	}
+		return s2;
+}
+
+
+
+string formatString(int level, int lives, int health, int squirts, int gold, int sonar, int barrelsLeft, int score)
+{
+	string s1;
+	s1 = ("Lvl: " + twoDigits(level) + "  Lives: " + intToString(lives) + "  Hlth: " + threeDigits(health) + "  Wtr: " + twoDigits(squirts)
+		+ "  Gld: " + twoDigits(gold) + "  Sonar: " + twoDigits(sonar) + "  Oil Left: " + twoDigits(barrelsLeft) + "  Scr: " + sixDigits(score));
+	return s1;
+}

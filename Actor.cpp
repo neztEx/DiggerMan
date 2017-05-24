@@ -345,7 +345,9 @@ void DiggerMan::Initialize(StudentWorld * m_gw)
 {
 	setWorld(m_gw);
 	squirt_num = 5;
-	sonarkit_num = 1; 
+	sonarkit_num = 1;
+	health = 10;
+	Gold_num = 0;
 }
 
 void DiggerMan::addSquirtGun()
@@ -376,6 +378,21 @@ void DiggerMan::decreaseSonarKit()
 int DiggerMan::getSonarKit()
 {
 	return sonarkit_num;
+}
+
+int DiggerMan::getGoldNum()
+{
+	return Gold_num;
+}
+
+void DiggerMan::AddGoldNum()
+{
+	Gold_num++;
+}
+
+void DiggerMan::decreaseGoldNum()
+{
+	Gold_num--;
 }
 
 
@@ -424,6 +441,26 @@ void DiggerMan::discoverObjects()
 
 	}
 
+}
+
+void DiggerMan::decreaseHealth()
+{
+	health--;
+}
+
+void DiggerMan::increaseHealth()
+{
+	health++;
+}
+
+int DiggerMan::getHealth()
+{
+	return health;
+}
+
+void DiggerMan::ResetHealth()
+{
+	health = 10;
 }
 
 
@@ -673,6 +710,7 @@ void WaterPool::doSomething()
 			getWorld()->getPlayer()->addSquirtGun();
 			cout << "object picked up by diggerman!!!!" << endl;
 			getWorld()->playSound(SOUND_GOT_GOODIE);
+			getWorld()->increaseScore(100);
 		}
 	}
 	else
@@ -702,6 +740,7 @@ void SonarKit::doSomething()
 			getWorld()->getPlayer()->addSonarKit();
 			cout << "object picked up by diggerman!!!!" << endl;
 			getWorld()->playSound(SOUND_GOT_GOODIE);
+			getWorld()->increaseScore(75);
 		}
 	}
 	else
@@ -732,6 +771,8 @@ void Barrel::doSomething()
 				//getWorld()->getPlayer()->addSonarKit();
 				cout << "object picked up by diggerman!!!!" << endl;
 				getWorld()->playSound(SOUND_FOUND_OIL);
+				getWorld()->increaseScore(1000);
+				getWorld()->DecreaseBarrels();
 			}
 		}
 		if (getTickCounter() == getmaxT())
@@ -752,6 +793,8 @@ void Barrel::doSomething()
 		//getWorld()->getPlayer()->addSonarKit();
 		cout << "object picked up by diggerman!!!!" << endl;
 		getWorld()->playSound(SOUND_FOUND_OIL);
+		getWorld()->increaseScore(1000);
+		getWorld()->DecreaseBarrels();
 
 	}
 	else
@@ -785,6 +828,8 @@ void GoldNugget::doSomething()
 				//getWorld()->getPlayer()->addSonarKit();
 				cout << "object picked up by diggerman!!!!" << endl;
 				getWorld()->playSound(SOUND_GOT_GOODIE);
+				getWorld()->increaseScore(10);
+				getWorld()->getPlayer()->AddGoldNum();
 			}
 		}
 		if (getTickCounter() == getmaxT())
@@ -805,6 +850,8 @@ void GoldNugget::doSomething()
 		//getWorld()->getPlayer()->addSonarKit();
 		cout << "object picked up by diggerman!!!!" << endl;
 		getWorld()->playSound(SOUND_GOT_GOODIE);
+		getWorld()->increaseScore(10);
+		getWorld()->getPlayer()->AddGoldNum();
 
 	}
 	else

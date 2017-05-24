@@ -42,10 +42,16 @@ public:
 	DiggerMan* getPlayer();
 	void setPlayer( DiggerMan *z);
     void setlevel();
+	void setTotalBarrels(int B);
+	int GetTotalBarrels();
+	void DecreaseBarrels();
+	void ResetBarrels();
+	void SetDisplayText();
     
 
 private:
     vector<BaseObject*> gameObjects;
+	int MaxBarrels; //max barrels per level
     Dirt *gameMap[VIEW_WIDTH][DIRT_HEIGHT];
 	//int numObjects; //store de num of objects in map
 	DiggerMan *m_player;

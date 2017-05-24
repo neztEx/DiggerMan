@@ -90,14 +90,21 @@ public:
 	int getSquirtNum(); 
 	void addSonarKit();
 	void decreaseSonarKit();
-
 	int getSonarKit();
-
+	int getGoldNum();
+	void AddGoldNum();
+	void decreaseGoldNum();
 	void discoverObjects(); //for sonarkit
+	void decreaseHealth();
+	void increaseHealth();
+	int getHealth();
+	void ResetHealth();
 	
 private:
 	int squirt_num;
 	int sonarkit_num;
+	int health;
+	int Gold_num;
 };
 
 
