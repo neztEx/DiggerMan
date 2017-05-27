@@ -37,6 +37,7 @@ public:
     bool dirtAlive(int x, int y);
     bool digging(DiggerMan *z);
     void createGameObjects();
+    void addNewObjects();
 	//void fillObjectCoord(DiggerMan *z);
 	void UpdateVector();
 	DiggerMan* getPlayer();

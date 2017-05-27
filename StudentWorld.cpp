@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <time.h>
 #include <sstream>
+#include <random>
 
 using namespace std;
 //const int DIRT_HEIGHT = 60;
@@ -36,6 +37,7 @@ int StudentWorld::init()
 	ResetBarrels();
     createGameObjects();
     
+    
     return GWSTATUS_CONTINUE_GAME;
 }
 int StudentWorld::move()
@@ -49,16 +51,20 @@ int StudentWorld::move()
     {
         playSound(SOUND_DIG);
     }
-    if (getPlayer()->isVisible() == false){
-        return GWSTATUS_PLAYER_DIED;
-    }
     for (int i = 0; i < getSizeVector(); i++)
     {
         //cout << "vector doSomething" << endl;
         getObject(i)->doSomething();
     }
+    addNewObjects();
 	UpdateVector();
-    
+    if (getPlayer()->isVisible() == false){
+        return GWSTATUS_PLAYER_DIED;
+    }
+    if(GetTotalBarrels() == 0){
+        playSound(SOUND_FINISHED_LEVEL);
+        return GWSTATUS_FINISHED_LEVEL;
+    }
     return GWSTATUS_CONTINUE_GAME;
 }
 
@@ -76,6 +82,7 @@ void StudentWorld::cleanUp()
             delete gameMap[x][y];
         }
     }
+    delete getPlayer();
 }
 //--------------CUSTOM FUNCTIONS-------------------
 
@@ -178,9 +185,12 @@ void StudentWorld::SetDisplayText()
 }
 
 void StudentWorld::createGameObjects() {
+    int current_level_number = getLevel();
+    
     int B = min(current_level_number / 2 + 2, 7); //boulders
     int G = max(5-current_level_number / 2, 2); //gold nuggets
     int L = min(2+current_level_number, 18); //barrels of oil
+    
     
 	setTotalBarrels(B);
     srand(time(NULL));
@@ -221,7 +231,7 @@ void StudentWorld::createGameObjects() {
         bo1->initialize(this);
         insertObject(bo1);
     }
-
+/*
 	WaterPool *w1 = new WaterPool(6, 10);
 	//WaterPool *w1 = new WaterPool(30, 10);
 	w1->initialize(this);
@@ -230,7 +240,7 @@ void StudentWorld::createGameObjects() {
 	sk1->initialize(this);
 	insertObject(sk1);
 
-
+*/
 
 	//Boulder *b4 = new Boulder(15, 40);
 	//b4->setWorld(this);
@@ -242,6 +252,70 @@ void StudentWorld::createGameObjects() {
 	//SonarKit *sk2 = new SonarKit(3, 22);
 	//sk2->initialize(this);
 	//insertObject(sk2);
+}
+
+void StudentWorld::addNewObjects(){
+
+    int current_level_number = getLevel();
+    bool goodieAdded = false;
+    int G = (current_level_number * 25 + 300);
+    
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    srand((time_t)ts.tv_nsec);
+    int random = rand() % G;
+
+    if(random < 1){
+        cout << "goodie to be added!" << endl;
+        while(goodieAdded != true){
+            int random2 = rand() % 5;
+
+            if(random2 < 1){
+                SonarKit *sk1 = new SonarKit(0, 60);
+                sk1->initialize(this);
+                insertObject(sk1);
+                goodieAdded = true;
+                return;
+            }
+            if(random2 < 4){
+                
+                bool freeSpace = false;
+                while(goodieAdded != true){
+                    int xSet = 0;
+                    int ySet = 0;
+                    while(freeSpace != true)
+                    {
+                        int x = rand() % 60;
+                        int y = rand() % 56;
+
+                        for(int x1 = 0; x1<4;x1++)
+                        {
+                            for(int y1 = 0; y1<4; y1++)
+                            {
+                                if(gameMap[x+x1][y+y1]->isVisible()==false)
+                                    freeSpace = true;
+                                else
+                                    freeSpace = false;
+                            }
+                            if(freeSpace == false)
+                                break;
+                        }
+                        if(freeSpace == true){
+                        xSet = x;
+                        ySet = y;
+                        }
+                    }
+                    WaterPool *w1 = new WaterPool(xSet,ySet);
+                    w1->initialize(this);
+                    insertObject(w1);
+                    goodieAdded = true;
+                    return;
+                }
+            }
+        }
+    }
+    return;
+    
 }
 
 
