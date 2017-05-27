@@ -254,6 +254,7 @@ void StudentWorld::createGameObjects() {
 	//insertObject(sk2);
 }
 
+//functions to add new objects after certain amount of ticks have occured in the game
 void StudentWorld::addNewObjects(){
 
     int current_level_number = getLevel();
@@ -265,19 +266,19 @@ void StudentWorld::addNewObjects(){
     srand((time_t)ts.tv_nsec);
     int random = rand() % G;
 
-    if(random < 1){
+    if(random < 1){ //1 in G chance to add a new object to the game
         cout << "goodie to be added!" << endl;
-        while(goodieAdded != true){
+        while(goodieAdded != true){ //while the item hasnt been added continue to loop until a location can be found
             int random2 = rand() % 5;
 
-            if(random2 < 1){
+            if(random2 < 1){ //to add sonar kit
                 SonarKit *sk1 = new SonarKit(0, 60);
                 sk1->initialize(this);
                 insertObject(sk1);
                 goodieAdded = true;
                 return;
             }
-            if(random2 < 4){
+            if(random2 < 4){ //to add water pool
                 
                 bool freeSpace = false;
                 while(goodieAdded != true){
@@ -287,22 +288,37 @@ void StudentWorld::addNewObjects(){
                     {
                         int x = rand() % 60;
                         int y = rand() % 56;
-
-                        for(int x1 = 0; x1<4;x1++)
+                        
+                        Boulder *temp = new Boulder(x, y);
+                        bool result = find(gameObjects.begin(), gameObjects.end(), temp) != gameObjects.end();
+                        delete temp;
+                        
+                        if(result == false)
                         {
-                            for(int y1 = 0; y1<4; y1++)
+                            
+                            for(int x1 = 0; x1<4;x1++)
                             {
-                                if(gameMap[x+x1][y+y1]->isVisible()==false)
-                                    freeSpace = true;
-                                else
-                                    freeSpace = false;
+                                for(int y1 = 0; y1<4; y1++)
+                                {
+                                    if(gameMap[x+x1][y+y1]->isVisible()==true)
+                                    {
+                                        freeSpace = false;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        freeSpace = true;
+                                    }
+                                }
+                                if(freeSpace == false)
+                                    break;
                             }
-                            if(freeSpace == false)
-                                break;
-                        }
-                        if(freeSpace == true){
-                        xSet = x;
-                        ySet = y;
+                            
+                            if(freeSpace == true)
+                            {
+                                xSet = x;
+                                ySet = y;
+                            }
                         }
                     }
                     WaterPool *w1 = new WaterPool(xSet,ySet);
