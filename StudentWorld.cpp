@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include "Actor.h"
 #include <algorithm>
-#include <time.h>
+#include <sys/time.h>
 #include <sstream>
 #include <random>
 
@@ -261,9 +261,9 @@ void StudentWorld::addNewObjects(){
     bool goodieAdded = false;
     int G = (current_level_number * 25 + 300);
     
-    struct timespec ts;
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    srand((time_t)ts.tv_nsec);
+    timeval t1;
+    gettimeofday(&t1, NULL);
+    srand(t1.tv_usec * t1.tv_sec);
     int random = rand() % G;
 
     if(random < 1){ //1 in G chance to add a new object to the game
