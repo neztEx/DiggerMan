@@ -6,6 +6,7 @@
 #include <sys/time.h>
 #include <sstream>
 #include <random>
+//#include <windows.h>
 
 using namespace std;
 //const int DIRT_HEIGHT = 60;
@@ -59,6 +60,7 @@ int StudentWorld::move()
     addNewObjects();
 	UpdateVector();
     if (getPlayer()->isVisible() == false){
+        playSound(GWSTATUS_PLAYER_DIED);
         return GWSTATUS_PLAYER_DIED;
     }
     if(GetTotalBarrels() == 0){
@@ -261,9 +263,20 @@ void StudentWorld::addNewObjects(){
     bool goodieAdded = false;
     int G = (current_level_number * 25 + 300);
     
+    //windows code for time
+    /*
+     LARGE_INTEGER cicles;   
+     QueryPerformanceCounter(&cicles);   
+     srand (cicles.QuadPart);
+    */
+  
+    //Mac code for time
     timeval t1;
     gettimeofday(&t1, NULL);
     srand(t1.tv_usec * t1.tv_sec);
+    
+    
+    
     int random = rand() % G;
 
     if(random < 1){ //1 in G chance to add a new object to the game
