@@ -256,7 +256,15 @@ void DiggerMan::doSomething()
 			
 			}
             case KEY_PRESS_TAB:
-				cout << "x Coord: " << getX() << " y Coord: " << getY() << endl;
+				//add gold nugget to the map
+				if (getGoldNum() > 0)
+				{
+					GoldNugget *gn1 = new GoldNugget(getX(), getY());;
+					gn1->initialize(getWorld());
+					gn1->setPickable(false);
+					getWorld()->insertObject(gn1);
+					decreaseGoldNum();
+				}
                 break;
             case KEY_PRESS_ESCAPE:
                 break;
@@ -797,8 +805,8 @@ void Barrel::doSomething()
 		getWorld()->DecreaseBarrels();
 
 	}
-	else
-		setVisible(false);
+	/*else
+		setVisible(false);*/
 }
 
 void Barrel::initialize(StudentWorld * m_gw)
@@ -813,6 +821,16 @@ void HiddenGoodie::activateSonar()
 	setmaxT(50);
 }
 
+bool HiddenGoodie::getPickable()
+{
+	return pickableforDig;
+}
+
+void HiddenGoodie::setPickable(bool x)
+{
+	pickableforDig = x;
+}
+
 void GoldNugget::doSomething()
 {
 	if (getmaxT() > 0) //this means that the sonar kit was activated near this object
@@ -821,7 +839,7 @@ void GoldNugget::doSomething()
 		if (getTickCounter() <= getmaxT()) //if the number of ticks is still less than the max ticks for this level
 		{
 			addCounter();
-			if (HittingPlayer(getX(), getY()) == 0) //its touching the object
+			if ((HittingPlayer(getX(), getY()) == 0)&& (getPickable()==true)) //its touching the object
 			{
 				setState(dead);
 				setVisible(false);
@@ -843,7 +861,7 @@ void GoldNugget::doSomething()
 	{
 		setVisible(true);
 	}
-	else if (HittingPlayer(getX(), getY()) == 0) // its touching the object
+	else if ((HittingPlayer(getX(), getY()) == 0) && (getPickable() == true)) // its touching the object
 	{
 		setState(dead);
 		setVisible(false);
@@ -854,8 +872,8 @@ void GoldNugget::doSomething()
 		getWorld()->getPlayer()->AddGoldNum();
 
 	}
-	else
-	setVisible(false);
+	/*else
+	setVisible(false);*/
 }
 
 void GoldNugget::initialize(StudentWorld * m_gw)

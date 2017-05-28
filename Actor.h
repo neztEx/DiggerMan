@@ -209,9 +209,14 @@ public:
 		: Goodie(imageID, startX, startY, dir, size, depth)
 	{
 		setVisible(false);
+		setPickable(true);
 		//setName(waterPool);
 	}
 	void activateSonar();
+	bool getPickable();
+	void setPickable(bool x);
+private:
+	bool pickableforDig;
 };
 
 

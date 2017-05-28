@@ -3,10 +3,11 @@
 #include <cstdlib>
 #include "Actor.h"
 #include <algorithm>
-#include <sys/time.h>
+#include <time.h>
 #include <sstream>
 #include <random>
-//#include <windows.h>
+#include <windows.h>
+
 
 using namespace std;
 //const int DIRT_HEIGHT = 60;
@@ -194,7 +195,7 @@ void StudentWorld::createGameObjects() {
     int L = min(2+current_level_number, 18); //barrels of oil
     
     
-	setTotalBarrels(B);
+	setTotalBarrels(L);
     srand(time(NULL));
 
     for (int i = 0; i < B; i++) {
@@ -264,16 +265,16 @@ void StudentWorld::addNewObjects(){
     int G = (current_level_number * 25 + 300);
     
     //windows code for time
-    /*
+    
      LARGE_INTEGER cicles;   
      QueryPerformanceCounter(&cicles);   
      srand (cicles.QuadPart);
-    */
+    
   
-    //Mac code for time
-    timeval t1;
-    gettimeofday(&t1, NULL);
-    srand(t1.tv_usec * t1.tv_sec);
+    ////Mac code for time
+    //timeval t1;
+    //gettimeofday(&t1, NULL);
+    //srand(t1.tv_usec * t1.tv_sec);
     
     
     
