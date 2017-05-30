@@ -32,6 +32,10 @@ void BaseObject::activateSonar()
 {
 }
 
+void BaseObject::GetAnnoyed(int x)
+{
+}
+
 void BaseObject::setState(state d)
 {
 	m_state = d;
@@ -91,6 +95,54 @@ BaseObject::name BaseObject::HittingSomething(int x, int y)
 	}
 	return none;
 
+}
+
+// function returns if the distance between objects is <=3
+// if it is then it sends the name of the object
+BaseObject::name BaseObject::HittingSomething2(int x, int y)
+{
+	//change this for a nice code!!! to go thru the vector
+	for (int i = 0; i < getWorld()->getSizeVector(); i++)
+	{
+		//if (getWorld()->getObject(i)->ObjectInMap(x, y))
+		if (Radious(x, y, getWorld()->getObject(i)->getX(), getWorld()->getObject(i)->getY()) <= 3.0)
+		{
+			cout << "x1: " << x << " y1: " << y << " x2: "<<getWorld()->getObject(i)->getX() << " y2: " << getWorld()->getObject(i)->getY() << endl;
+			cout << "Radius::: "<<Radious(x, y, getWorld()->getObject(i)->getX(), getWorld()->getObject(i)->getY()) << endl;
+			return getWorld()->getObject(i)->getName();
+
+		}
+	}
+	return none;
+
+}
+
+int BaseObject::IndexOfObjectWithinRadius(int x, int y)
+{
+	//change this for a nice code!!! to go thru the vector
+	for (int i = 0; i < getWorld()->getSizeVector(); i++)
+	{
+		//if (getWorld()->getObject(i)->ObjectInMap(x, y))
+		if (Radious(x, y, getWorld()->getObject(i)->getX(), getWorld()->getObject(i)->getY()) <= 3.0)
+		{
+			/*cout << "x1: " << x << " y1: " << y << " x2: " << getWorld()->getObject(i)->getX() << " y2: " << getWorld()->getObject(i)->getY() << endl;
+			cout << "Radius::: " << Radious(x, y, getWorld()->getObject(i)->getX(), getWorld()->getObject(i)->getY()) << endl;*/
+			return i;
+
+		}
+	}
+	return -1;
+
+}
+
+
+
+
+// function that return the radious distance from two objects
+// taking as a parameters the x and y coordinates from both objects
+double BaseObject::Radious(int x1, int y1, int x2, int y2)
+{
+	return sqrt((pow(abs((x1 - x2)), 2.0)) + (pow(abs((y1 - y2)), 2.0)));
 }
 
 //function that returns the vector index of the object
@@ -161,6 +213,11 @@ int BaseObject::HittingPlayer(int x, int y)
 		}
 	}
 	return 2;
+}
+
+double BaseObject::RadiusFromPlayer()
+{
+	return sqrt((pow(abs((getX() - getWorld()->getPlayer()->getX())), 2.0)) + (pow(abs((getY() - getWorld()->getPlayer()->getY())), 2.0)));
 }
 
 //void BaseObject::updateTickCounter()(){
@@ -257,6 +314,7 @@ void DiggerMan::doSomething()
 			}
             case KEY_PRESS_TAB:
 				//add gold nugget to the map
+				cout << "x: " << getX() << "y:  " << getY() << endl;
 				if (getGoldNum() > 0)
 				{
 					GoldNugget *gn1 = new GoldNugget(getX(), getY());;
@@ -309,37 +367,45 @@ bool DiggerMan::AllowMove(int x, int y, Direction Dir)
 {
 	if ((x >= 0) && (x <= 60) && (y >= 0) && (y <= 60))
 	{
+		if (HittingSomething2(x, y) == boulder)
+			return false;
+
+		/*
 		switch (Dir)
 		{
 		case left:
 			for (int i = 0; i < 4; i++)
 			{
 				if (HittingSomething(x, (y+i)) == boulder)
+				
 					return false;
 			} return true;
 			break;
 		case right:
 			for (int i = 0; i < 4; i++)
 			{
-				if (HittingSomething((x+3), (y + i)) == boulder)
+				//if (HittingSomething((x+3), (y + i)) == boulder)
+				if (HittingSomething2((x + 3), (y + i)) == boulder)
 					return false;
 			} return true;
 			break;
 		case up:
 			for (int i = 0; i < 4; i++)
 			{
-				if (HittingSomething((x+i), (y + 3)) == boulder)
+				//if (HittingSomething((x+i), (y + 3)) == boulder)
+				if (HittingSomething2((x + i), (y + 3)) == boulder)
 					return false;
 			} return true;
 			break;
 		case down:
 			for (int i = 0; i < 4; i++)
 			{
-				if (HittingSomething((x+i), (y)) == boulder)
+				//if (HittingSomething((x+i), (y)) == boulder)
+				if (HittingSomething2((x + i), (y)) == boulder)
 					return false;
 			} return true;
 			break;
-		}
+		}*/
 
 	}
 		//return true;
@@ -451,9 +517,9 @@ void DiggerMan::discoverObjects()
 
 }
 
-void DiggerMan::decreaseHealth()
+void DiggerMan::decreaseHealth(int x)
 {
-	health--;
+	health=health - x;
 }
 
 void DiggerMan::increaseHealth()
@@ -593,8 +659,58 @@ bool Squirt::AllowMove(int x, int y)
 {
 	if ((x >= 0) && (x <= 60) && (y >= 0) && (y <= 60))
 	{
-		//based on the direction, checks if there is either dirt or a boulder in the x,y position
-		//provided. if there are those, then squirt can move there therefore the functions returns false
+		int i = IndexOfObjectWithinRadius(x, y);
+		if (i >=0)
+		{ 
+			switch (getWorld()->getObject(i)->getName())
+			{
+			case boulder:
+				return false;
+					break;
+			case regProt:
+				getWorld()->getObject(i)->GetAnnoyed(2);
+				return false;
+					break;
+
+			}
+		return false;
+		}
+		else
+		{
+			switch (getDirection())
+			{
+			case left:
+
+				for (int i = 0; i < 4; i++)
+				{
+					if (getWorld()->dirtAlive(x, (y + i)))
+						return false;
+				} return true;
+				break;
+			case right:
+				for (int i = 0; i < 4; i++)
+				{
+					if  (getWorld()->dirtAlive((x + 3), (y + i)))
+						return false;
+				} return true;
+				break;
+			case up:
+				for (int i = 0; i < 4; i++)
+				{
+					if (getWorld()->dirtAlive((x + i), (y + 3)))
+						return false;
+				} return true;
+				break;
+			case down:
+				for (int i = 0; i < 4; i++)
+				{
+					if (getWorld()->dirtAlive((x + i), (y)))
+						return false;
+				} return true;
+				break;
+			}
+		}
+		/* ORIGINAL CODE
 		switch (getDirection())
 		{
 		case left:
@@ -627,8 +743,8 @@ bool Squirt::AllowMove(int x, int y)
 			} return true;
 			break;
 		}
-
-	
+		
+		*/
 	}
 	else
 		return false;
@@ -711,7 +827,8 @@ void WaterPool::doSomething()
 	if ( getTickCounter()<= getmaxT()) //if the number of ticks is still less than the max ticks for this level
 	{
 		addCounter();
-		if (HittingPlayer(getX(), getY()) == 0) //its touching the object
+		//if (HittingPlayer(getX(), getY()) == 0) //its touching the object
+		if (RadiusFromPlayer() <= 3.0) // its touching the object
 		{
 			setVisible(false);
 			setState(dead);
@@ -736,12 +853,18 @@ void WaterPool::initialize(StudentWorld * m_gw)
 
 }
 
+
+//*************************************************************************************
+//************* SONAR KIT FUNCTIONS ***************************************************
+//*************************************************************************************
+
 void SonarKit::doSomething()
 {
 	if (getTickCounter() <= getmaxT()) //if the number of ticks is still less than the max ticks for this level
 	{
 		addCounter();
-		if (HittingPlayer(getX(), getY()) == 0) //its touching the object
+		//if (HittingPlayer(getX(), getY()) == 0) //its touching the object
+		if (RadiusFromPlayer() <= 3.0) // its touching the object
 		{
 			setVisible(false);
 			setState(dead);
@@ -772,7 +895,8 @@ void Barrel::doSomething()
 		if (getTickCounter() <= getmaxT()) //if the number of ticks is still less than the max ticks for this level
 		{
 			addCounter();
-			if (HittingPlayer(getX(), getY()) == 0) //its touching the object
+			//if (HittingPlayer(getX(), getY()) == 0) //its touching the object
+			if (RadiusFromPlayer() <= 3)
 			{
 				setState(dead);
 				setVisible(false);
@@ -790,11 +914,13 @@ void Barrel::doSomething()
 		}
 	}
 
-	else if (HittingPlayer(getX(), getY()) == 1) //its on the edge
+	//else if (HittingPlayer(getX(), getY()) == 1) //its on the edge
+	else if (RadiusFromPlayer() == 4.0) // its on the edge
 	{
 		setVisible(true);
 	}
-	else if (HittingPlayer(getX(), getY()) == 0) // its touching the object
+	// if (HittingPlayer(getX(), getY()) == 0) // its touching the object
+	else if (RadiusFromPlayer() <= 3)
 	{
 		setState(dead);
 		setVisible(false);
@@ -839,7 +965,8 @@ void GoldNugget::doSomething()
 		if (getTickCounter() <= getmaxT()) //if the number of ticks is still less than the max ticks for this level
 		{
 			addCounter();
-			if ((HittingPlayer(getX(), getY()) == 0)&& (getPickable()==true)) //its touching the object
+			//if ((HittingPlayer(getX(), getY()) == 0)&& (getPickable()==true))//its touching the object
+			if ((RadiusFromPlayer() <= 3) && (getPickable() == true))
 			{
 				setState(dead);
 				setVisible(false);
@@ -857,11 +984,13 @@ void GoldNugget::doSomething()
 		}
 	}
 
-	else if (HittingPlayer(getX(), getY()) == 1) //its on the edge
+	//else if (HittingPlayer(getX(), getY()) == 1) //its on the edge
+	else if (RadiusFromPlayer()== 4.0) // its on the edge
 	{
 		setVisible(true);
 	}
-	else if ((HittingPlayer(getX(), getY()) == 0) && (getPickable() == true)) // its touching the object
+	//else if ((HittingPlayer(getX(), getY()) == 0) && (getPickable() == true)) // its touching the object
+	else	if ((RadiusFromPlayer() <= 3) && (getPickable() == true))
 	{
 		setState(dead);
 		setVisible(false);
@@ -880,3 +1009,218 @@ void GoldNugget::initialize(StudentWorld * m_gw)
 {
 	setWorld(m_gw);
 }
+
+
+//**********************************************************************
+//********** REGULAR PROTESTER FUNCTIONS *******************************
+//**********************************************************************
+
+void RegProtester::doSomething()
+{
+	switch (getProt_State())
+	{
+	case moving:
+		//cout << "its on moving state" << endl;
+		if (getCounterNoRestTicks() == 0)  //hasnt yell at the diggerman
+		{
+			//if ((HittingPlayer(getX(), getY()) == 1)|| (HittingPlayer(getX(), getY()) == 0)) //diggerman is on the edge or touching the protester
+			if (RadiusFromPlayer()<=4)
+			{
+				//getWorld()->playSound(SOUND_PROTESTER_YELL);
+				////cout << "annoying diggerman" << endl;
+				//resetCounterNoRest(); //starts the counternorestTicks to 15
+				switch (PlayerPosition(getX(), getY())) //find to where the player is facing
+				{
+				case up:
+					cout << "its is coming from up" << endl;
+					if (getDirection() == up) // if the protester is facing up
+					{
+						getWorld()->playSound(SOUND_PROTESTER_YELL);
+						resetCounterNoRest();
+					}
+					break;
+				case down:
+					cout << "its is coming from down" << endl;
+					if (getDirection() == down) // if the protester is facing down
+					{
+						getWorld()->playSound(SOUND_PROTESTER_YELL);
+						resetCounterNoRest();
+					}
+					break;
+				case left:
+					cout << "its is coming from left" << endl;
+					if (getDirection() == left) // if the protester is facing left
+					{
+						getWorld()->playSound(SOUND_PROTESTER_YELL);
+						resetCounterNoRest();
+					}
+					break;
+				case right:
+					cout << "its is coming from right" << endl;
+					if (getDirection() == right) // if the protester is facing right
+					{
+						getWorld()->playSound(SOUND_PROTESTER_YELL);
+						resetCounterNoRest();
+					}
+					break;
+				}
+				//ANNOY THE DIGGERMAN
+			}
+		}
+		else   // the counter is greater than 0
+			decreaseCounterNoRest();
+
+		setProtesterState(rest);
+		break;
+	
+	case rest:
+		//cout << "its on resting state" << endl;
+		decreaseCounterTicks();
+		if (getCounterTicks() == 0)
+		{
+			resetCounterTicks();
+			setProtesterState(moving);
+		}
+		break;
+	
+	case leaveOil:
+		break;
+
+	}
+
+}
+
+void RegProtester::Initialize(StudentWorld * m_gw)
+{
+	setWorld(m_gw);
+	health = 5;
+	squareToMoveinDir = calculateSquarestoMove();
+	int calc = 3 - getWorld()->getLevel() / 4;
+	ticksToWait = max (0, calc);
+	//cout << "ticstowait  is equal to!!!" << ticksToWait << endl;
+	resetCounterTicks();
+	counterNoRestTicks = 0;
+
+}
+
+void RegProtester::decreaseHealth(int x)
+{
+	health = health - x;
+}
+
+int RegProtester::getHealth()
+{
+	return health;
+}
+
+void RegProtester::setProtesterState(Protesterstate x)
+{
+	p_state = x;
+}
+
+RegProtester::Protesterstate RegProtester::getProt_State()
+{
+	return p_state;
+}
+
+int RegProtester::calculateSquarestoMove()
+{
+	return 8;
+}
+
+void RegProtester::resetCounterTicks()
+{
+	counterTicksRest = ticksToWait;
+}
+
+void RegProtester::decreaseCounterTicks()
+{
+	counterTicksRest--;
+}
+
+int RegProtester::getCounterTicks()
+{
+	return counterTicksRest;
+}
+
+int RegProtester::getCounterNoRestTicks()
+{
+	return counterNoRestTicks;
+}
+
+void RegProtester::decreaseCounterNoRest()
+{
+	counterNoRestTicks--;
+}
+
+void RegProtester::resetCounterNoRest()
+{
+	counterNoRestTicks = 15;
+}
+
+void RegProtester::GetAnnoyed(int x)
+{
+	if (x <= 2) //hitted by squirt
+		getWorld()->increaseScore(100);
+	else
+		getWorld()->increaseScore(500);
+	
+	decreaseHealth(x);
+	if (getHealth() <= 0)
+	{	
+		setVisible(false);
+		setState(dead); //CHANGE FOR STATE LEAVE OIL
+		getWorld()->playSound(SOUND_PROTESTER_GIVE_UP);
+	}
+	else
+		getWorld()->playSound(SOUND_PROTESTER_ANNOYED);
+		
+}
+
+RegProtester::Direction RegProtester::PlayerPosition(int x, int y)
+{
+	if (((x - ((getWorld()->getPlayer()->getX() + 3))) == 1) || ((x - ((getWorld()->getPlayer()->getX() + 3))) == 0))
+		return left;
+	else if ((((x + 3) - (getWorld()->getPlayer()->getX())) == -1)|| (((x + 3) - (getWorld()->getPlayer()->getX())) == -0))
+		return right;
+	else if (((y - ((getWorld()->getPlayer()->getY() + 3))) == 1)|| ((y - ((getWorld()->getPlayer()->getY() + 3))) == 0))
+		return down;
+	else if ((((y + 3) - (getWorld()->getPlayer()->getY())) == -1)|| (((y + 3) - (getWorld()->getPlayer()->getY())) == 0))
+		return up;
+
+}
+
+//delete from here
+/*
+if (((x - ((getWorld()->getPlayer()->getX() + 3))) == 1) || (((x + 3) - (getWorld()->getPlayer()->getX())) == -1)) //its coming from left or right
+{
+	if ((abs(y - (getWorld()->getPlayer()->getY()))) <= 4)
+	{
+		return 1;
+	}
+}
+
+else if (((y - ((getWorld()->getPlayer()->getY() + 3))) == 1) || (((y + 3) - (getWorld()->getPlayer()->getY())) == -1)) //its coming from up or down
+{
+	if ((abs(x - (getWorld()->getPlayer()->getX()))) <= 4)
+	{
+
+		return 1;
+	}
+}
+if (((x - ((getWorld()->getPlayer()->getX() + 3))) == 0) || (((x + 3) - (getWorld()->getPlayer()->getX())) == 0)) //its coming from left or right
+{
+	if ((abs(y - (getWorld()->getPlayer()->getY()))) <= 4)
+	{
+		return 0;
+	}
+}
+
+else if (((y - ((getWorld()->getPlayer()->getY() + 3))) == 0) || (((y + 3) - (getWorld()->getPlayer()->getY())) == 0)) //its coming from up or down
+{
+	if ((abs(x - (getWorld()->getPlayer()->getX()))) <= 4)
+	{
+		return 0;
+	}
+}
+*/

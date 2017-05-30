@@ -207,6 +207,8 @@ void StudentWorld::createGameObjects() {
         }
         Boulder *bl = new Boulder(x,y);
         bl->setWorld(this);
+		//delete the line below
+		cout << "boulder X: "<<bl->getX() << " y: " << bl->getY() << endl;
         for(int x1 = 0; x1<4;x1++){
             for(int y1 = 0; y1<4; y1++){
                 gameMap[x+x1][y+y1]->setVisible(false);
@@ -234,7 +236,10 @@ void StudentWorld::createGameObjects() {
         bo1->initialize(this);
         insertObject(bo1);
     }
-/*
+	RegProtester *prot = new RegProtester;
+	prot->Initialize(this);
+	insertObject(prot);
+	/*
 	WaterPool *w1 = new WaterPool(6, 10);
 	//WaterPool *w1 = new WaterPool(30, 10);
 	w1->initialize(this);
@@ -281,7 +286,7 @@ void StudentWorld::addNewObjects(){
     int random = rand() % G;
 
     if(random < 1){ //1 in G chance to add a new object to the game
-        cout << "goodie to be added!" << endl;
+       // cout << "goodie to be added!" << endl;
         while(goodieAdded != true){ //while the item hasnt been added continue to loop until a location can be found
             int random2 = rand() % 5;
 

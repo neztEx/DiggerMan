@@ -25,10 +25,12 @@ public:
 	void setWorld(StudentWorld *gw);
 	StudentWorld *getWorld();
 	int HittingPlayer(int x, int y);
+	double RadiusFromPlayer();
     virtual void doSomething();
 	virtual bool AllowMove(int x, int y);
 	virtual void Initialize();
 	virtual void activateSonar();
+	virtual void GetAnnoyed(int x);
 	void setState(state d);
 	state getState();
 	void setName(name n);
@@ -37,6 +39,12 @@ public:
 	bool ObjectInMap(int x, int y);// checks if the map is in the x,y coord provided
     //virtual void updateTickCounter();
 	name HittingSomething(int x, int y); //Send coord x,y and check if there is another object in the oilfield
+
+	BaseObject::name HittingSomething2(int x, int y);
+
+	int IndexOfObjectWithinRadius(int x, int y);
+
+	double Radious(int x1, int y1, int x2, int y2);
 
 	int IndexOfObject(int x, int y);
 	
@@ -95,7 +103,7 @@ public:
 	void AddGoldNum();
 	void decreaseGoldNum();
 	void discoverObjects(); //for sonarkit
-	void decreaseHealth();
+	void decreaseHealth(int x);
 	void increaseHealth();
 	int getHealth();
 	void ResetHealth();
@@ -108,7 +116,61 @@ private:
 };
 
 
+//****************************
+//****	REGULAR PROTESTER CLASS  ******************
+//****************************
 
+class RegProtester : public BaseObject
+{
+public:
+	enum Protesterstate { rest, leaveOil, moving};
+	RegProtester()
+		: BaseObject(IMID_PROTESTER, 30, 30, left, 1.0, 0)
+	{
+		setVisible(true);
+		setName(regProt);
+		setProtesterState(moving);
+		setSpace();
+	}
+
+	void doSomething();
+	//bool AllowMove(int x, int y, Direction dir);
+	void Initialize(StudentWorld *m_gw);
+	//void addSquirtGun();
+	//void decraseSquirtGun();
+	//int getSquirtNum();
+	//void addSonarKit();
+	//void decreaseSonarKit();
+	//int getSonarKit();
+	//int getGoldNum();
+	//void AddGoldNum();
+	//void decreaseGoldNum();
+	//void discoverObjects(); //for sonarkit
+	void decreaseHealth(int x);
+	//void increaseHealth();
+	int getHealth();
+	//void ResetHealth();
+	void setProtesterState(Protesterstate x);
+	Protesterstate getProt_State();
+	int calculateSquarestoMove();
+	void resetCounterTicks();
+	void decreaseCounterTicks();
+	int getCounterTicks();
+	int getCounterNoRestTicks();
+	void decreaseCounterNoRest();
+	void resetCounterNoRest();
+	void GetAnnoyed(int x);
+	Direction PlayerPosition(int x, int y);
+
+
+private:
+	int health;
+	Protesterstate p_state;
+	int squareToMoveinDir;
+	int ticksToWait;
+	int counterTicksRest;
+	int counterNoRestTicks;
+};
 //****************************
 //**** SQUIRT CLASS  ******************
 //****************************
