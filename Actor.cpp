@@ -1125,7 +1125,9 @@ RegProtester::Protesterstate RegProtester::getProt_State()
 
 int RegProtester::calculateSquarestoMove()
 {
-	return 8;
+    srand(time(NULL));
+    int random = rand() % 52+8;
+    return random;
 }
 
 void RegProtester::resetCounterTicks()
@@ -1187,6 +1189,8 @@ RegProtester::Direction RegProtester::PlayerPosition(int x, int y)
 		return down;
 	else if ((((y + 3) - (getWorld()->getPlayer()->getY())) == -1)|| (((y + 3) - (getWorld()->getPlayer()->getY())) == 0))
 		return up;
+    
+    return left;
 
 }
 

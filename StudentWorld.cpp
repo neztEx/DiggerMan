@@ -3,10 +3,10 @@
 #include <cstdlib>
 #include "Actor.h"
 #include <algorithm>
-#include <time.h>
+#include <sys/time.h>
 #include <sstream>
 #include <random>
-#include <windows.h>
+//#include <windows.h>
 
 
 using namespace std;
@@ -188,7 +188,7 @@ void StudentWorld::SetDisplayText()
 }
 
 void StudentWorld::createGameObjects() {
-    int current_level_number = getLevel();
+    int current_level_number = getLevel() + 100;
     
     int B = min(current_level_number / 2 + 2, 7); //boulders
     int G = max(5-current_level_number / 2, 2); //gold nuggets
@@ -271,15 +271,15 @@ void StudentWorld::addNewObjects(){
     
     //windows code for time
     
-     LARGE_INTEGER cicles;   
-     QueryPerformanceCounter(&cicles);   
-     srand (cicles.QuadPart);
+//     LARGE_INTEGER cicles;   
+//     QueryPerformanceCounter(&cicles);   
+//     srand (cicles.QuadPart);
     
   
     ////Mac code for time
-    //timeval t1;
-    //gettimeofday(&t1, NULL);
-    //srand(t1.tv_usec * t1.tv_sec);
+    timeval t1;
+    gettimeofday(&t1, NULL);
+    srand(t1.tv_usec * t1.tv_sec);
     
     
     
