@@ -125,7 +125,7 @@ class RegProtester : public BaseObject
 public:
 	enum Protesterstate { rest, leaveOil, moving};
 	RegProtester()
-		: BaseObject(IMID_PROTESTER, 30, 30, left, 1.0, 0)
+		: BaseObject(IMID_PROTESTER, 60, 60, left, 1.0, 0)
 	{
 		setVisible(true);
 		setName(regProt);
@@ -134,7 +134,7 @@ public:
 	}
 
 	void doSomething();
-	//bool AllowMove(int x, int y, Direction dir);
+	bool AllowMove(int x, int y, Direction dir);
 	void Initialize(StudentWorld *m_gw);
 	//void addSquirtGun();
 	//void decraseSquirtGun();
@@ -152,7 +152,12 @@ public:
 	//void ResetHealth();
 	void setProtesterState(Protesterstate x);
 	Protesterstate getProt_State();
-	int calculateSquarestoMove();
+	int calculateSquarestoMove(); //returns a value between 8 and 60
+	void resetSquarestoMove();
+	int getSquaresToMove();
+	void setSquarestoMove();
+	void decreaseSquaresToMove();
+	Direction getNewDirection();
 	void resetCounterTicks();
 	void decreaseCounterTicks();
 	int getCounterTicks();
@@ -161,7 +166,12 @@ public:
 	void resetCounterNoRest();
 	void GetAnnoyed(int x);
 	Direction PlayerPosition(int x, int y);
-
+	bool FollowPlayer();
+	bool CheckIfPathIsEmpty(int x1, int y1, int x2, int y2);
+	int getPerpMovements();
+	void decreasePerpMovements();
+	void setPerpMovements();
+	void ActivatePerpMovement();
 
 private:
 	int health;
@@ -170,6 +180,7 @@ private:
 	int ticksToWait;
 	int counterTicksRest;
 	int counterNoRestTicks;
+	int perpendicularMovements;
 };
 //****************************
 //**** SQUIRT CLASS  ******************

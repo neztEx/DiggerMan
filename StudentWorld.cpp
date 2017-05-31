@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include "Actor.h"
 #include <algorithm>
-#include <sys/time.h>
+#include <time.h>
 #include <sstream>
 #include <random>
 //#include <windows.h>
@@ -271,16 +271,16 @@ void StudentWorld::addNewObjects(){
     
     //windows code for time
     
-//     LARGE_INTEGER cicles;   
-//     QueryPerformanceCounter(&cicles);   
-//     srand (cicles.QuadPart);
+     LARGE_INTEGER cicles;   
+     QueryPerformanceCounter(&cicles);   
+     srand (cicles.QuadPart);
     
   
-    ////Mac code for time
-    timeval t1;
-    gettimeofday(&t1, NULL);
-    srand(t1.tv_usec * t1.tv_sec);
-    
+    //////Mac code for time
+    //timeval t1;
+    //gettimeofday(&t1, NULL);
+    //srand(t1.tv_usec * t1.tv_sec);
+    //
     
     
     int random = rand() % G;
