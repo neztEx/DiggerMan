@@ -115,6 +115,131 @@ private:
 	int Gold_num;
 };
 
+ //beggining comment for protester
+//*****************************************
+//****  PROTESTER CLASS  ******************
+//*****************************************
+
+class Protester : public BaseObject
+{
+public:
+enum Protesterstate { rest, leaveOil, moving};
+Protester(int imageID, int startX, int startY, Direction dir = left, double size = 1.0, unsigned int depth = 0)
+: BaseObject(imageID, startX, startY, dir, size, depth)
+{
+setVisible(true);
+//setName(regProt);
+setProtesterState(moving);
+setSpace();
+}
+
+//void doSomething();
+bool AllowMove(int x, int y, Direction dir);
+//void Initialize(StudentWorld *m_gw);
+void decreaseHealth(int x);
+int getHealth();
+void setHealth(int x);
+void setProtesterState(Protesterstate x);
+Protesterstate getProt_State();
+int calculateSquarestoMove(); //returns a value between 8 and 60
+void resetSquarestoMove();
+int getSquaresToMove();
+void setSquarestoMove();
+void decreaseSquaresToMove();
+Direction getNewDirection();
+void resetCounterTicks();
+void decreaseCounterTicks();
+int getCounterTicks();
+int getCounterNoRestTicks();
+void decreaseCounterNoRest();
+void resetCounterNoRest();
+//void GetAnnoyed(int x);
+Direction PlayerPosition(int x, int y);
+bool FollowPlayer();
+bool CheckIfPathIsEmpty(int x1, int y1, int x2, int y2);
+int getPerpMovements();
+void decreasePerpMovements();
+void setPerpMovements();
+void ActivatePerpMovement();
+void setTicksToWait(int x);
+void setCounterNoRestTicks(int x);
+void setCounterTicksRest(int x);
+
+private:
+int health;
+Protesterstate p_state;
+int squareToMoveinDir;
+int ticksToWait;
+int counterTicksRest;
+int counterNoRestTicks;
+int perpendicularMovements;
+};
+
+
+
+
+
+ //end comment for protester
+
+
+
+//****************************
+//****	REGULAR PROTESTER CLASS  ******************
+//****************************
+
+class RegProtester : public Protester
+{
+public:
+	enum Protesterstate { rest, leaveOil, moving};
+	RegProtester()
+		: Protester(IMID_PROTESTER, 30, 30, left, 1.0, 0)
+	{
+		setName(regProt);
+	}
+
+	void doSomething();
+	void Initialize(StudentWorld *m_gw);
+	void GetAnnoyed(int x);
+
+};
+
+
+//**************************************************
+//****	HARDCORE PROTESTER CLASS  ******************
+//**************************************************
+
+class HardProtester : public Protester
+{
+public:
+	enum Protesterstate { rest, leaveOil, moving };
+	HardProtester()
+		: Protester(IMID_HARD_CORE_PROTESTER, 60, 60, left, 1.0, 0)
+	{
+		setName(hardProt);
+	}
+
+	void doSomething();
+	void Initialize(StudentWorld *m_gw);
+	void GetAnnoyed(int x);
+	void activateStare();
+	void decreaseStaring();
+	void setCountStaring(int x);
+
+	int getCountStaring();
+
+private:
+	int countStaring;
+	
+
+};
+
+
+
+
+
+//old regular protester
+/*  
+
 
 //****************************
 //****	REGULAR PROTESTER CLASS  ******************
@@ -123,65 +248,69 @@ private:
 class RegProtester : public BaseObject
 {
 public:
-	enum Protesterstate { rest, leaveOil, moving};
-	RegProtester()
-		: BaseObject(IMID_PROTESTER, 60, 60, left, 1.0, 0)
-	{
-		setVisible(true);
-		setName(regProt);
-		setProtesterState(moving);
-		setSpace();
-	}
+enum Protesterstate { rest, leaveOil, moving};
+RegProtester()
+: BaseObject(IMID_PROTESTER, 60, 60, left, 1.0, 0)
+{
+setVisible(true);
+setName(regProt);
+setProtesterState(moving);
+setSpace();
+}
 
-	void doSomething();
-	bool AllowMove(int x, int y, Direction dir);
-	void Initialize(StudentWorld *m_gw);
-	//void addSquirtGun();
-	//void decraseSquirtGun();
-	//int getSquirtNum();
-	//void addSonarKit();
-	//void decreaseSonarKit();
-	//int getSonarKit();
-	//int getGoldNum();
-	//void AddGoldNum();
-	//void decreaseGoldNum();
-	//void discoverObjects(); //for sonarkit
-	void decreaseHealth(int x);
-	//void increaseHealth();
-	int getHealth();
-	//void ResetHealth();
-	void setProtesterState(Protesterstate x);
-	Protesterstate getProt_State();
-	int calculateSquarestoMove(); //returns a value between 8 and 60
-	void resetSquarestoMove();
-	int getSquaresToMove();
-	void setSquarestoMove();
-	void decreaseSquaresToMove();
-	Direction getNewDirection();
-	void resetCounterTicks();
-	void decreaseCounterTicks();
-	int getCounterTicks();
-	int getCounterNoRestTicks();
-	void decreaseCounterNoRest();
-	void resetCounterNoRest();
-	void GetAnnoyed(int x);
-	Direction PlayerPosition(int x, int y);
-	bool FollowPlayer();
-	bool CheckIfPathIsEmpty(int x1, int y1, int x2, int y2);
-	int getPerpMovements();
-	void decreasePerpMovements();
-	void setPerpMovements();
-	void ActivatePerpMovement();
+void doSomething();
+bool AllowMove(int x, int y, Direction dir);
+void Initialize(StudentWorld *m_gw);
+//void addSquirtGun();
+//void decraseSquirtGun();
+//int getSquirtNum();
+//void addSonarKit();
+//void decreaseSonarKit();
+//int getSonarKit();
+//int getGoldNum();
+//void AddGoldNum();
+//void decreaseGoldNum();
+//void discoverObjects(); //for sonarkit
+void decreaseHealth(int x);
+//void increaseHealth();
+int getHealth();
+//void ResetHealth();
+void setProtesterState(Protesterstate x);
+Protesterstate getProt_State();
+int calculateSquarestoMove(); //returns a value between 8 and 60
+void resetSquarestoMove();
+int getSquaresToMove();
+void setSquarestoMove();
+void decreaseSquaresToMove();
+Direction getNewDirection();
+void resetCounterTicks();
+void decreaseCounterTicks();
+int getCounterTicks();
+int getCounterNoRestTicks();
+void decreaseCounterNoRest();
+void resetCounterNoRest();
+void GetAnnoyed(int x);
+Direction PlayerPosition(int x, int y);
+bool FollowPlayer();
+bool CheckIfPathIsEmpty(int x1, int y1, int x2, int y2);
+int getPerpMovements();
+void decreasePerpMovements();
+void setPerpMovements();
+void ActivatePerpMovement();
 
 private:
-	int health;
-	Protesterstate p_state;
-	int squareToMoveinDir;
-	int ticksToWait;
-	int counterTicksRest;
-	int counterNoRestTicks;
-	int perpendicularMovements;
+int health;
+Protesterstate p_state;
+int squareToMoveinDir;
+int ticksToWait;
+int counterTicksRest;
+int counterNoRestTicks;
+int perpendicularMovements;
 };
+
+
+*/
+
 //****************************
 //**** SQUIRT CLASS  ******************
 //****************************
@@ -375,7 +504,12 @@ public:
 
 	void doSomething();
 	void initialize(StudentWorld *m_gw);
+	int getCounterByProt();
+	void decreaseCounterByProt();
+	void setCounterByProt(int x);
 
+private:
+	int counterByProt;
 };
 
 

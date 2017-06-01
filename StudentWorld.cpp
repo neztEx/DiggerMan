@@ -236,9 +236,18 @@ void StudentWorld::createGameObjects() {
         bo1->initialize(this);
         insertObject(bo1);
     }
+	
+	
 	RegProtester *prot = new RegProtester;
 	prot->Initialize(this);
 	insertObject(prot);
+	
+	
+	HardProtester *prot2 = new HardProtester;
+	prot2->Initialize(this);
+	insertObject(prot2);
+	
+	
 	/*
 	WaterPool *w1 = new WaterPool(6, 10);
 	//WaterPool *w1 = new WaterPool(30, 10);
