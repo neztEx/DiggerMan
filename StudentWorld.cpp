@@ -288,11 +288,18 @@ void StudentWorld::createGameObjects() {
         Barrel *bo1 = new Barrel(x,y);
         bo1->initialize(this);
         insertObject(bo1);
-        }
+    }
     
 	RegProtester *prot = new RegProtester;
 	prot->Initialize(this);
 	insertObject(prot);
+	
+	
+	HardProtester *prot2 = new HardProtester;
+	prot2->Initialize(this);
+	insertObject(prot2);
+	
+	
 	/*
 	WaterPool *w1 = new WaterPool(6, 10);
 	//WaterPool *w1 = new WaterPool(30, 10);
@@ -325,13 +332,12 @@ void StudentWorld::addNewObjects(){
     
     //windows code for time
 
-    /*
-     LARGE_INTEGER cicles;   
-     QueryPerformanceCounter(&cicles);   
-     srand (cicles.QuadPart);
-    */
-  
     ////Mac code for time
+    
+//     LARGE_INTEGER cicles;   
+//     QueryPerformanceCounter(&cicles);   
+//     srand (cicles.QuadPart);
+
     
     srand(time(NULL)+getTickCounter());
     
