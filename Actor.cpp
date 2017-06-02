@@ -581,8 +581,8 @@ void Boulder::doSomething()
     if (fallingState == true)
     {
 
-        if(getWorld()->dirtAlive(getX(), getY()-1) == false)
-        {
+            if (getWorld()->dirtAlive(getX(),getY() - 1) == false && getWorld()->dirtAlive(getX()+1,getY() - 1) == false &&  getWorld()->dirtAlive(getX()+2,getY() - 1) == false && getWorld()->dirtAlive(getX()+3,getY() - 1) == false)
+            {
             moveTo(getX(), getY() - 1);
             if(HittingPlayer(getX(), getY()) == 0){
                 getWorld()->getPlayer()->setVisible(false);

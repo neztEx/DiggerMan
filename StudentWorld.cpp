@@ -3,9 +3,10 @@
 #include <cstdlib>
 #include "Actor.h"
 #include <algorithm>
-#include <sys/time.h>
+#include <time.h>
 #include <sstream>
 #include <random>
+#include <math.h>
 //#include <windows.h>
 
 
@@ -37,7 +38,9 @@ int StudentWorld::init()
 	setPlayer(player);
 	getPlayer()->Initialize(this);
 	ResetBarrels();
+    
     createGameObjects();
+    
     
     
     return GWSTATUS_CONTINUE_GAME;
@@ -47,6 +50,7 @@ int StudentWorld::move()
     // This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
     // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
    // decLives();
+    setTickCounter();
 	SetDisplayText();
     getPlayer()->doSomething();
     if (digging(getPlayer()))
@@ -61,6 +65,7 @@ int StudentWorld::move()
     addNewObjects();
 	UpdateVector();
     if (getPlayer()->isVisible() == false){
+        decLives();
         playSound(GWSTATUS_PLAYER_DIED);
         return GWSTATUS_PLAYER_DIED;
     }
@@ -188,7 +193,7 @@ void StudentWorld::SetDisplayText()
 }
 
 void StudentWorld::createGameObjects() {
-    int current_level_number = getLevel() + 100;
+    int current_level_number = getLevel() + 5;
     
     int B = min(current_level_number / 2 + 2, 7); //boulders
     int G = max(5-current_level_number / 2, 2); //gold nuggets
@@ -198,44 +203,93 @@ void StudentWorld::createGameObjects() {
 	setTotalBarrels(L);
     srand(time(NULL));
 
-    for (int i = 0; i < B; i++) {
+    for (int i = 0; i < B; i++) //CREATE BOULDER
+    {
         int x = rand() % 60;
-        int y = rand() % 36+20; //56-20=36, plus 20 to start the range at.
-        //cout << y << endl;
-        while(x == 30 || x == 31 || x == 32 || x == 33){
+        while(x > 25 && x < 35){
             x = rand() % 60;
         }
-        Boulder *bl = new Boulder(x,y);
-        bl->setWorld(this);
+        int y = rand() % 36+20;
+        
+        if(gameObjects.empty()){
+            Boulder *bl = new Boulder(x,y);
+            bl->setWorld(this);
+            for(int x1 = 0; x1<4;x1++){
+                for(int y1 = 0; y1<4; y1++){
+                    gameMap[x+x1][y+y1]->setVisible(false);
+                }
+            }
+            insertObject(bl);
+        }
+        
+        if(!gameObjects.empty()){
+            while(ecludianDistance(x, y) != true){
+                 x = rand() % 60;
+                while(x > 25 && x < 35){
+                    x = rand() % 60;
+                }
+                 y = rand() % 36+20;
+            }
+            Boulder *bl = new Boulder(x,y);
+            bl->setWorld(this);
+            for(int x1 = 0; x1<4;x1++){
+                for(int y1 = 0; y1<4; y1++){
+                    gameMap[x+x1][y+y1]->setVisible(false);
+                }
+            }
+            insertObject(bl);
+        }
+        
+//        Boulder *bl = new Boulder(x,y);
+//        bl->setWorld(this);
 		//delete the line below
-		cout << "boulder X: "<<bl->getX() << " y: " << bl->getY() << endl;
-        for(int x1 = 0; x1<4;x1++){
-            for(int y1 = 0; y1<4; y1++){
-                gameMap[x+x1][y+y1]->setVisible(false);
+//		cout << "boulder X: "<<bl->getX() << " y: " << bl->getY() << endl;
+//        for(int x1 = 0; x1<4;x1++){
+//            for(int y1 = 0; y1<4; y1++){
+//                gameMap[x+x1][y+y1]->setVisible(false);
+//            }
+//        }
+//        insertObject(bl);
+    }
+    for (int i = 0; i < G; i++) { //CREATE GOLD NUGGET
+        int x = rand() % 60;
+        while(x > 25 && x < 35){
+            x = rand() % 60;
+        }
+        int y = rand() % 56;
+        
+        while(ecludianDistance(x, y) != true){
+            x = rand() % 60;
+            while(x > 25 && x < 35){
+                x = rand() % 60;
             }
         }
-        insertObject(bl);
+            y = rand() % 56;
+            GoldNugget *gn1 = new GoldNugget(x,y);;
+            gn1->initialize(this);
+            insertObject(gn1);
+
     }
-    for (int i = 0; i < G; i++) {
+    for (int i = 0; i < L; i++) { //CREATE OIL BARREL
         int x = rand() % 60;
-        int y = rand() % 56;
-        while(x == 30 || x == 31 || x == 32 || x == 33){
+        while(x > 25 && x < 35){
             x = rand() % 60;
         }
-        GoldNugget *gn1 = new GoldNugget(x,y);;
-        gn1->initialize(this);
-        insertObject(gn1);
-    }
-    for (int i = 0; i < L; i++) {
-        int x = rand() % 60;
         int y = rand() % 56;
-        while(x == 30 || x == 31 || x == 32 || x == 33){
+        
+        while(ecludianDistance(x, y) != true){
             x = rand() % 60;
+            while(x > 25 && x < 35){
+                x = rand() % 60;
+            }
+            y = rand() % 56;
         }
+
         Barrel *bo1 = new Barrel(x,y);
         bo1->initialize(this);
         insertObject(bo1);
-    }
+        }
+    
 	RegProtester *prot = new RegProtester;
 	prot->Initialize(this);
 	insertObject(prot);
@@ -270,18 +324,16 @@ void StudentWorld::addNewObjects(){
     int G = (current_level_number * 25 + 300);
     
     //windows code for time
-    
-//     LARGE_INTEGER cicles;   
-//     QueryPerformanceCounter(&cicles);   
-//     srand (cicles.QuadPart);
-    
+
+    /*
+     LARGE_INTEGER cicles;   
+     QueryPerformanceCounter(&cicles);   
+     srand (cicles.QuadPart);
+    */
   
     ////Mac code for time
-    timeval t1;
-    gettimeofday(&t1, NULL);
-    srand(t1.tv_usec * t1.tv_sec);
     
-    
+    srand(time(NULL)+getTickCounter());
     
     int random = rand() % G;
 
@@ -469,3 +521,33 @@ string formatString(int level, int lives, int health, int squirts, int gold, int
 		+ "  Gld: " + twoDigits(gold) + "  Sonar: " + twoDigits(sonar) + "  Oil Left: " + twoDigits(barrelsLeft) + "  Scr: " + sixDigits(score));
 	return s1;
 }
+
+bool StudentWorld::ecludianDistance(int x,int y){
+    cout << x << " " << y << endl;
+    cout << gameObjects.back()->getX() << " " << gameObjects.back()->getY() << endl;
+    
+    for(int i = 0; i < gameObjects.size(); i++){
+
+        double sumX = (x - gameObjects[i]->getX());
+        double sumY = (y - gameObjects[i]->getY());
+        sumX = (sumX*sumX);
+        sumY = (sumY*sumY);
+        int result = sqrt(sumX + sumY);
+        if(result < 6){
+            return false;
+        }
+        cout << result << endl;
+        
+    }
+    return true;
+}
+
+void StudentWorld::setTickCounter()
+{
+    tickCounter++;
+}
+int StudentWorld::getTickCounter()
+{
+    return tickCounter;
+}
+

@@ -48,6 +48,9 @@ public:
 	void DecreaseBarrels();
 	void ResetBarrels();
 	void SetDisplayText();
+    bool ecludianDistance(int x, int y);
+    void setTickCounter();
+    int getTickCounter();
     
 
 private:
@@ -57,6 +60,7 @@ private:
 	//int numObjects; //store de num of objects in map
 	DiggerMan *m_player;
     int current_level_number = 0;
+    int tickCounter;
 	//int *ObjectCoord[VIEW_WIDTH][VIEW_HEIGHT]; //2d ARRAy that keeps track of the position of all the objects in the map
 	//BaseObject::name *ObjectCoord[VIEW_WIDTH][VIEW_HEIGHT];
 };
