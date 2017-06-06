@@ -164,6 +164,7 @@ void ActivatePerpMovement();
 void setTicksToWait(int x);
 void setCounterNoRestTicks(int x);
 void setCounterTicksRest(int x);
+void bfs(int x, int y);
 
 private:
 int health;

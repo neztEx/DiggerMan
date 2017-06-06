@@ -4,6 +4,7 @@
 #include <cmath>
 #include <time.h>
 //#include "GameWorld.h"
+#include <queue>
 
 #include <iostream>
 
@@ -1384,6 +1385,98 @@ void Protester::setCounterTicksRest(int x)
 	counterTicksRest = x;
 }
 
+void Protester::bfs(int x, int y){
+    
+    
+    struct node{
+        int xco;
+        int yco;
+        node *up;
+        node *right;
+        node *left;
+        node *down;
+        bool visited = false;
+        bool path = false;
+    };
+    queue<node*> q; //travel
+    //vector<node*> visited; //nodes visited
+    
+    
+    node *head = new node; //initializes the first node position of protester
+    head->xco = getX();
+    head->yco = getY();
+    head->up = nullptr;
+    head->right = nullptr;
+    head->left = nullptr;
+    head->down = nullptr;
+    q.push(head);
+    
+    node *guess;
+
+    while(!q.empty()){
+        guess = q.front();
+        q.pop();
+        //visited.push_back(guess);
+        
+        if (guess == nullptr)
+            continue;
+        if (guess->xco == x && guess->yco == y) //once destination is found return;
+            return;
+//        if(getWorld()->dirtAlive(guess->xco, guess->yco+1) == true && find(visited.begin(), visited.end(), guess->up) != visited.end() == false){
+        if(getWorld()->dirtAlive(guess->xco, (guess->yco)+1) == false && guess->up->path == false){
+//        if(guess->up->path == false){
+            guess->up->xco = guess->xco;
+            guess->up->yco = guess->yco + 1;
+            guess->up->path = true;
+            q.push(guess->up);
+        }
+        if(getWorld()->dirtAlive(guess->xco+1, guess->yco) == false && guess->right->path == false){
+            guess->right->xco = guess->xco+1;
+            guess->right->yco = guess->yco;
+            guess->right->path = true;
+            q.push(guess->right);
+        }
+        if(getWorld()->dirtAlive(guess->xco-1, guess->yco) == false && guess->left->path == false){
+            guess->left->xco = guess->xco-1;
+            guess->left->yco = guess->yco;
+            guess->left->path = true;
+            q.push(guess->left);
+        }
+        if(getWorld()->dirtAlive(guess->xco, guess->yco-1) == false && guess->down->path == false){
+            guess->down->xco = guess->xco;
+            guess->down->yco = guess->yco - 1;
+            guess->down->path = true;
+            q.push(guess->down);
+        }
+    }
+    deque<node*> correctPath;
+    head->visited = true;
+    correctPath.push_back(head);
+    
+    while(head->xco != x && head->yco != y){
+        if(head->right != nullptr && head->right->visited == false){
+            head->right->visited = true;
+            correctPath.push_back(head->right);
+        }
+        else if(head->up != nullptr && head->up->visited == false){
+            head->up->visited = true;
+            correctPath.push_back(head->up);
+        }
+        else if(head->left != nullptr && head->left->visited == false){
+            head->left->visited = true;
+            correctPath.push_back(head->left);
+        }
+        else if(head->down != nullptr && head->left->visited == false){
+            head->down->visited = true;
+            correctPath.push_back(head->down);
+        }
+        else{
+            correctPath.pop_back();
+        }
+    }
+    moveTo(correctPath[1]->xco, correctPath[1]->yco);
+}
+
 /* old reg protester functions
 
 //**********************************************************************
@@ -2354,13 +2447,16 @@ void RegProtester::GetAnnoyed(int x)
 	decreaseHealth(x);
 	if (getHealth() <= 0 && getState() == alive)
 	{
-		setVisible(false);
+		//setVisible(false);
 		setState(dead); //CHANGE FOR STATE LEAVE OIL
 		getWorld()->playSound(SOUND_PROTESTER_GIVE_UP);
 		setCounterTicksRest(0);
 	}
 	else
 		getWorld()->playSound(SOUND_PROTESTER_ANNOYED);
+    if(dead == true){
+        bfs(60, 60);
+    }
 
 }
 
@@ -2635,6 +2731,8 @@ void HardProtester::doSomething()
 	{
 		decreaseStaring();
 	}
+    
+    
 }
 
 void HardProtester::Initialize(StudentWorld * m_gw)

@@ -51,12 +51,15 @@ public:
     bool ecludianDistance(int x, int y);
     void setTickCounter();
     int getTickCounter();
+    //Dirt *gameMap[VIEW_WIDTH][DIRT_HEIGHT];
+
+
     
 
 private:
+    Dirt *gameMap[VIEW_WIDTH][DIRT_HEIGHT];
     vector<BaseObject*> gameObjects;
 	int MaxBarrels; //max barrels per level
-    Dirt *gameMap[VIEW_WIDTH][DIRT_HEIGHT];
 	//int numObjects; //store de num of objects in map
 	DiggerMan *m_player;
     int current_level_number = 0;

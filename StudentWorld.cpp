@@ -117,6 +117,8 @@ bool StudentWorld::dirtAlive(int x,int y)
 		return false;
     return gameMap[x][y]->isVisible();
 }
+
+
 void StudentWorld::createDirt() {
     //using 2d array for coordinate system and init with a for loop
     for (int x = 0; x<VIEW_WIDTH; x++) {
@@ -326,7 +328,7 @@ void StudentWorld::createGameObjects() {
 //functions to add new objects after certain amount of ticks have occured in the game
 void StudentWorld::addNewObjects(){
 
-    int current_level_number = getLevel();
+    int current_level_number = getLevel() +10;
     bool goodieAdded = false;
     int G = (current_level_number * 25 + 300);
     
