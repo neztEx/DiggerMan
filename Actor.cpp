@@ -2423,7 +2423,9 @@ void RegProtester::doSomething()
 		}
 		break;
 
+
 	case leaveOil:
+		bfs(60, 60);
 		break;
 
 	}
@@ -2445,42 +2447,42 @@ void RegProtester::Initialize(StudentWorld * m_gw)
 
 void RegProtester::GetAnnoyed(int x)
 {
-	if (x == 2) //hitted by squirt
+	if (getProt_State() != Protester::leaveOil)
 	{
-		getWorld()->increaseScore(100);
-		setProtesterState(Protester::rest);
-		int calc = 100 - getWorld()->getLevel() * 10;
-		setCounterTicksRest(max(50, calc));
+		if (x == 2) //hitted by squirt
+		{
+			getWorld()->increaseScore(100);
+			setProtesterState(Protester::rest);
+			int calc = 100 - getWorld()->getLevel() * 10;
+			setCounterTicksRest(max(50, calc));
 
-	}
-	else if (x == 50) // by a boulder
-		getWorld()->increaseScore(500);
-	else if (x == 100) //by a gold nugget
-	{
-		getWorld()->playSound(SOUND_PROTESTER_FOUND_GOLD);
-		getWorld()->increaseScore(100);
-		setVisible(false);
-		setState(dead); //CHANGE FOR STATE LEAVE OIL
-	}
+		}
+		else if (x == 50) // by a boulder
+			getWorld()->increaseScore(500);
+		else if (x == 100) //by a gold nugget
+		{
+			getWorld()->playSound(SOUND_PROTESTER_FOUND_GOLD);
+			getWorld()->increaseScore(100);
+			setVisible(false);
+			setState(dead); //CHANGE FOR STATE LEAVE OIL
+		}
 
-	decreaseHealth(x);
-	if (getHealth() <= 0 && getState() == alive)
-	{
-		//setVisible(false);
-		setState(dead); //CHANGE FOR STATE LEAVE OIL
-		getWorld()->playSound(SOUND_PROTESTER_GIVE_UP);
-		setCounterTicksRest(0);
+		decreaseHealth(x);
+		if (getHealth() <= 0 && getState() == alive)
+		{
+			//setVisible(false);
+			//setState(dead); //CHANGE FOR STATE LEAVE OIL
+			setProtesterState(Protester::leaveOil);
+			getWorld()->playSound(SOUND_PROTESTER_GIVE_UP);
+			setCounterTicksRest(0);
+		}
+		else
+			getWorld()->playSound(SOUND_PROTESTER_ANNOYED);
 	}
-	else
-		getWorld()->playSound(SOUND_PROTESTER_ANNOYED);
-    if(dead == true){
-        bfs(60, 60);
-    }
-
 }
 
 // ******************************************
-// ****** REGULAR PROTESTER FUNCTIONS *******
+// ****** HARD PROTESTER FUNCTIONS *******
 // ******************************************
 
 void HardProtester::doSomething()
@@ -2742,6 +2744,7 @@ void HardProtester::doSomething()
 			break;
 
 		case leaveOil:
+			bfs(60, 60);
 			break;
 
 		}
@@ -2769,36 +2772,40 @@ void HardProtester::Initialize(StudentWorld * m_gw)
 
 void HardProtester::GetAnnoyed(int x)
 {
-	if (x == 2) //hitted by squirt
+	if (getProt_State() != Protester::leaveOil)
 	{
-		getWorld()->increaseScore(250);
-		setProtesterState(Protester::rest);
-		int calc = 100 - getWorld()->getLevel() * 10;
-		setCounterTicksRest(max(50, calc));
-		decreaseHealth(x);
-		if (getHealth() >0)
-			getWorld()->playSound(SOUND_PROTESTER_ANNOYED);
+		if (x == 2) //hitted by squirt
+		{
+			getWorld()->increaseScore(250);
+			setProtesterState(Protester::rest);
+			int calc = 100 - getWorld()->getLevel() * 10;
+			setCounterTicksRest(max(50, calc));
+			decreaseHealth(x);
+			if (getHealth() > 0)
+				getWorld()->playSound(SOUND_PROTESTER_ANNOYED);
 
-	}
-	else if (x == 50) // by a boulder
-	{
-		getWorld()->increaseScore(500);
-		decreaseHealth(x);
-	}
-	else if (x == 100) //by a gold nugget
-	{
-		getWorld()->playSound(SOUND_PROTESTER_FOUND_GOLD);
-		getWorld()->increaseScore(50);
-		activateStare(); //its going to start to look at the gold
-	}
+		}
+		else if (x == 50) // by a boulder
+		{
+			getWorld()->increaseScore(500);
+			decreaseHealth(x);
+		}
+		else if (x == 100) //by a gold nugget
+		{
+			getWorld()->playSound(SOUND_PROTESTER_FOUND_GOLD);
+			getWorld()->increaseScore(50);
+			activateStare(); //its going to start to look at the gold
+		}
 
-	//decreaseHealth(x);
-	if (getHealth() <= 0 && getState() == alive)
-	{
-		setVisible(false);
-		setState(dead); //CHANGE FOR STATE LEAVE OIL
-		getWorld()->playSound(SOUND_PROTESTER_GIVE_UP);
-		setCounterTicksRest(0);
+		//decreaseHealth(x);
+		if (getHealth() <= 0 && getState() == alive)
+		{
+			//setVisible(false);
+			//setState(dead); //CHANGE FOR STATE LEAVE OIL
+			setProtesterState(Protester::leaveOil);
+			getWorld()->playSound(SOUND_PROTESTER_GIVE_UP);
+			setCounterTicksRest(0);
+		}
 	}
 
 }
