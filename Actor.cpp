@@ -1424,7 +1424,6 @@ void Protester::bfs(int x, int y){
             return;
 //        if(getWorld()->dirtAlive(guess->xco, guess->yco+1) == true && find(visited.begin(), visited.end(), guess->up) != visited.end() == false){
         if(getWorld()->dirtAlive(guess->xco, (guess->yco)+1) == false && guess->path == false){
-//        if(guess->up->path == false){
             node *newGuess = new node;
             newGuess->xco = guess->xco;
             newGuess->yco = guess->yco + 1;
@@ -1486,7 +1485,9 @@ void Protester::bfs(int x, int y){
             correctPath.pop_back();
         }
     }
-    moveTo(correctPath[1]->xco, correctPath[1]->yco);
+    int resultX = correctPath[1]->xco;
+    int resultY = correctPath[1]->yco;
+    moveTo(resultX, resultY);
 }
 
 /* old reg protester functions
