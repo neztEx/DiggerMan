@@ -1423,30 +1423,42 @@ void Protester::bfs(int x, int y){
         if (guess->xco == x && guess->yco == y) //once destination is found return;
             return;
 //        if(getWorld()->dirtAlive(guess->xco, guess->yco+1) == true && find(visited.begin(), visited.end(), guess->up) != visited.end() == false){
-        if(getWorld()->dirtAlive(guess->xco, (guess->yco)+1) == false && guess->up->path == false){
+        if(getWorld()->dirtAlive(guess->xco, (guess->yco)+1) == false && guess->path == false){
 //        if(guess->up->path == false){
-            guess->up->xco = guess->xco;
-            guess->up->yco = guess->yco + 1;
-            guess->up->path = true;
-            q.push(guess->up);
+            node *newGuess = new node;
+            newGuess->xco = guess->xco;
+            newGuess->yco = guess->yco + 1;
+            guess->path = true;
+            guess->up = newGuess;
+            q.push(newGuess);
+            cout << "up node" << endl;
         }
-        if(getWorld()->dirtAlive(guess->xco+1, guess->yco) == false && guess->right->path == false){
-            guess->right->xco = guess->xco+1;
-            guess->right->yco = guess->yco;
-            guess->right->path = true;
-            q.push(guess->right);
+        if(getWorld()->dirtAlive(guess->xco+1, guess->yco) == false && guess->path == false){
+            node *newGuess = new node;
+            newGuess->xco = guess->xco;
+            newGuess->yco = guess->yco + 1;
+            guess->path = true;
+            guess->right = newGuess;
+            q.push(newGuess);
+            cout << "right node" << endl;
         }
-        if(getWorld()->dirtAlive(guess->xco-1, guess->yco) == false && guess->left->path == false){
-            guess->left->xco = guess->xco-1;
-            guess->left->yco = guess->yco;
-            guess->left->path = true;
-            q.push(guess->left);
+        if(getWorld()->dirtAlive(guess->xco-1, guess->yco) == false && guess->path == false){
+            node *newGuess = new node;
+            newGuess->xco = guess->xco;
+            newGuess->yco = guess->yco + 1;
+            guess->path = true;
+            guess->left = newGuess;
+            q.push(newGuess);
+            cout << "left node" << endl;
         }
-        if(getWorld()->dirtAlive(guess->xco, guess->yco-1) == false && guess->down->path == false){
-            guess->down->xco = guess->xco;
-            guess->down->yco = guess->yco - 1;
-            guess->down->path = true;
-            q.push(guess->down);
+        if(getWorld()->dirtAlive(guess->xco, guess->yco-1) == false && guess->path == false){
+            node *newGuess = new node;
+            newGuess->xco = guess->xco;
+            newGuess->yco = guess->yco + 1;
+            guess->path = true;
+            guess->down = newGuess;
+            q.push(newGuess);
+            cout << "down node" << endl;
         }
     }
     deque<node*> correctPath;
