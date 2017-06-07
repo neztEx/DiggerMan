@@ -91,6 +91,7 @@ public:
     }
     
     void doSomething();
+	bool AllocateSquirt();
     bool AllowMove(int x, int y, Direction dir);
 	void Initialize(StudentWorld *m_gw);
 	void addSquirtGun();

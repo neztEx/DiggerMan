@@ -278,36 +278,42 @@ void DiggerMan::doSomething()
 			{
 				if (getSquirtNum() > 0) //if diggerman has bullets of water :p
 				{
-
-					int xS, yS;
-					switch (getDirection())
+					if (AllocateSquirt())
 					{
-					case up:
-						xS = getX();
-						yS = getY() + 4;
-						break;
-					case down:
-						xS = getX();
-						yS = getY() - 4;
-						break;
-					case right:
-						xS = getX() + 4;
-						yS = getY();
-						break;
-					case left:
-						xS = getX() - 4;
-						yS = getY();
-						break;
+						int xS, yS;
+						switch (getDirection())
+						{
+						case up:
+							xS = getX();
+							yS = getY() + 4;
+							break;
+						case down:
+							xS = getX();
+							yS = getY() - 4;
+							break;
+						case right:
+							xS = getX() + 4;
+							yS = getY();
+							break;
+						case left:
+							xS = getX() - 4;
+							yS = getY();
+							break;
+						}
+						//cout << "never gets here" << endl;
+
+						Squirt *s1 = new Squirt(xS, yS, getDirection());
+						s1->initialize(getWorld());
+						//cout << "INSIDE DIGGERMAN WITH SQUIRT" << s1->getWorld()->getSizeVector() << endl;
+						getWorld()->insertObject(s1);
+						getWorld()->playSound(SOUND_PLAYER_SQUIRT);
+						decraseSquirtGun(); // decrease de bullets
 					}
-					//cout << "never gets here" << endl;
-
-					Squirt *s1 = new Squirt(xS, yS, getDirection());
-					s1->initialize(getWorld());
-					//cout << "INSIDE DIGGERMAN WITH SQUIRT" << s1->getWorld()->getSizeVector() << endl;
-					getWorld()->insertObject(s1);
-					getWorld()->playSound(SOUND_PLAYER_SQUIRT);
-					decraseSquirtGun(); // decrease de bullets
-
+					else
+					{
+						getWorld()->playSound(SOUND_PLAYER_SQUIRT);
+						decraseSquirtGun(); // decrease de bullets
+					}
 				}
 				break;
 			
@@ -347,6 +353,47 @@ void DiggerMan::doSomething()
 				break;
         }
     }
+}
+
+
+bool DiggerMan::AllocateSquirt()
+{
+	switch (getDirection())
+	{
+	case up:
+		for (int i = 0; i < 4; i++)
+		{
+			if (getWorld()->dirtAlive(getX() + i, getY() + 4) == true)
+				return false;
+		}
+		return true;
+		break;
+	case down:
+		for (int i = 0; i < 4; i++)
+		{
+			if (getWorld()->dirtAlive(getX() + i, getY() -1) == true)
+				return false;
+		}
+		return true;
+		break;
+	case right:
+		for (int i = 0; i < 4; i++)
+		{
+			if (getWorld()->dirtAlive(getX() + 4, getY() + i) == true)
+				return false;
+		}
+		return true;
+		break;
+	case left:
+		for (int i = 0; i < 4; i++)
+		{
+			if (getWorld()->dirtAlive(getX() -1, getY() + i) == true)
+				return false;
+		}
+		return true;
+		break;
+	}
+	return false;
 }
 
 
