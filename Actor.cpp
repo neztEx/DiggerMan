@@ -1420,8 +1420,10 @@ void Protester::bfs(int x, int y){
         
         if (guess == nullptr)
             continue;
-        if (guess->xco == x && guess->yco == y) //once destination is found return;
-            return;
+        if (guess->xco == x && guess->yco == y){ //once destination is found return;
+            q.pop();
+            break;
+        }
 //        if(getWorld()->dirtAlive(guess->xco, guess->yco+1) == true && find(visited.begin(), visited.end(), guess->up) != visited.end() == false){
 //        if(getWorld()->dirtAlive(guess->xco, (guess->yco)+1) == false && guess->path == false){
             if(AllowMove(guess->xco, guess->yco+1, up) == true && guess->path == false){ //up
@@ -1471,20 +1473,23 @@ void Protester::bfs(int x, int y){
     correctPath.push_back(head);
     
     while(head->xco != x && head->yco != y){
-        if(head->right != nullptr && head->right->visited == false){
-            head->right->visited = true;
-            correctPath.push_back(head->right);
-        }
-        else if(head->up != nullptr && head->up->visited == false){
             head->up->visited = true;
+            head = head->up;
             correctPath.push_back(head->up);
+        }
+        else if(head->right != nullptr && head->right->visited == false){
+            head->right->visited = true;
+            head = head->right;
+            correctPath.push_back(head->right);
         }
         else if(head->left != nullptr && head->left->visited == false){
             head->left->visited = true;
+            head = head->left;
             correctPath.push_back(head->left);
         }
         else if(head->down != nullptr && head->left->visited == false){
             head->down->visited = true;
+            head = head->down;
             correctPath.push_back(head->down);
         }
         else{
@@ -1494,6 +1499,7 @@ void Protester::bfs(int x, int y){
     int resultX = correctPath[1]->xco;
     int resultY = correctPath[1]->yco;
     moveTo(resultX, resultY);
+    cout << "protester move" << endl;
 }
 
 /* old reg protester functions
