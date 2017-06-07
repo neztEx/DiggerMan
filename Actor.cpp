@@ -1434,7 +1434,7 @@ void Protester::bfs(int x, int y){
             guess->path = true;
             guess->up = newGuess;
             q.push(newGuess);
-            cout << "up node" << endl;
+            //cout << "up node" << endl;
         }
 //        if(getWorld()->dirtAlive(guess->xco+1, guess->yco) == false && guess->path == false){
         if(AllowMove(guess->xco+1, guess->yco, right) == true && guess->path == false){ //right
@@ -1444,7 +1444,7 @@ void Protester::bfs(int x, int y){
             guess->path = true;
             guess->right = newGuess;
             q.push(newGuess);
-            cout << "right node" << endl;
+            //cout << "right node" << endl;
         }
 //        if(getWorld()->dirtAlive(guess->xco-1, guess->yco) == false && guess->path == false){
         if(AllowMove(guess->xco-1, guess->yco, left) == true && guess->path == false){ //left
@@ -1455,7 +1455,7 @@ void Protester::bfs(int x, int y){
             guess->path = true;
             guess->left = newGuess;
             q.push(newGuess);
-            cout << "left node" << endl;
+            //cout << "left node" << endl;
         }
 //        if(getWorld()->dirtAlive(guess->xco, guess->yco-1) == false && guess->path == false){
         if(AllowMove(guess->xco, guess->yco-1, down) == true && guess->path == false){ //down
@@ -1466,7 +1466,7 @@ void Protester::bfs(int x, int y){
             guess->path = true;
             guess->down = newGuess;
             q.push(newGuess);
-            cout << "down node" << endl;
+            //cout << "down node" << endl;
         }
     }
     deque<node*> correctPath;
@@ -1502,6 +1502,10 @@ void Protester::bfs(int x, int y){
     int resultY = correctPath[1]->yco;
     moveTo(resultX, resultY);
     cout << "protester move" << endl;
+    while (!correctPath.empty())
+    {
+        correctPath.pop_front();
+    }
 }
 
 /* old reg protester functions
