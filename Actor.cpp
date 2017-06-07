@@ -313,7 +313,7 @@ void DiggerMan::doSomething()
 			}
             case KEY_PRESS_TAB:
 				//add gold nugget to the map
-				cout << "x: " << getX() << "y:  " << getY() << endl;
+				//cout << "x: " << getX() << "y:  " << getY() << endl;
 				if (getGoldNum() > 0)
 				{
 					GoldNugget *gn1 = new GoldNugget(getX(), getY());;
@@ -329,7 +329,7 @@ void DiggerMan::doSomething()
             case 90:// if press 'Z'
 				if (getSonarKit() > 0) // if diggerman has sonarkits
 				{
-					cout << "launching sonar kit" << endl;
+					//cout << "launching sonar kit" << endl;
 					discoverObjects();
 					decreaseSonarKit();
 				}
@@ -338,7 +338,7 @@ void DiggerMan::doSomething()
             case 122:// if press 'z'
 				if (getSonarKit() > 0) // if diggerman has sonarkits
 				{
-					cout << "launching sonar kit" << endl;
+				//	cout << "launching sonar kit" << endl;
 					discoverObjects();
 					decreaseSonarKit();
 				}
@@ -479,7 +479,7 @@ void DiggerMan::discoverObjects()
 			
 				if ((HittingSomething((x + newX), (y + newY)) == barrelOil) || (HittingSomething((x + newX), (y + newY)) == goldNugget))
 				{
-					cout << "found OBJECT IN RADAR" << endl;
+				//	cout << "found OBJECT IN RADAR" << endl;
 					getWorld()->getObject(IndexOfObject((x + newX), (y + newY)))->activateSonar();
 				}
 				/*switch (HittingSomething((x + newX), (y + newY)
@@ -524,6 +524,17 @@ int DiggerMan::getHealth()
 void DiggerMan::ResetHealth()
 {
 	health = 10;
+}
+
+void DiggerMan::GetAnnoyed(int x)
+{
+	decreaseHealth(x);
+	if (getHealth() <= 0)
+	{
+		getWorld()->playSound(SOUND_PLAYER_GIVE_UP);
+		setState(dead);
+	}
+
 }
 
 
@@ -580,7 +591,9 @@ void Boulder::doSomething()
                 int i = IndexOfObjectWithinRadius(getX(), getY());
                 if (i >= 0)
                 {
-					cout << "object found it by boulder" << endl;
+					cout << "object found it by boulder " <<i<< endl;
+					//setVisible(false);
+					//setState(dead);
 					switch (getWorld()->getObject(i)->getName())
                     {
                         case regProt:
@@ -808,7 +821,7 @@ void WaterPool::doSomething()
 			setVisible(false);
 			setState(dead);
 			getWorld()->getPlayer()->addSquirtGun();
-			cout << "object picked up by diggerman!!!!" << endl;
+			//cout << "object picked up by diggerman!!!!" << endl;
 			getWorld()->playSound(SOUND_GOT_GOODIE);
 			getWorld()->increaseScore(100);
 		}
@@ -844,7 +857,7 @@ void SonarKit::doSomething()
 			setVisible(false);
 			setState(dead);
 			getWorld()->getPlayer()->addSonarKit();
-			cout << "object picked up by diggerman!!!!" << endl;
+		//	cout << "object picked up by diggerman!!!!" << endl;
 			getWorld()->playSound(SOUND_GOT_GOODIE);
 			getWorld()->increaseScore(75);
 		}
@@ -880,7 +893,7 @@ void Barrel::doSomething()
 				setState(dead);
 				setVisible(false);
 				//getWorld()->getPlayer()->addSonarKit();
-				cout << "object picked up by diggerman!!!!" << endl;
+				//cout << "object picked up by diggerman!!!!" << endl;
 				getWorld()->playSound(SOUND_FOUND_OIL);
 				getWorld()->increaseScore(1000);
 				getWorld()->DecreaseBarrels();
@@ -904,7 +917,7 @@ void Barrel::doSomething()
 		setState(dead);
 		setVisible(false);
 		//getWorld()->getPlayer()->addSonarKit();
-		cout << "object picked up by diggerman!!!!" << endl;
+		//cout << "object picked up by diggerman!!!!" << endl;
 		getWorld()->playSound(SOUND_FOUND_OIL);
 		getWorld()->increaseScore(1000);
 		getWorld()->DecreaseBarrels();
@@ -968,7 +981,7 @@ void GoldNugget::doSomething()
 			setState(dead);
 			setVisible(false);
 			//getWorld()->getPlayer()->addSonarKit();
-			cout << "object picked up by diggerman!!!!" << endl;
+		//	cout << "object picked up by diggerman!!!!" << endl;
 			getWorld()->playSound(SOUND_GOT_GOODIE);
 			getWorld()->increaseScore(10);
 			getWorld()->getPlayer()->AddGoldNum();
@@ -1057,7 +1070,7 @@ bool Protester::AllowMove(int x, int y, Direction dir)
 			switch (dir)
 			{
 			case left:
-				cout << "LEFT" << endl;
+				//cout << "LEFT" << endl;
 				for (int i = 0; i < 4; i++)
 				{
 					if (getWorld()->dirtAlive(x, (y + i)))
@@ -1121,7 +1134,7 @@ int Protester::calculateSquarestoMove()
 {
     srand(time(NULL));
     int random = rand() % 52+8;
-	cout << "random number:: " << random << endl;
+//	cout << "random number:: " << random << endl;
     return random;
 }
 
@@ -1198,14 +1211,14 @@ Protester::Direction Protester::getNewDirection()
 	while (!moveApproved)
 	{
 		int random = rand() % 4 + 1;
-		cout << "random number:: " << random << endl;
+		//cout << "random number:: " << random << endl;
 		switch (random)
 		{
 		case 1:    //left
-			cout << "left" << endl;
+			//cout << "left" << endl;
 			if (AllowMove((getX() - 1), getY(), left))
 			{
-			    cout << "left" << endl;
+			  //  cout << "left" << endl;
 				moveApproved = true;
 				return left;
 			}
@@ -1214,7 +1227,7 @@ Protester::Direction Protester::getNewDirection()
 			//cout << "right" << endl;
 			if (AllowMove((getX() + 1), getY(), right))
 			{
-				cout << "right" << endl;
+			//	cout << "right" << endl;
 				moveApproved = true;
 				return right;
 			}
@@ -1224,7 +1237,7 @@ Protester::Direction Protester::getNewDirection()
 			//cout << "up" << endl;
 			if (AllowMove(getX(), (getY()+1),up))
 			{
-				cout << "up" << endl;
+				//cout << "up" << endl;
 				moveApproved = true;
 				return up;
 			}
@@ -1233,7 +1246,7 @@ Protester::Direction Protester::getNewDirection()
 			//cout << "down" << endl;
 			if (AllowMove(getX(), (getY() - 1),down))
 			{
-				cout << "down" << endl;
+			//	cout << "down" << endl;
 				moveApproved = true;
 				return down;
 			}
@@ -1265,7 +1278,7 @@ bool Protester::FollowPlayer()
 						// it is below!!
 						if (CheckIfPathIsEmpty(getX(), (getWorld()->getPlayer()->getY() + 4), getX(), getY()))
 						{
-							cout << "below path clear!!" << endl;
+						//	cout << "below path clear!!" << endl;
 							setDirection(down);
 							moveTo(getX(), (getY() - 1));
 							return true;
@@ -1275,7 +1288,7 @@ bool Protester::FollowPlayer()
 					{
 						if (CheckIfPathIsEmpty(getX(), (getY() + 4), getX(), getWorld()->getPlayer()->getY()))
 						{
-							cout << "up path clear!!" << endl;
+						//	cout << "up path clear!!" << endl;
 							setDirection(up);
 							moveTo(getX(), (getY() + 1));
 							return true;
@@ -1306,7 +1319,7 @@ bool Protester::FollowPlayer()
 							// it is on the left!!
 							if (CheckIfPathIsEmpty((getWorld()->getPlayer()->getX() + 4), getY(), getX(), getY()))
 							{
-								cout << "left path clear!!" << endl;
+							//	cout << "left path clear!!" << endl;
 								setDirection(left);
 								moveTo((getX()-1), getY());
 								return true;
@@ -1316,7 +1329,7 @@ bool Protester::FollowPlayer()
 						{
 							if (CheckIfPathIsEmpty((getX() + 4), getY(), getWorld()->getPlayer()->getX(), getY()))
 							{
-								cout << "right path clear!!" << endl;
+							//	cout << "right path clear!!" << endl;
 								setDirection(right);
 								moveTo((getX() + 1), getY());
 								return true;
@@ -1367,7 +1380,7 @@ bool Protester::CheckIfPathIsEmpty(int x1, int y1, int x2, int y2)
 		}
 		return true;
 	}
-	cout << "wrong coordenates!!!" << endl;
+	//cout << "wrong coordenates!!!" << endl;
 	return false;
 }
 
@@ -1519,7 +1532,7 @@ void Protester::bfs(int x, int y){
     int resultY = correctPath[1]->yco;
 
     moveTo(resultX, resultY);
-    cout << "protester move" << endl;
+   // cout << "protester move" << endl;
 
 }
 
@@ -2214,34 +2227,38 @@ void RegProtester::doSomething()
 				switch (PlayerPosition(getX(), getY())) //find to where the player is facing
 				{
 				case up:
-					cout << "its is coming from up" << endl;
+					//cout << "its is coming from up" << endl;
 					if (getDirection() == up) // if the protester is facing up
 					{
 						getWorld()->playSound(SOUND_PROTESTER_YELL);
+						getWorld()->getPlayer()->GetAnnoyed(2);
 						resetCounterNoRest();
 					}
 					break;
 				case down:
-					cout << "its is coming from down" << endl;
+					//cout << "its is coming from down" << endl;
 					if (getDirection() == down) // if the protester is facing down
 					{
 						getWorld()->playSound(SOUND_PROTESTER_YELL);
+						getWorld()->getPlayer()->GetAnnoyed(2);
 						resetCounterNoRest();
 					}
 					break;
 				case left:
-					cout << "its is coming from left" << endl;
+				//	cout << "its is coming from left" << endl;
 					if (getDirection() == left) // if the protester is facing left
 					{
 						getWorld()->playSound(SOUND_PROTESTER_YELL);
+						getWorld()->getPlayer()->GetAnnoyed(2);
 						resetCounterNoRest();
 					}
 					break;
 				case right:
-					cout << "its is coming from right" << endl;
+				//	cout << "its is coming from right" << endl;
 					if (getDirection() == right) // if the protester is facing right
 					{
 						getWorld()->playSound(SOUND_PROTESTER_YELL);
+						getWorld()->getPlayer()->GetAnnoyed(2);
 						resetCounterNoRest();
 					}
 					break;
@@ -2254,7 +2271,7 @@ void RegProtester::doSomething()
 			{
 				if (FollowPlayer())// if its watching the player
 				{
-					cout << "success" << endl;
+				//	cout << "success" << endl;
 					//resetSquarestoMove();
 					setSquarestoMove(); //set squarestomove to zero
 				}
@@ -2535,7 +2552,7 @@ void HardProtester::doSomething()
 					switch (PlayerPosition(getX(), getY())) //find to where the player is facing
 					{
 					case up:
-						cout << "its is coming from up" << endl;
+					//	cout << "its is coming from up" << endl;
 						if (getDirection() == up) // if the protester is facing up
 						{
 							getWorld()->playSound(SOUND_PROTESTER_YELL);
@@ -2543,7 +2560,7 @@ void HardProtester::doSomething()
 						}
 						break;
 					case down:
-						cout << "its is coming from down" << endl;
+					//	cout << "its is coming from down" << endl;
 						if (getDirection() == down) // if the protester is facing down
 						{
 							getWorld()->playSound(SOUND_PROTESTER_YELL);
@@ -2551,7 +2568,7 @@ void HardProtester::doSomething()
 						}
 						break;
 					case left:
-						cout << "its is coming from left" << endl;
+					//	cout << "its is coming from left" << endl;
 						if (getDirection() == left) // if the protester is facing left
 						{
 							getWorld()->playSound(SOUND_PROTESTER_YELL);
@@ -2559,7 +2576,7 @@ void HardProtester::doSomething()
 						}
 						break;
 					case right:
-						cout << "its is coming from right" << endl;
+					//	cout << "its is coming from right" << endl;
 						if (getDirection() == right) // if the protester is facing right
 						{
 							getWorld()->playSound(SOUND_PROTESTER_YELL);
@@ -2575,7 +2592,7 @@ void HardProtester::doSomething()
 				{
 					if (FollowPlayer())// if its watching the player
 					{
-						cout << "success" << endl;
+						//cout << "success" << endl;
 						//resetSquarestoMove();
 						setSquarestoMove(); //set squarestomove to zero
 					}

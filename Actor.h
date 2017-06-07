@@ -107,6 +107,7 @@ public:
 	void increaseHealth();
 	int getHealth();
 	void ResetHealth();
+	void GetAnnoyed(int x);
 	
 private:
 	int squirt_num;

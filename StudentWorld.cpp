@@ -354,7 +354,7 @@ void StudentWorld::addNewObjects(){
             numberOfProtesters++;
     }
     if(getTickCounter() > T && numberOfProtesters < P){
-        cout << numberOfProtesters << endl;
+       // cout << numberOfProtesters << endl;
         
         int randomPro = rand() % probabilityOfHardcore;
         
@@ -561,8 +561,8 @@ string formatString(int level, int lives, int health, int squirts, int gold, int
 }
 
 bool StudentWorld::ecludianDistance(int x,int y){
-    cout << x << " " << y << endl;
-    cout << gameObjects.back()->getX() << " " << gameObjects.back()->getY() << endl;
+    //cout << x << " " << y << endl;
+    //cout << gameObjects.back()->getX() << " " << gameObjects.back()->getY() << endl;
     
     for(int i = 0; i < gameObjects.size(); i++){
 
@@ -574,7 +574,7 @@ bool StudentWorld::ecludianDistance(int x,int y){
         if(result < 6){
             return false;
         }
-        cout << result << endl;
+      //  cout << result << endl;
         
     }
     return true;
