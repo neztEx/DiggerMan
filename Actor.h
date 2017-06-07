@@ -193,7 +193,7 @@ class RegProtester : public Protester
 public:
 	enum Protesterstate { rest, leaveOil, moving};
 	RegProtester()
-		: Protester(IMID_PROTESTER, 30, 30, left, 1.0, 0)
+		: Protester(IMID_PROTESTER, 60, 60, left, 1.0, 0)
 	{
 		setName(regProt);
 	}

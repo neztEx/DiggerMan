@@ -570,26 +570,28 @@ void Boulder::doSomething()
     if (fallingState == true)
     {
 
-            if (getWorld()->dirtAlive(getX(),getY() - 1) == false && getWorld()->dirtAlive(getX()+1,getY() - 1) == false &&  getWorld()->dirtAlive(getX()+2,getY() - 1) == false && getWorld()->dirtAlive(getX()+3,getY() - 1) == false)
+          if (getWorld()->dirtAlive(getX(),getY() - 1) == false && getWorld()->dirtAlive(getX()+1,getY() - 1) == false &&  getWorld()->dirtAlive(getX()+2,getY() - 1) == false && getWorld()->dirtAlive(getX()+3,getY() - 1) == false)
             {
-            moveTo(getX(), getY() - 1);
-            if(HittingPlayer(getX(), getY()) == 0){
-                getWorld()->getPlayer()->setState(dead);
-            }
+				moveTo(getX(), getY() - 1);
+				if(HittingPlayer(getX(), getY()) == 0)
+				 {
+					  getWorld()->getPlayer()->setState(dead);
+				 }
                 int i = IndexOfObjectWithinRadius(getX(), getY());
                 if (i >= 0)
                 {
-                    switch (getWorld()->getObject(i)->getName())
+					cout << "object found it by boulder" << endl;
+					switch (getWorld()->getObject(i)->getName())
                     {
                         case regProt:
-                            getWorld()->getObject(i)->GetAnnoyed(100);
-                            getWorld()->getObject(i)->setVisible(false);
-                            getWorld()->getObject(i)->setState(dead);
+                            getWorld()->getObject(i)->GetAnnoyed(50);
+                            setVisible(false);
+                            setState(dead);
                             break;
                         case hardProt:
-                            getWorld()->getObject(i)->GetAnnoyed(100);
-                            getWorld()->getObject(i)->setVisible(false);
-                            getWorld()->getObject(i)->setState(dead);
+                            getWorld()->getObject(i)->GetAnnoyed(50);
+                            setVisible(false);
+                            setState(dead);
                             break;
                     }
                 }
@@ -2450,7 +2452,9 @@ void RegProtester::doSomething()
 
 
 	case leaveOil:
-		bfs(60, 60);
+		//bfs(60, 60);
+		setState(dead);
+		setVisible(false);
 		break;
 
 	}
