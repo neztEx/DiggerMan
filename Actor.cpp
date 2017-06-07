@@ -1392,10 +1392,10 @@ void Protester::bfs(int x, int y){
     struct node{
         int xco;
         int yco;
-        node *up;
-        node *right;
-        node *left;
-        node *down;
+        node *up = nullptr;
+        node *right = nullptr;
+        node *left = nullptr;
+        node *down = nullptr;
         bool visited = false;
         bool path = false;
     };
@@ -1406,10 +1406,10 @@ void Protester::bfs(int x, int y){
     node *head = new node; //initializes the first node position of protester
     head->xco = getX();
     head->yco = getY();
-    head->up = nullptr;
-    head->right = nullptr;
-    head->left = nullptr;
-    head->down = nullptr;
+//    head->up = nullptr;
+//    head->right = nullptr;
+//    head->left = nullptr;
+//    head->down = nullptr;
     q.push(head);
     
     node *guess;
@@ -1437,7 +1437,7 @@ void Protester::bfs(int x, int y){
             cout << "up node" << endl;
         }
 //        if(getWorld()->dirtAlive(guess->xco+1, guess->yco) == false && guess->path == false){
-        if(AllowMove(guess->xco+1, guess->yco, up) == true && guess->path == false){ //right
+        if(AllowMove(guess->xco+1, guess->yco, right) == true && guess->path == false){ //right
             node *newGuess = new node;
             newGuess->xco = guess->xco+1;
             newGuess->yco = guess->yco;
@@ -1447,7 +1447,7 @@ void Protester::bfs(int x, int y){
             cout << "right node" << endl;
         }
 //        if(getWorld()->dirtAlive(guess->xco-1, guess->yco) == false && guess->path == false){
-        if(AllowMove(guess->xco-1, guess->yco, up) == true && guess->path == false){ //left
+        if(AllowMove(guess->xco-1, guess->yco, left) == true && guess->path == false){ //left
 
             node *newGuess = new node;
             newGuess->xco = guess->xco-1;
@@ -1458,7 +1458,7 @@ void Protester::bfs(int x, int y){
             cout << "left node" << endl;
         }
 //        if(getWorld()->dirtAlive(guess->xco, guess->yco-1) == false && guess->path == false){
-        if(AllowMove(guess->xco, guess->yco-1, up) == true && guess->path == false){ //down
+        if(AllowMove(guess->xco, guess->yco-1, down) == true && guess->path == false){ //down
 
             node *newGuess = new node;
             newGuess->xco = guess->xco;
@@ -1473,30 +1473,30 @@ void Protester::bfs(int x, int y){
     head->visited = true;
     correctPath.push_back(head);
     
-    while(head->xco != x && head->yco != y){
+    while(head->xco != x || head->yco != y)
+    {
         if(head->up != nullptr && head->up->visited == false){
             head->up->visited = true;
             head = head->up;
-            correctPath.push_back(head->up);
+            correctPath.push_back(head);
         }
         else if(head->right != nullptr && head->right->visited == false){
-            head->right->visited = true;
-            head = head->right;
-            correctPath.push_back(head->right);
-        }
+                head->right->visited = true;
+                head = head->right;
+                correctPath.push_back(head);
+            }
         else if(head->left != nullptr && head->left->visited == false){
-            head->left->visited = true;
-            head = head->left;
-            correctPath.push_back(head->left);
-        }
+                head->left->visited = true;
+                head = head->left;
+                correctPath.push_back(head);
+            }
         else if(head->down != nullptr && head->left->visited == false){
-            head->down->visited = true;
-            head = head->down;
-            correctPath.push_back(head->down);
-        }
-        else{
-            correctPath.pop_back();
-        }
+                head->down->visited = true;
+                head = head->down;
+                correctPath.push_back(head);
+            }
+        else correctPath.pop_back();
+        
     }
     int resultX = correctPath[1]->xco;
     int resultY = correctPath[1]->yco;
