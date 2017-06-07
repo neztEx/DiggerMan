@@ -323,6 +323,7 @@ void DiggerMan::doSomething()
 				}
                 break;
             case KEY_PRESS_ESCAPE:
+				setState(dead);
                 break;
             case 90:// if press 'Z'
 				if (getSonarKit() > 0) // if diggerman has sonarkits
@@ -572,7 +573,7 @@ void Boulder::doSomething()
             {
             moveTo(getX(), getY() - 1);
             if(HittingPlayer(getX(), getY()) == 0){
-                getWorld()->getPlayer()->setVisible(false);
+                getWorld()->getPlayer()->setState(dead);
             }
             
 		//	cout << "animate" << endl;
@@ -2470,12 +2471,11 @@ void RegProtester::GetAnnoyed(int x)
 		{
 			getWorld()->playSound(SOUND_PROTESTER_FOUND_GOLD);
 			getWorld()->increaseScore(100);
-			setVisible(false);
-			setState(dead); //CHANGE FOR STATE LEAVE OIL
+			setProtesterState(Protester::leaveOil); //CHANGE FOR STATE LEAVE OIL
 		}
 
 		decreaseHealth(x);
-		if (getHealth() <= 0 && getState() == alive)
+		if (getHealth() <= 0 && getState() == alive && getProt_State() != Protester::leaveOil)
 		{
 			//setVisible(false);
 			//setState(dead); //CHANGE FOR STATE LEAVE OIL

@@ -64,7 +64,7 @@ int StudentWorld::move()
     }
     addNewObjects();
 	UpdateVector();
-    if (getPlayer()->isVisible() == false){
+    if (getPlayer()->getState() == BaseObject::dead){
         decLives();
         playSound(GWSTATUS_PLAYER_DIED);
         return GWSTATUS_PLAYER_DIED;
