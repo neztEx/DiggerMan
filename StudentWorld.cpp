@@ -357,8 +357,8 @@ void StudentWorld::addNewObjects(){
        // cout << numberOfProtesters << endl;
         
         int randomPro = rand() % probabilityOfHardcore;
-        
-        if(randomPro > probabilityOfHardcore){
+        cout << randomPro << endl;
+        if(randomPro > 30 && randomPro < 40){
             HardProtester *prot2 = new HardProtester;
             prot2->Initialize(this);
             insertObject(prot2);
