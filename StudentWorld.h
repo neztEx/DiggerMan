@@ -51,6 +51,7 @@ public:
     bool ecludianDistance(int x, int y);
     void setTickCounter();
     int getTickCounter();
+    void resetTickCounter();
     //Dirt *gameMap[VIEW_WIDTH][DIRT_HEIGHT];
 
 

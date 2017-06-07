@@ -195,12 +195,12 @@ void StudentWorld::SetDisplayText()
 }
 
 void StudentWorld::createGameObjects() {
-    int current_level_number = getLevel() + 5;
+    int current_level_number = getLevel();
     
     int B = min(current_level_number / 2 + 2, 7); //boulders
     int G = max(5-current_level_number / 2, 2); //gold nuggets
     int L = min(2+current_level_number, 18); //barrels of oil
-    
+
     
 	setTotalBarrels(L);
     srand(time(NULL));
@@ -291,15 +291,15 @@ void StudentWorld::createGameObjects() {
         bo1->initialize(this);
         insertObject(bo1);
     }
+
+    RegProtester *prot = new RegProtester;
+    prot->Initialize(this);
+    insertObject(prot);
     
-	RegProtester *prot = new RegProtester;
-	prot->Initialize(this);
-	insertObject(prot);
-	
-	
-	HardProtester *prot2 = new HardProtester;
-	prot2->Initialize(this);
-	insertObject(prot2);
+
+//	HardProtester *prot2 = new HardProtester;
+//	prot2->Initialize(this);
+//	insertObject(prot2);
 	
 	
 	/*
@@ -328,9 +328,12 @@ void StudentWorld::createGameObjects() {
 //functions to add new objects after certain amount of ticks have occured in the game
 void StudentWorld::addNewObjects(){
 
-    int current_level_number = getLevel() +10;
+    int current_level_number = getLevel()+2;
     bool goodieAdded = false;
     int G = (current_level_number * 25 + 300);
+    int T = max(25, 200-current_level_number); //ticks for protesters
+    int P = min(15,2+current_level_number*2); //number of protesters should be 1.5
+    int probabilityOfHardcore = min(90, current_level_number * 10 + 30);
     
     //windows code for time
 
@@ -344,6 +347,33 @@ void StudentWorld::addNewObjects(){
     srand(time(NULL)+getTickCounter());
     
     int random = rand() % G;
+    
+    int numberOfProtesters = 0;
+    for(int i = 0; i < gameObjects.size(); i++){
+        if(gameObjects[i]->getID() == 1)
+            numberOfProtesters++;
+    }
+    if(getTickCounter() > T && numberOfProtesters < P){
+        cout << numberOfProtesters << endl;
+        
+        int randomPro = rand() % probabilityOfHardcore;
+        
+        if(randomPro > probabilityOfHardcore){
+            HardProtester *prot2 = new HardProtester;
+            prot2->Initialize(this);
+            insertObject(prot2);
+            resetTickCounter();
+        }
+        else{
+            RegProtester *prot = new RegProtester;
+            prot->Initialize(this);
+            insertObject(prot);
+            resetTickCounter();
+        }
+
+    }
+    
+    
 
     if(random < 1){ //1 in G chance to add a new object to the game
        // cout << "goodie to be added!" << endl;
@@ -557,5 +587,8 @@ void StudentWorld::setTickCounter()
 int StudentWorld::getTickCounter()
 {
     return tickCounter;
+}
+void StudentWorld::resetTickCounter(){
+    tickCounter = 0;
 }
 

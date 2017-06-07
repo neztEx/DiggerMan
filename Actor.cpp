@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <time.h>
+#include <memory>
 //#include "GameWorld.h"
 #include <queue>
 
@@ -575,6 +576,23 @@ void Boulder::doSomething()
             if(HittingPlayer(getX(), getY()) == 0){
                 getWorld()->getPlayer()->setState(dead);
             }
+                int i = IndexOfObjectWithinRadius(getX(), getY());
+                if (i >= 0)
+                {
+                    switch (getWorld()->getObject(i)->getName())
+                    {
+                        case regProt:
+                            getWorld()->getObject(i)->GetAnnoyed(100);
+                            getWorld()->getObject(i)->setVisible(false);
+                            getWorld()->getObject(i)->setState(dead);
+                            break;
+                        case hardProt:
+                            getWorld()->getObject(i)->GetAnnoyed(100);
+                            getWorld()->getObject(i)->setVisible(false);
+                            getWorld()->getObject(i)->setState(dead);
+                            break;
+                    }
+                }
             
 		//	cout << "animate" << endl;
             return;
@@ -2750,7 +2768,7 @@ void HardProtester::doSomething()
 			break;
 
 		case leaveOil:
-			bfs(60, 60);
+			//bfs(60, 60);
 			break;
 
 		}
