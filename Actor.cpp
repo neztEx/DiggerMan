@@ -130,7 +130,8 @@ int BaseObject::IndexOfObjectWithinRadius(int x, int y)
 		{
 			/*cout << "x1: " << x << " y1: " << y << " x2: " << getWorld()->getObject(i)->getX() << " y2: " << getWorld()->getObject(i)->getY() << endl;
 			cout << "Radius::: " << Radious(x, y, getWorld()->getObject(i)->getX(), getWorld()->getObject(i)->getY()) << endl;*/
-			return i;
+			if (getWorld()->getObject(i)->getName()!= getName())
+				return i;
 
 		}
 	}
@@ -408,7 +409,7 @@ void DiggerMan::Initialize(StudentWorld * m_gw)
 {
 	setWorld(m_gw);
 	squirt_num = 5;
-	sonarkit_num = 10;
+	sonarkit_num = 1;
 	health = 10;
 	Gold_num = 0;
 }
@@ -588,10 +589,12 @@ void Boulder::doSomething()
 				 {
 					  getWorld()->getPlayer()->setState(dead);
 				 }
-                int i = IndexOfObjectWithinRadius(getX(), getY());
-                if (i >= 0)
+				
+                //int i = IndexOfObjectWithinRadius(getX(), getY());
+                else if (IndexOfObjectWithinRadius(getX(), getY()) >= 0)
                 {
-					cout << "object found it by boulder " <<i<< endl;
+					int i = IndexOfObjectWithinRadius(getX(), getY());
+					//cout << "object found it by boulder " << i << endl;
 					//setVisible(false);
 					//setState(dead);
 					switch (getWorld()->getObject(i)->getName())
@@ -608,7 +611,18 @@ void Boulder::doSomething()
                             break;
                     }
                 }
-            
+				//switch (HittingSomething((getX()), getY()))
+				//{
+				//case regProt:
+				//	//getWorld()->getObject(i)->GetAnnoyed(50);
+				//	cout << "protester!!!" << endl;
+				//	setVisible(false);
+				//	setState(dead);
+				//	break;
+				//
+				//
+				//}
+
 		//	cout << "animate" << endl;
             return;
         }
