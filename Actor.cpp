@@ -1387,32 +1387,28 @@ void Protester::setCounterTicksRest(int x)
 }
 
 void Protester::bfs(int x, int y){
-    
-    
+    struct node;
+    typedef shared_ptr<node> upNode;
     struct node{
         int xco;
         int yco;
-        node *up = nullptr;
-        node *right = nullptr;
-        node *left = nullptr;
-        node *down = nullptr;
+        upNode up = nullptr;
+        upNode right = nullptr;
+        upNode left = nullptr;
+        upNode down = nullptr;
         bool visited = false;
         bool path = false;
     };
-    queue<node*> q; //travel
+    queue<upNode> q; //travel
     //vector<node*> visited; //nodes visited
     
+    upNode head(new node); //initializes the first node position of protester
     
-    node *head = new node; //initializes the first node position of protester
     head->xco = getX();
     head->yco = getY();
-//    head->up = nullptr;
-//    head->right = nullptr;
-//    head->left = nullptr;
-//    head->down = nullptr;
     q.push(head);
     
-    node *guess;
+    upNode guess(new node);
 
     while(!q.empty()){
         guess = q.front();
@@ -1428,7 +1424,7 @@ void Protester::bfs(int x, int y){
 //        if(getWorld()->dirtAlive(guess->xco, guess->yco+1) == true && find(visited.begin(), visited.end(), guess->up) != visited.end() == false){
 //        if(getWorld()->dirtAlive(guess->xco, (guess->yco)+1) == false && guess->path == false){
             if(AllowMove(guess->xco, guess->yco+1, up) == true && guess->path == false){ //up
-            node *newGuess = new node;
+            upNode newGuess(new node);
             newGuess->xco = guess->xco;
             newGuess->yco = guess->yco + 1;
             guess->path = true;
@@ -1438,7 +1434,7 @@ void Protester::bfs(int x, int y){
         }
 //        if(getWorld()->dirtAlive(guess->xco+1, guess->yco) == false && guess->path == false){
         if(AllowMove(guess->xco+1, guess->yco, right) == true && guess->path == false){ //right
-            node *newGuess = new node;
+            upNode newGuess(new node);
             newGuess->xco = guess->xco+1;
             newGuess->yco = guess->yco;
             guess->path = true;
@@ -1449,7 +1445,7 @@ void Protester::bfs(int x, int y){
 //        if(getWorld()->dirtAlive(guess->xco-1, guess->yco) == false && guess->path == false){
         if(AllowMove(guess->xco-1, guess->yco, left) == true && guess->path == false){ //left
 
-            node *newGuess = new node;
+            upNode newGuess(new node);
             newGuess->xco = guess->xco-1;
             newGuess->yco = guess->yco;
             guess->path = true;
@@ -1460,7 +1456,7 @@ void Protester::bfs(int x, int y){
 //        if(getWorld()->dirtAlive(guess->xco, guess->yco-1) == false && guess->path == false){
         if(AllowMove(guess->xco, guess->yco-1, down) == true && guess->path == false){ //down
 
-            node *newGuess = new node;
+            upNode newGuess(new node);
             newGuess->xco = guess->xco;
             newGuess->yco = guess->yco-1;
             guess->path = true;
@@ -1469,8 +1465,8 @@ void Protester::bfs(int x, int y){
             //cout << "down node" << endl;
         }
     }
-
-    deque<node*> correctPath;
+    
+    deque<upNode> correctPath;
     head->visited = true;
     correctPath.push_back(head);
     
@@ -1501,14 +1497,10 @@ void Protester::bfs(int x, int y){
     }
     int resultX = correctPath[1]->xco;
     int resultY = correctPath[1]->yco;
-    
+
     moveTo(resultX, resultY);
     cout << "protester move" << endl;
-    for (deque<node*>::const_iterator it = correctPath.begin(); it != correctPath.end(); ++it)
-    {
-        delete *it;
-    }
-    correctPath.clear();
+
 }
 
 /* old reg protester functions
