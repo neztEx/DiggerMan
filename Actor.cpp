@@ -1473,6 +1473,7 @@ void Protester::bfs(int x, int y){
     correctPath.push_back(head);
     
     while(head->xco != x && head->yco != y){
+        if(head->up != nullptr && head->up->visited == false){
             head->up->visited = true;
             head = head->up;
             correctPath.push_back(head->up);
