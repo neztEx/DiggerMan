@@ -1469,6 +1469,7 @@ void Protester::bfs(int x, int y){
             //cout << "down node" << endl;
         }
     }
+
     deque<node*> correctPath;
     head->visited = true;
     correctPath.push_back(head);
@@ -1500,12 +1501,14 @@ void Protester::bfs(int x, int y){
     }
     int resultX = correctPath[1]->xco;
     int resultY = correctPath[1]->yco;
+    
     moveTo(resultX, resultY);
     cout << "protester move" << endl;
-    while (!correctPath.empty())
+    for (deque<node*>::const_iterator it = correctPath.begin(); it != correctPath.end(); ++it)
     {
-        correctPath.pop_front();
+        delete *it;
     }
+    correctPath.clear();
 }
 
 /* old reg protester functions
