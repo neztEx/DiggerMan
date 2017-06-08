@@ -298,10 +298,10 @@ void StudentWorld::createGameObjects() {
     insertObject(prot);
     
 
-//	HardProtester *prot2 = new HardProtester;
-//	prot2->Initialize(this);
-//	insertObject(prot2);
-	
+	//HardProtester *prot2 = new HardProtester;
+	//prot2->Initialize(this);
+	//insertObject(prot2);
+	//
 	
 	/*
 	WaterPool *w1 = new WaterPool(6, 10);
@@ -361,6 +361,7 @@ void StudentWorld::addNewObjects(){
         int randomPro = rand() % probabilityOfHardcore;
         cout << randomPro << endl;
         if(randomPro > 30 && randomPro < 40){
+
             HardProtester *prot2 = new HardProtester;
             prot2->Initialize(this);
             insertObject(prot2);

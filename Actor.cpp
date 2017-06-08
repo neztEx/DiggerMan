@@ -321,7 +321,7 @@ void DiggerMan::doSomething()
 			}
             case KEY_PRESS_TAB:
 				//add gold nugget to the map
-				//cout << "x: " << getX() << "y:  " << getY() << endl;
+				cout << "x: " << getX() << "y:  " << getY() << endl;
 				if (getGoldNum() > 0)
 				{
 					GoldNugget *gn1 = new GoldNugget(getX(), getY());;
@@ -1262,7 +1262,7 @@ Protester::Direction Protester::PlayerPosition(int x, int y)
 	else if ((((y + 3) - (getWorld()->getPlayer()->getY())) == -1)|| (((y + 3) - (getWorld()->getPlayer()->getY())) == 0))
 		return up;
     
-    return left;
+    return GraphObject::none;
 
 }
 
@@ -1526,7 +1526,7 @@ void Protester::bfs(int x, int y){
 //        if (guess == nullptr)
 //            continue;
         if (guess->xco == x && guess->yco == y){ //once destination is found return;
-            q.pop();
+          //  q.pop();
             break;
         }
         
@@ -1593,7 +1593,6 @@ void Protester::bfs(int x, int y){
     deque<upNode> correctPath;
     head->visited = true;
     correctPath.push_back(head);
-	int stepsToReachPoint = 0;
     
     while(head->xco != x || head->yco != y)
     {
@@ -1601,31 +1600,31 @@ void Protester::bfs(int x, int y){
             head->up->visited = true;
             head = head->up;
             correctPath.push_back(head);
-			stepsToReachPoint++;
+		
 
         }
         else if(head->right != nullptr && head->right->visited == false){
                 head->right->visited = true;
                 head = head->right;
                 correctPath.push_back(head);
-				stepsToReachPoint++;
+			
             }
         else if(head->left != nullptr && head->left->visited == false){
                 head->left->visited = true;
                 head = head->left;
                 correctPath.push_back(head);
-				stepsToReachPoint++;
+				
             }
         else if(head->down != nullptr && head->down->visited == false){
                 head->down->visited = true;
                 head = head->down;
                 correctPath.push_back(head);
-				stepsToReachPoint++;
+			
             }
         else{
             correctPath.pop_back();
             head = correctPath.back();
-			stepsToReachPoint--;
+		
         }
     }
     int resultX = correctPath[1]->xco;
@@ -1641,7 +1640,7 @@ void Protester::bfs(int x, int y){
 		setDirection(up);
     //setDirection(up);
  //   cout << "move " << resultX << " " << resultY << endl;
-	cout << "Steps::: " << stepsToReachPoint << endl;
+	
 
 
     moveTo(resultX, resultY);
@@ -2009,36 +2008,47 @@ void HardProtester::doSomething()
 					{
 					case up:
 					//	cout << "its is coming from up" << endl;
-						if (getDirection() == up) // if the protester is facing up
+						
+						if (getDirection() != up) // if the protester is facing up
 						{
-							getWorld()->playSound(SOUND_PROTESTER_YELL);
-							resetCounterNoRest();
+							setDirection(up);
 						}
+							getWorld()->playSound(SOUND_PROTESTER_YELL);
+							getWorld()->getPlayer()->GetAnnoyed(2);
+							resetCounterNoRest();
+						
 						break;
 					case down:
 					//	cout << "its is coming from down" << endl;
-						if (getDirection() == down) // if the protester is facing down
+						if (getDirection() != down) // if the protester is facing down
 						{
-							getWorld()->playSound(SOUND_PROTESTER_YELL);
-							resetCounterNoRest();
+							setDirection(down);
 						}
+							getWorld()->playSound(SOUND_PROTESTER_YELL);
+							getWorld()->getPlayer()->GetAnnoyed(2);
+							resetCounterNoRest();
 						break;
 					case left:
 					//	cout << "its is coming from left" << endl;
-						if (getDirection() == left) // if the protester is facing left
+						if (getDirection() != left) // if the protester is facing left
 						{
-							getWorld()->playSound(SOUND_PROTESTER_YELL);
-							resetCounterNoRest();
+							setDirection(left);
 						}
+							getWorld()->playSound(SOUND_PROTESTER_YELL);
+							getWorld()->getPlayer()->GetAnnoyed(2);
+							resetCounterNoRest();
 						break;
 					case right:
 					//	cout << "its is coming from right" << endl;
-						if (getDirection() == right) // if the protester is facing right
+						if (getDirection() != right) // if the protester is facing right
 						{
-							getWorld()->playSound(SOUND_PROTESTER_YELL);
-							resetCounterNoRest();
+							setDirection(right);
 						}
+							getWorld()->playSound(SOUND_PROTESTER_YELL);
+							getWorld()->getPlayer()->GetAnnoyed(2);
+							resetCounterNoRest();
 						break;
+
 					}
 
 					//ANNOY THE DIGGERMAN
@@ -2047,7 +2057,9 @@ void HardProtester::doSomething()
 				
 				else if (M >= CalculateSteps(getWorld()->getPlayer()->getX(), getWorld()->getPlayer()->getY())) //chek if the player is near 
 				{
+					cout << "gets HERE BEFORE IT CRASHES!!!" << endl;
 					bfs(getWorld()->getPlayer()->getX(), getWorld()->getPlayer()->getY());
+					cout << "PASSED THE FUNCTION!!!" << endl;
 				}
 				else
 				{
@@ -2320,7 +2332,10 @@ int HardProtester::CalculateSteps(int x, int y)
 		//        if (guess == nullptr)
 		//            continue;
 		if (guess->xco == x && guess->yco == y) { //once destination is found return;
-			q.pop();
+			
+			cout << "FOUND FINAL POSITION OF DIGGERMAN" << endl;
+			//q.pop();
+			cout << "we pop the last position" << endl;
 			break;
 		}
 
@@ -2339,7 +2354,7 @@ int HardProtester::CalculateSteps(int x, int y)
 
 		}
 		//        if(AllowMove(guess->xco+1, guess->yco, right) == true && guess->rightPath == false){ //right
-		if (AllowMove(guess->xco + 1, guess->yco, up) == true && find(vecPair.begin(), vecPair.end(), make_pair(guess->xco + 1, guess->yco)) != vecPair.end() == false) {
+		if (AllowMove(guess->xco + 1, guess->yco, right) == true && find(vecPair.begin(), vecPair.end(), make_pair(guess->xco + 1, guess->yco)) != vecPair.end() == false) {
 			upNode newGuess(new node);
 			newGuess->xco = guess->xco + 1;
 			newGuess->yco = guess->yco;
