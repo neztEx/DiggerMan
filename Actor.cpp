@@ -2226,8 +2226,19 @@ void HardProtester::doSomething()
 			break;
 
 		case leaveOil:
-			bfs(60, 60);
-			break;
+                if (getX()==60 && getY()==60)
+                {
+                    setState(dead);
+                    setVisible(false);
+                }
+                else
+                    bfs(60, 60);
+                //cout << "leave" << endl;
+                
+                //		setState(dead);
+                //		setVisible(false);
+                break;
+
 
 		}
 	}
