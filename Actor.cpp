@@ -1531,7 +1531,7 @@ void Protester::bfs(int x, int y){
         }
         
 //        if(AllowMove(guess->xco, guess->yco+1, up) == true && guess->upPath == false){ //up
-        if(AllowMove(guess->xco, guess->yco+1, up) == true && find(vecPair.begin(), vecPair.end(), make_pair(guess->xco+1,guess->yco)) != vecPair.end() == false){ //up
+        if(AllowMove(guess->xco, guess->yco+1, up) == true && find(vecPair.begin(), vecPair.end(), make_pair(guess->xco,guess->yco+1)) != vecPair.end() == false){ //up
             upNode newGuess(new node);
             newGuess->xco = guess->xco;
             newGuess->yco = guess->yco + 1;
@@ -1545,7 +1545,7 @@ void Protester::bfs(int x, int y){
 
         }
 //        if(AllowMove(guess->xco+1, guess->yco, right) == true && guess->rightPath == false){ //right
-        if(AllowMove(guess->xco+1, guess->yco, up) == true && find(vecPair.begin(), vecPair.end(), make_pair(guess->xco,guess->yco+1)) != vecPair.end() == false){
+        if(AllowMove(guess->xco+1, guess->yco, up) == true && find(vecPair.begin(), vecPair.end(), make_pair(guess->xco+1,guess->yco)) != vecPair.end() == false){
             upNode newGuess(new node);
             newGuess->xco = guess->xco+1;
             newGuess->yco = guess->yco;
