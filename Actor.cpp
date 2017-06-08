@@ -6,6 +6,7 @@
 #include <memory>
 //#include "GameWorld.h"
 #include <queue>
+#include <list>
 
 #include <iostream>
 
@@ -1481,6 +1482,10 @@ void Protester::setCounterTicksRest(int x)
 }
 
 void Protester::bfs(int x, int y){
+    cout << "start of bfs!" << endl;
+    typedef std::pair <int, int> intPair;
+
+    
     struct node;
     typedef shared_ptr<node> upNode;
     struct node{
@@ -1491,74 +1496,99 @@ void Protester::bfs(int x, int y){
         upNode left = nullptr;
         upNode down = nullptr;
         bool visited = false;
-        bool path = false;
+//        bool upPath = false;
+//        bool rightPath = false;
+//        bool leftPath = false;
+//        bool downPath = false;
     };
     queue<upNode> q; //travel
     //vector<node*> visited; //nodes visited
     
     upNode head(new node); //initializes the first node position of protester
-    
+    //vector<upNode> veclist;
+    vector<intPair> vecPair;
+    int array[60][60] = {};
+
     head->xco = getX();
     head->yco = getY();
     q.push(head);
+    vecPair.push_back(make_pair(head->xco,head->yco));
+    //veclist.push_back(head);
     
     upNode guess(new node);
+    cout << "Starting node search!" << endl;
 
     while(!q.empty()){
         guess = q.front();
         q.pop();
         //visited.push_back(guess);
         
-        if (guess == nullptr)
-            continue;
+//        if (guess == nullptr)
+//            continue;
         if (guess->xco == x && guess->yco == y){ //once destination is found return;
             q.pop();
             break;
         }
-//        if(getWorld()->dirtAlive(guess->xco, guess->yco+1) == true && find(visited.begin(), visited.end(), guess->up) != visited.end() == false){
-//        if(getWorld()->dirtAlive(guess->xco, (guess->yco)+1) == false && guess->path == false){
-            if(AllowMove(guess->xco, guess->yco+1, up) == true && guess->path == false){ //up
+        
+//        if(AllowMove(guess->xco, guess->yco+1, up) == true && guess->upPath == false){ //up
+        if(AllowMove(guess->xco, guess->yco+1, up) == true && find(vecPair.begin(), vecPair.end(), make_pair(guess->xco+1,guess->yco)) != vecPair.end() == false){ //up
             upNode newGuess(new node);
             newGuess->xco = guess->xco;
             newGuess->yco = guess->yco + 1;
-            guess->path = true;
+            //newGuess->downPath = true;
             guess->up = newGuess;
+            vecPair.push_back(make_pair(newGuess->xco,newGuess->yco));
             q.push(newGuess);
-            //cout << "up node" << endl;
+            cout << "up node" << endl;
+            cout << newGuess->xco << endl;
+            cout << newGuess->yco << endl;
+
         }
-//        if(getWorld()->dirtAlive(guess->xco+1, guess->yco) == false && guess->path == false){
-        if(AllowMove(guess->xco+1, guess->yco, right) == true && guess->path == false){ //right
+//        if(AllowMove(guess->xco+1, guess->yco, right) == true && guess->rightPath == false){ //right
+        if(AllowMove(guess->xco+1, guess->yco, up) == true && find(vecPair.begin(), vecPair.end(), make_pair(guess->xco,guess->yco+1)) != vecPair.end() == false){
             upNode newGuess(new node);
             newGuess->xco = guess->xco+1;
             newGuess->yco = guess->yco;
-            guess->path = true;
+            //newGuess->leftPath = true;
             guess->right = newGuess;
+            vecPair.push_back(make_pair(newGuess->xco,newGuess->yco));
             q.push(newGuess);
-            //cout << "right node" << endl;
+            cout << "right node" << endl;
+            cout << newGuess->xco << endl;
+            cout << newGuess->yco << endl;
         }
-//        if(getWorld()->dirtAlive(guess->xco-1, guess->yco) == false && guess->path == false){
-        if(AllowMove(guess->xco-1, guess->yco, left) == true && guess->path == false){ //left
-
+//        if(AllowMove(guess->xco-1, guess->yco, left) == true && guess->leftPath == false){ //left
+        if(AllowMove(guess->xco-1, guess->yco, left) == true && find(vecPair.begin(), vecPair.end(), make_pair(guess->xco-1,guess->yco)) != vecPair.end() == false){ //left
             upNode newGuess(new node);
             newGuess->xco = guess->xco-1;
             newGuess->yco = guess->yco;
-            guess->path = true;
+            //newGuess->rightPath = true;
             guess->left = newGuess;
+            vecPair.push_back(make_pair(newGuess->xco,newGuess->yco));
             q.push(newGuess);
-            //cout << "left node" << endl;
+            cout << "left node" << endl;
+            cout << newGuess->xco << endl;
+            cout << newGuess->yco << endl;
+
         }
-//        if(getWorld()->dirtAlive(guess->xco, guess->yco-1) == false && guess->path == false){
-        if(AllowMove(guess->xco, guess->yco-1, down) == true && guess->path == false){ //down
+//        if(AllowMove(guess->xco, guess->yco-1, down) == true && guess->downPath == false){ //down
+        if(AllowMove(guess->xco, guess->yco-1, down) == true && find(vecPair.begin(), vecPair.end(), make_pair(guess->xco,guess->yco-1)) != vecPair.end() == false){ //down
 
             upNode newGuess(new node);
             newGuess->xco = guess->xco;
             newGuess->yco = guess->yco-1;
-            guess->path = true;
+//            newGuess->upPath = true;
             guess->down = newGuess;
+            vecPair.push_back(make_pair(newGuess->xco,newGuess->yco));
             q.push(newGuess);
-            //cout << "down node" << endl;
+            cout << "down node" << endl;
+            cout << newGuess->xco << endl;
+            cout << newGuess->yco << endl;
+
         }
+        //guess->path = true;
     }
+    cout << "node path created" << endl;
     
     deque<upNode> correctPath;
     head->visited = true;
@@ -1581,688 +1611,26 @@ void Protester::bfs(int x, int y){
                 head = head->left;
                 correctPath.push_back(head);
             }
-        else if(head->down != nullptr && head->left->visited == false){
+        else if(head->down != nullptr && head->down->visited == false){
                 head->down->visited = true;
                 head = head->down;
                 correctPath.push_back(head);
             }
-        else correctPath.pop_back();
-        
+        else{
+            correctPath.pop_back();
+            head = correctPath.back();
+        }
     }
     int resultX = correctPath[1]->xco;
     int resultY = correctPath[1]->yco;
+    
+    //setDirection(up);
+    cout << "move " << resultX << " " << resultY << endl;
 
     moveTo(resultX, resultY);
    // cout << "protester move" << endl;
 
 }
-
-/* old reg protester functions
-
-//**********************************************************************
-//********** REGULAR PROTESTER FUNCTIONS *******************************
-//**********************************************************************
-
-void RegProtester::doSomething()
-{
-switch (getProt_State())
-{
-case moving:
-//cout << "its on moving state" << endl;
-if (getCounterNoRestTicks() == 0)  //hasnt yell at the diggerman
-{
-if (getPerpMovements() > 0)
-decreasePerpMovements();
-//if ((HittingPlayer(getX(), getY()) == 1)|| (HittingPlayer(getX(), getY()) == 0)) //diggerman is on the edge or touching the protester
-if (RadiusFromPlayer() <= 4)
-{
-//getWorld()->playSound(SOUND_PROTESTER_YELL);
-////cout << "annoying diggerman" << endl;
-//resetCounterNoRest(); //starts the counternorestTicks to 15
-switch (PlayerPosition(getX(), getY())) //find to where the player is facing
-{
-case up:
-cout << "its is coming from up" << endl;
-if (getDirection() == up) // if the protester is facing up
-{
-getWorld()->playSound(SOUND_PROTESTER_YELL);
-resetCounterNoRest();
-}
-break;
-case down:
-cout << "its is coming from down" << endl;
-if (getDirection() == down) // if the protester is facing down
-{
-getWorld()->playSound(SOUND_PROTESTER_YELL);
-resetCounterNoRest();
-}
-break;
-case left:
-cout << "its is coming from left" << endl;
-if (getDirection() == left) // if the protester is facing left
-{
-getWorld()->playSound(SOUND_PROTESTER_YELL);
-resetCounterNoRest();
-}
-break;
-case right:
-cout << "its is coming from right" << endl;
-if (getDirection() == right) // if the protester is facing right
-{
-getWorld()->playSound(SOUND_PROTESTER_YELL);
-resetCounterNoRest();
-}
-break;
-}
-
-//ANNOY THE DIGGERMAN
-}
-
-else
-{
-if (FollowPlayer())// if its watching the player
-{
-cout << "success" << endl;
-//resetSquarestoMove();
-setSquarestoMove(); //set squarestomove to zero
-}
-else
-{
-if (getSquaresToMove() > 0)  // there is still N chances to move
-{
-decreaseSquaresToMove();
-switch (getDirection())
-{
-case up:
-if (AllowMove(getX(), (getY() + 1),up))
-moveTo(getX(), getY() + 1);
-else  // its either in fron of a boulder or on an intersection
-{
-//check perpendicular movement
-if (getPerpMovements() == 0) //perpendicular movement is allowed
-{
-if (AllowMove(getX() - 1, getY(), left))
-if (AllowMove(getX() + 1, getY(), right)) //both available
-{
-srand(time(NULL));
-int random = rand() % 2 + 1;
-switch (random)
-{
-case 1: //left
-setDirection(left);
-moveTo(getX() - 1, getY());
-ActivatePerpMovement();
-break;
-case 2: // to the right
-setDirection(right);
-moveTo(getX() + 1, getY());
-ActivatePerpMovement();
-break;
-}
-
-}
-else // only left is available
-{
-setDirection(left);
-moveTo(getX() - 1, getY());
-ActivatePerpMovement();
-}
-else if (AllowMove(getX() + 1, getY(), right))
-{
-//only right available
-setDirection(right);
-moveTo(getX() + 1, getY());
-ActivatePerpMovement();
-}
-else  //neither left nor right is available
-{
-resetSquarestoMove();
-}
-}
-else
-resetSquarestoMove(); //set squares to move to zero
-}
-break;
-case down:
-if (AllowMove(getX(), getY() - 1, down))
-moveTo(getX(), getY() - 1);
-else  // its either in fron of a boulder or on an intersection
-{
-//check perpendicular movement
-if (getPerpMovements() == 0) //perpendicular movement is allowed
-{
-if (AllowMove(getX() - 1, getY(), left))
-if (AllowMove(getX() + 1, getY(), right)) //both available
-{
-srand(time(NULL));
-int random = rand() % 2 + 1;
-switch (random)
-{
-case 1: //left
-setDirection(left);
-moveTo(getX() - 1, getY());
-ActivatePerpMovement();
-break;
-case 2: // to the right
-setDirection(right);
-moveTo(getX() + 1, getY());
-ActivatePerpMovement();
-break;
-}
-
-}
-else // only left is available
-{
-setDirection(left);
-moveTo(getX() - 1, getY());
-ActivatePerpMovement();
-}
-else if (AllowMove(getX() + 1, getY(), right))
-{
-//only right available
-setDirection(right);
-moveTo(getX() + 1, getY());
-ActivatePerpMovement();
-}
-else  //neither left nor right is available
-{
-resetSquarestoMove();
-}
-}
-else
-resetSquarestoMove(); //set squares to move to zero
-}
-
-break;
-case right:
-if (AllowMove(getX() + 1, getY(), right))
-moveTo(getX() + 1, getY());
-else  // its either in fron of a boulder or on an intersection
-{
-//check perpendicular movement
-if (getPerpMovements() == 0) //perpendicular movement is allowed
-{
-if (AllowMove(getX(), getY()-1, down))
-if (AllowMove(getX(), getY()+1, up)) //both available
-{
-srand(time(NULL));
-int random = rand() % 2 + 1;
-switch (random)
-{
-case 1: //down
-setDirection(down);
-moveTo(getX(), getY()-1);
-ActivatePerpMovement();
-break;
-case 2: // up
-setDirection(up);
-moveTo(getX(), getY()+1);
-ActivatePerpMovement();
-break;
-}
-
-}
-else //only down
-{
-setDirection(down);
-moveTo(getX() , getY()-1);
-ActivatePerpMovement();
-}
-else if (AllowMove(getX(), getY()+1, up))
-{
-//only up available
-setDirection(up);
-moveTo(getX(), getY()+1);
-ActivatePerpMovement();
-}
-else  //neither left nor right is available
-{
-resetSquarestoMove();
-}
-}
-else
-resetSquarestoMove(); //set squares to move to zero
-}
-
-break;
-case left:
-if (AllowMove(getX() - 1, getY(), left))
-moveTo(getX() - 1, getY());
-break;
-}
-
-}
-else  //squarestoMove has reach 0
-{
-setSquarestoMove(); //reset the squarest to move
-setDirection(getNewDirection());
-}
-}
-}
-
-}
-else   // the counter is greater than 0
-decreaseCounterNoRest();
-
-setProtesterState(rest);
-break;
-
-case rest:
-//cout << "Ticks Resting::" << getCounterTicks()<< endl;
-
-decreaseCounterTicks();
-if (getCounterTicks() == 0)
-{
-resetCounterTicks();
-setProtesterState(moving);
-}
-break;
-
-case leaveOil:
-break;
-
-}
-
-}
-
-bool RegProtester::AllowMove(int x, int y, Direction dir)
-{
-
-if ((x >= 0) && (x <= 60) && (y >= 0) && (y <= 60))
-{
-int i = IndexOfObjectWithinRadius(x, y);
-if (i >= 0)
-{
-switch (getWorld()->getObject(i)->getName())
-{
-case boulder:
-return false;
-break;
-
-}
-//return false;
-}
-switch (dir)
-{
-case left:
-cout << "LEFT" << endl;
-for (int i = 0; i < 4; i++)
-{
-if (getWorld()->dirtAlive(x, (y + i)))
-return false;
-} return true;
-break;
-case right:
-for (int i = 0; i < 4; i++)
-{
-if (getWorld()->dirtAlive((x + 3), (y + i)))
-return false;
-} return true;
-break;
-case up:
-for (int i = 0; i < 4; i++)
-{
-if (getWorld()->dirtAlive((x + i), (y + 3)))
-return false;
-} return true;
-break;
-case down:
-for (int i = 0; i < 4; i++)
-{
-if (getWorld()->dirtAlive((x + i), (y)))
-return false;
-} return true;
-break;
-}
-
-}
-
-return false;
-}
-
-void RegProtester::Initialize(StudentWorld * m_gw)
-{
-setWorld(m_gw);
-health = 5;
-//squareToMoveinDir = calculateSquarestoMove();
-setSquarestoMove();
-int calc = 3 - getWorld()->getLevel() / 4;
-ticksToWait = max (0, calc);
-//cout << "ticstowait  is equal to!!!" << ticksToWait << endl;
-resetCounterTicks();
-counterNoRestTicks = 0;
-setPerpMovements();
-
-}
-
-void RegProtester::decreaseHealth(int x)
-{
-health = health - x;
-}
-
-int RegProtester::getHealth()
-{
-return health;
-}
-
-void RegProtester::setProtesterState(Protesterstate x)
-{
-p_state = x;
-}
-
-RegProtester::Protesterstate RegProtester::getProt_State()
-{
-return p_state;
-}
-
-int RegProtester::calculateSquarestoMove()
-{
-srand(time(NULL));
-int random = rand() % 52+8;
-cout << "random number:: " << random << endl;
-return random;
-}
-
-void RegProtester::resetSquarestoMove()
-{
-squareToMoveinDir = 0;
-}
-
-int RegProtester::getSquaresToMove()
-{
-return squareToMoveinDir;
-}
-
-void RegProtester::setSquarestoMove()
-{
-squareToMoveinDir = calculateSquarestoMove();
-}
-
-void RegProtester::decreaseSquaresToMove()
-{
-squareToMoveinDir--;
-}
-
-void RegProtester::resetCounterTicks()
-{
-counterTicksRest = ticksToWait;
-}
-
-void RegProtester::decreaseCounterTicks()
-{
-counterTicksRest--;
-}
-
-int RegProtester::getCounterTicks()
-{
-return counterTicksRest;
-}
-
-int RegProtester::getCounterNoRestTicks()
-{
-return counterNoRestTicks;
-}
-
-void RegProtester::decreaseCounterNoRest()
-{
-counterNoRestTicks--;
-}
-
-void RegProtester::resetCounterNoRest()
-{
-counterNoRestTicks = 15;
-}
-
-void RegProtester::GetAnnoyed(int x)
-{
-if (x == 2) //hitted by squirt
-{
-getWorld()->increaseScore(100);
-setProtesterState(rest);
-int calc = 100 - getWorld()->getLevel() * 10;
-counterTicksRest = max(50, calc);
-
-}
-else if (x==50) // by a boulder
-getWorld()->increaseScore(500);
-else if (x == 100) //by a gold nugget
-{
-getWorld()->playSound(SOUND_PROTESTER_FOUND_GOLD);
-getWorld()->increaseScore(100);
-setVisible(false);
-setState(dead); //CHANGE FOR STATE LEAVE OIL
-}
-
-decreaseHealth(x);
-if (getHealth() <= 0 && getState()==alive)
-{
-setVisible(false);
-setState(dead); //CHANGE FOR STATE LEAVE OIL
-getWorld()->playSound(SOUND_PROTESTER_GIVE_UP);
-counterTicksRest = 0;
-}
-else
-getWorld()->playSound(SOUND_PROTESTER_ANNOYED);
-
-}
-
-RegProtester::Direction RegProtester::PlayerPosition(int x, int y)
-{
-if (((x - ((getWorld()->getPlayer()->getX() + 3))) == 1) || ((x - ((getWorld()->getPlayer()->getX() + 3))) == 0))
-return left;
-else if ((((x + 3) - (getWorld()->getPlayer()->getX())) == -1)|| (((x + 3) - (getWorld()->getPlayer()->getX())) == -0))
-return right;
-else if (((y - ((getWorld()->getPlayer()->getY() + 3))) == 1)|| ((y - ((getWorld()->getPlayer()->getY() + 3))) == 0))
-return down;
-else if ((((y + 3) - (getWorld()->getPlayer()->getY())) == -1)|| (((y + 3) - (getWorld()->getPlayer()->getY())) == 0))
-return up;
-
-return left;
-
-}
-
-RegProtester::Direction RegProtester::getNewDirection()
-{
-bool moveApproved = false;
-srand(time(NULL));
-while (!moveApproved)
-{
-int random = rand() % 4 + 1;
-cout << "random number:: " << random << endl;
-switch (random)
-{
-case 1:    //left
-cout << "left" << endl;
-if (AllowMove((getX() - 1), getY(), left))
-{
-cout << "left" << endl;
-moveApproved = true;
-return left;
-}
-break;
-case 2:	//right
-//cout << "right" << endl;
-if (AllowMove((getX() + 1), getY(), right))
-{
-cout << "right" << endl;
-moveApproved = true;
-return right;
-}
-break;
-case 3:   //up
-
-//cout << "up" << endl;
-if (AllowMove(getX(), (getY()+1),up))
-{
-cout << "up" << endl;
-moveApproved = true;
-return up;
-}
-break;
-case 4:  //down
-//cout << "down" << endl;
-if (AllowMove(getX(), (getY() - 1),down))
-{
-cout << "down" << endl;
-moveApproved = true;
-return down;
-}
-break;
-
-}
-}
-return GraphObject::none;
-}
-
-bool RegProtester::FollowPlayer()
-{
-
-//check if the player is on the same X positions
-for (int i = 0; i < 4; i++)
-{
-for (int j = 0; j < 4; j++)
-{
-if ((getX() + i) == ((getWorld()->getPlayer()->getX() + j)))
-{
-//its in one of the X coord of the protester!
-if (RadiusFromPlayer() > 4.0) //its far from 4 units
-{
-if ((abs(getY() - getWorld()->getPlayer()->getY())) < squareToMoveinDir) // if the protester can reach the player with his squares to move
-{
-//it is above or below???
-if (getY() > getWorld()->getPlayer()->getY())
-{
-// it is below!!
-if (CheckIfPathIsEmpty(getX(), (getWorld()->getPlayer()->getY() + 4), getX(), getY()))
-{
-cout << "below path clear!!" << endl;
-setDirection(down);
-moveTo(getX(), (getY() - 1));
-return true;
-}
-}
-else  //it is up
-{
-if (CheckIfPathIsEmpty(getX(), (getY() + 4), getX(), getWorld()->getPlayer()->getY()))
-{
-cout << "up path clear!!" << endl;
-setDirection(up);
-moveTo(getX(), (getY() + 1));
-return true;
-}
-}
-}
-}
-
-}
-}
-}
-//check for Ys
-for (int i = 0; i<4; i++)
-{
-for (int j = 0; j < 4; j++)
-{
-
-if ((getY() + i) == ((getWorld()->getPlayer()->getY()) + j))
-{
-//its in one of the X coord of the protester!
-if (RadiusFromPlayer() > 4.0) //its far from 4 units
-{
-if ((abs(getX() - getWorld()->getPlayer()->getX())) < squareToMoveinDir)
-{
-//it is right or left???
-if (getX() > getWorld()->getPlayer()->getX())
-{
-// it is on the left!!
-if (CheckIfPathIsEmpty((getWorld()->getPlayer()->getX() + 4), getY(), getX(), getY()))
-{
-cout << "left path clear!!" << endl;
-setDirection(left);
-moveTo((getX()-1), getY());
-return true;
-}
-}
-else  //it is at right
-{
-if (CheckIfPathIsEmpty((getX() + 4), getY(), getWorld()->getPlayer()->getX(), getY()))
-{
-cout << "right path clear!!" << endl;
-setDirection(right);
-moveTo((getX() + 1), getY());
-return true;
-}
-}
-}
-}
-}
-}
-}
-
-return false;
-}
-
-//the second set of x.y has to be the greatest
-bool RegProtester::CheckIfPathIsEmpty(int x1, int y1, int x2, int y2)
-{
-if (x1 == x2)
-{
-//its on a vertical sight
-for (int i = y1; i < y2; i++)
-{
-if (HittingSomething2(x1, i) == boulder)
-return false;
-
-for (int j = 0; j < 4; j++)
-{
-if (getWorld()->dirtAlive(((x1)+j), i))
-return false;
-}
-}
-return true;
-
-}
-else if (y1 == y2)
-{
-//its on a horizontal sight
-for (int i = x1; i < x2; i++)
-{
-if (HittingSomething2(i, y1) == boulder)
-return false;
-
-for (int j = 0; j < 4; j++)
-{
-if (getWorld()->dirtAlive(i, ((y1)+j)))
-return false;
-}
-}
-return true;
-}
-cout << "wrong coordenates!!!" << endl;
-return false;
-}
-
-int RegProtester::getPerpMovements()
-{
-return perpendicularMovements;
-}
-
-void RegProtester::decreasePerpMovements()
-{
-perpendicularMovements--;
-}
-
-void RegProtester::setPerpMovements()
-{
-perpendicularMovements=0;
-}
-
-void RegProtester::ActivatePerpMovement()
-{
-perpendicularMovements=200;
-}
-
-
-*/
 
 // ******************************************
 // ****** REGULAR PROTESTER FUNCTIONS *******
@@ -2530,9 +1898,17 @@ void RegProtester::doSomething()
 
 
 	case leaveOil:
-		//bfs(60, 60);
-		setState(dead);
-		setVisible(false);
+        if (getX()==60 && getY()==60)
+        {
+            setState(dead);
+            setVisible(false);
+        }
+        else
+            bfs(60, 60);
+            //cout << "leave" << endl;
+            
+//		setState(dead);
+//		setVisible(false);
 		break;
 
 	}
@@ -2850,7 +2226,7 @@ void HardProtester::doSomething()
 			break;
 
 		case leaveOil:
-			//bfs(60, 60);
+			bfs(60, 60);
 			break;
 
 		}
