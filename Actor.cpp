@@ -1507,7 +1507,7 @@ void Protester::bfs(int x, int y){
     upNode head(new node); //initializes the first node position of protester
     //vector<upNode> veclist;
     vector<intPair> vecPair;
-    int array[60][60] = {};
+    //int array[60][60] = {};
 
     head->xco = getX();
     head->yco = getY();

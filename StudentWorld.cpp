@@ -32,6 +32,7 @@ GameWorld* createStudentWorld(string assetDir)
 
 int StudentWorld::init()
 {
+    resetTickCounter();
     //DIRT - creating the data structure for the dirt object w/ mineshaft
     createDirt();
 	DiggerMan *player = new DiggerMan();
@@ -353,6 +354,7 @@ void StudentWorld::addNewObjects(){
         if(gameObjects[i]->getID() == 1)
             numberOfProtesters++;
     }
+    cout << getTickCounter() << endl;
     if(getTickCounter() > T && numberOfProtesters < P){
        // cout << numberOfProtesters << endl;
         
