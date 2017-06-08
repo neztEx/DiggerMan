@@ -222,16 +222,19 @@ public:
 	}
 
 	void doSomething();
+	int CalculateSteps(int x, int y);
 	void Initialize(StudentWorld *m_gw);
 	void GetAnnoyed(int x);
 	void activateStare();
 	void decreaseStaring();
 	void setCountStaring(int x);
-
 	int getCountStaring();
+	void setM();
+	int getM();
 
 private:
 	int countStaring;
+	int M; 
 	
 
 };

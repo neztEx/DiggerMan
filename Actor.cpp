@@ -1545,7 +1545,7 @@ void Protester::bfs(int x, int y){
 
         }
 //        if(AllowMove(guess->xco+1, guess->yco, right) == true && guess->rightPath == false){ //right
-        if(AllowMove(guess->xco+1, guess->yco, up) == true && find(vecPair.begin(), vecPair.end(), make_pair(guess->xco+1,guess->yco)) != vecPair.end() == false){
+        if(AllowMove(guess->xco+1, guess->yco, right) == true && find(vecPair.begin(), vecPair.end(), make_pair(guess->xco+1,guess->yco)) != vecPair.end() == false){
             upNode newGuess(new node);
             newGuess->xco = guess->xco+1;
             newGuess->yco = guess->yco;
@@ -1593,6 +1593,7 @@ void Protester::bfs(int x, int y){
     deque<upNode> correctPath;
     head->visited = true;
     correctPath.push_back(head);
+	int stepsToReachPoint = 0;
     
     while(head->xco != x || head->yco != y)
     {
@@ -1600,37 +1601,55 @@ void Protester::bfs(int x, int y){
             head->up->visited = true;
             head = head->up;
             correctPath.push_back(head);
+			stepsToReachPoint++;
+
         }
         else if(head->right != nullptr && head->right->visited == false){
                 head->right->visited = true;
                 head = head->right;
                 correctPath.push_back(head);
+				stepsToReachPoint++;
             }
         else if(head->left != nullptr && head->left->visited == false){
                 head->left->visited = true;
                 head = head->left;
                 correctPath.push_back(head);
+				stepsToReachPoint++;
             }
         else if(head->down != nullptr && head->down->visited == false){
                 head->down->visited = true;
                 head = head->down;
                 correctPath.push_back(head);
+				stepsToReachPoint++;
             }
         else{
             correctPath.pop_back();
             head = correctPath.back();
+			stepsToReachPoint--;
         }
     }
     int resultX = correctPath[1]->xco;
     int resultY = correctPath[1]->yco;
-    
+
+	if (getX() - resultX == 1) //heading to the left
+		setDirection(left);
+	else if (getX() - resultX == -1) //heading right
+		setDirection(right);
+	else if (getY() - resultY == 1) //heading down
+		setDirection(down);
+	else if (getY() - resultY == -1) // heading up
+		setDirection(up);
     //setDirection(up);
-    cout << "move " << resultX << " " << resultY << endl;
+ //   cout << "move " << resultX << " " << resultY << endl;
+	cout << "Steps::: " << stepsToReachPoint << endl;
+
 
     moveTo(resultX, resultY);
    // cout << "protester move" << endl;
 
 }
+
+
 
 // ******************************************
 // ****** REGULAR PROTESTER FUNCTIONS *******
@@ -1971,7 +1990,7 @@ void HardProtester::doSomething()
 {
 	if (getCountStaring() == 0) //if its not staring at gold
 	{
-
+		
 		switch (getProt_State())
 		{
 		case moving:
@@ -2025,6 +2044,11 @@ void HardProtester::doSomething()
 					//ANNOY THE DIGGERMAN
 				}
 
+				
+				else if (M >= CalculateSteps(getWorld()->getPlayer()->getX(), getWorld()->getPlayer()->getY())) //chek if the player is near 
+				{
+					bfs(getWorld()->getPlayer()->getX(), getWorld()->getPlayer()->getY());
+				}
 				else
 				{
 					if (FollowPlayer())// if its watching the player
@@ -2250,6 +2274,176 @@ void HardProtester::doSomething()
     
 }
 
+int HardProtester::CalculateSteps(int x, int y)
+{
+	cout << "start of bfs!" << endl;
+	typedef std::pair <int, int> intPair;
+
+
+	struct node;
+	typedef shared_ptr<node> upNode;
+	struct node {
+		int xco;
+		int yco;
+		upNode up = nullptr;
+		upNode right = nullptr;
+		upNode left = nullptr;
+		upNode down = nullptr;
+		bool visited = false;
+		//        bool upPath = false;
+		//        bool rightPath = false;
+		//        bool leftPath = false;
+		//        bool downPath = false;
+	};
+	queue<upNode> q; //travel
+					 //vector<node*> visited; //nodes visited
+
+	upNode head(new node); //initializes the first node position of protester
+						   //vector<upNode> veclist;
+	vector<intPair> vecPair;
+	//int array[60][60] = {};
+
+	head->xco = getX();
+	head->yco = getY();
+	q.push(head);
+	vecPair.push_back(make_pair(head->xco, head->yco));
+	//veclist.push_back(head);
+
+	upNode guess(new node);
+	cout << "Starting node search!" << endl;
+
+	while (!q.empty()) {
+		guess = q.front();
+		q.pop();
+		//visited.push_back(guess);
+
+		//        if (guess == nullptr)
+		//            continue;
+		if (guess->xco == x && guess->yco == y) { //once destination is found return;
+			q.pop();
+			break;
+		}
+
+		//        if(AllowMove(guess->xco, guess->yco+1, up) == true && guess->upPath == false){ //up
+		if (AllowMove(guess->xco, guess->yco + 1, up) == true && find(vecPair.begin(), vecPair.end(), make_pair(guess->xco, guess->yco + 1)) != vecPair.end() == false) { //up
+			upNode newGuess(new node);
+			newGuess->xco = guess->xco;
+			newGuess->yco = guess->yco + 1;
+			//newGuess->downPath = true;
+			guess->up = newGuess;
+			vecPair.push_back(make_pair(newGuess->xco, newGuess->yco));
+			q.push(newGuess);
+			cout << "up node" << endl;
+			cout << newGuess->xco << endl;
+			cout << newGuess->yco << endl;
+
+		}
+		//        if(AllowMove(guess->xco+1, guess->yco, right) == true && guess->rightPath == false){ //right
+		if (AllowMove(guess->xco + 1, guess->yco, up) == true && find(vecPair.begin(), vecPair.end(), make_pair(guess->xco + 1, guess->yco)) != vecPair.end() == false) {
+			upNode newGuess(new node);
+			newGuess->xco = guess->xco + 1;
+			newGuess->yco = guess->yco;
+			//newGuess->leftPath = true;
+			guess->right = newGuess;
+			vecPair.push_back(make_pair(newGuess->xco, newGuess->yco));
+			q.push(newGuess);
+			cout << "right node" << endl;
+			cout << newGuess->xco << endl;
+			cout << newGuess->yco << endl;
+		}
+		//        if(AllowMove(guess->xco-1, guess->yco, left) == true && guess->leftPath == false){ //left
+		if (AllowMove(guess->xco - 1, guess->yco, left) == true && find(vecPair.begin(), vecPair.end(), make_pair(guess->xco - 1, guess->yco)) != vecPair.end() == false) { //left
+			upNode newGuess(new node);
+			newGuess->xco = guess->xco - 1;
+			newGuess->yco = guess->yco;
+			//newGuess->rightPath = true;
+			guess->left = newGuess;
+			vecPair.push_back(make_pair(newGuess->xco, newGuess->yco));
+			q.push(newGuess);
+			cout << "left node" << endl;
+			cout << newGuess->xco << endl;
+			cout << newGuess->yco << endl;
+
+		}
+		//        if(AllowMove(guess->xco, guess->yco-1, down) == true && guess->downPath == false){ //down
+		if (AllowMove(guess->xco, guess->yco - 1, down) == true && find(vecPair.begin(), vecPair.end(), make_pair(guess->xco, guess->yco - 1)) != vecPair.end() == false) { //down
+
+			upNode newGuess(new node);
+			newGuess->xco = guess->xco;
+			newGuess->yco = guess->yco - 1;
+			//            newGuess->upPath = true;
+			guess->down = newGuess;
+			vecPair.push_back(make_pair(newGuess->xco, newGuess->yco));
+			q.push(newGuess);
+			cout << "down node" << endl;
+			cout << newGuess->xco << endl;
+			cout << newGuess->yco << endl;
+
+		}
+		//guess->path = true;
+	}
+	cout << "node path created" << endl;
+
+	deque<upNode> correctPath;
+	head->visited = true;
+	correctPath.push_back(head);
+	int stepsToReachPoint = 0;
+
+	while (head->xco != x || head->yco != y)
+	{
+		if (head->up != nullptr && head->up->visited == false) {
+			head->up->visited = true;
+			head = head->up;
+			correctPath.push_back(head);
+			stepsToReachPoint++;
+
+		}
+		else if (head->right != nullptr && head->right->visited == false) {
+			head->right->visited = true;
+			head = head->right;
+			correctPath.push_back(head);
+			stepsToReachPoint++;
+		}
+		else if (head->left != nullptr && head->left->visited == false) {
+			head->left->visited = true;
+			head = head->left;
+			correctPath.push_back(head);
+			stepsToReachPoint++;
+		}
+		else if (head->down != nullptr && head->down->visited == false) {
+			head->down->visited = true;
+			head = head->down;
+			correctPath.push_back(head);
+			stepsToReachPoint++;
+		}
+		else {
+			correctPath.pop_back();
+			head = correctPath.back();
+			stepsToReachPoint--;
+		}
+	}
+	int resultX = correctPath[1]->xco;
+	int resultY = correctPath[1]->yco;
+
+	if (getX() - resultX == 1) //heading to the left
+		setDirection(left);
+	else if (getX() - resultX == -1) //heading right
+		setDirection(right);
+	else if (getY() - resultY == 1) //heading down
+		setDirection(down);
+	else if (getY() - resultY == -1) // heading up
+		setDirection(up);
+	//setDirection(up);
+	//   cout << "move " << resultX << " " << resultY << endl;
+	cout << "Steps::: " << stepsToReachPoint << endl;
+
+
+	//moveTo(resultX, resultY);
+	// cout << "protester move" << endl;
+	return stepsToReachPoint;
+
+}
+
 void HardProtester::Initialize(StudentWorld * m_gw)
 {
 	setWorld(m_gw);
@@ -2261,6 +2455,7 @@ void HardProtester::Initialize(StudentWorld * m_gw)
 	setCounterNoRestTicks(0);
 	setPerpMovements();
 	setCountStaring(0);
+	setM();
 }
 
 void HardProtester::GetAnnoyed(int x)
@@ -2322,4 +2517,14 @@ void HardProtester::setCountStaring(int x)
 int HardProtester::getCountStaring()
 {
 	return countStaring ;
+}
+
+void HardProtester::setM()
+{
+	M = 16 + getWorld()->getLevel() * 2;
+}
+
+int HardProtester::getM()
+{
+	return M;
 }
