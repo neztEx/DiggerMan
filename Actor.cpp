@@ -1482,7 +1482,7 @@ void Protester::setCounterTicksRest(int x)
 }
 
 void Protester::bfs(int x, int y){
-    cout << "start of bfs!" << endl;
+//    cout << "start of bfs!" << endl;
     typedef std::pair <int, int> intPair;
 
     
@@ -1516,7 +1516,7 @@ void Protester::bfs(int x, int y){
     //veclist.push_back(head);
     
     upNode guess(new node);
-    cout << "Starting node search!" << endl;
+//    cout << "Starting node search!" << endl;
 
     while(!q.empty()){
         guess = q.front();
@@ -1539,9 +1539,9 @@ void Protester::bfs(int x, int y){
             guess->up = newGuess;
             vecPair.push_back(make_pair(newGuess->xco,newGuess->yco));
             q.push(newGuess);
-            cout << "up node" << endl;
-            cout << newGuess->xco << endl;
-            cout << newGuess->yco << endl;
+//            cout << "up node" << endl;
+//            cout << newGuess->xco << endl;
+//            cout << newGuess->yco << endl;
 
         }
 //        if(AllowMove(guess->xco+1, guess->yco, right) == true && guess->rightPath == false){ //right
@@ -1553,9 +1553,9 @@ void Protester::bfs(int x, int y){
             guess->right = newGuess;
             vecPair.push_back(make_pair(newGuess->xco,newGuess->yco));
             q.push(newGuess);
-            cout << "right node" << endl;
-            cout << newGuess->xco << endl;
-            cout << newGuess->yco << endl;
+//            cout << "right node" << endl;
+//            cout << newGuess->xco << endl;
+//            cout << newGuess->yco << endl;
         }
 //        if(AllowMove(guess->xco-1, guess->yco, left) == true && guess->leftPath == false){ //left
         if(AllowMove(guess->xco-1, guess->yco, left) == true && find(vecPair.begin(), vecPair.end(), make_pair(guess->xco-1,guess->yco)) != vecPair.end() == false){ //left
@@ -1566,9 +1566,9 @@ void Protester::bfs(int x, int y){
             guess->left = newGuess;
             vecPair.push_back(make_pair(newGuess->xco,newGuess->yco));
             q.push(newGuess);
-            cout << "left node" << endl;
-            cout << newGuess->xco << endl;
-            cout << newGuess->yco << endl;
+//            cout << "left node" << endl;
+//            cout << newGuess->xco << endl;
+//            cout << newGuess->yco << endl;
 
         }
 //        if(AllowMove(guess->xco, guess->yco-1, down) == true && guess->downPath == false){ //down
@@ -1581,14 +1581,14 @@ void Protester::bfs(int x, int y){
             guess->down = newGuess;
             vecPair.push_back(make_pair(newGuess->xco,newGuess->yco));
             q.push(newGuess);
-            cout << "down node" << endl;
-            cout << newGuess->xco << endl;
-            cout << newGuess->yco << endl;
+//            cout << "down node" << endl;
+//            cout << newGuess->xco << endl;
+//            cout << newGuess->yco << endl;
 
         }
         //guess->path = true;
     }
-    cout << "node path created" << endl;
+//    cout << "node path created" << endl;
     
     deque<upNode> correctPath;
     head->visited = true;
@@ -2289,7 +2289,7 @@ void HardProtester::doSomething()
 
 int HardProtester::CalculateSteps(int x, int y)
 {
-	cout << "start of bfs!" << endl;
+//	cout << "start of bfs!" << endl;
 	typedef std::pair <int, int> intPair;
 
 
@@ -2323,7 +2323,7 @@ int HardProtester::CalculateSteps(int x, int y)
 	//veclist.push_back(head);
 
 	upNode guess(new node);
-	cout << "Starting node search!" << endl;
+//	cout << "Starting node search!" << endl;
 
 	while (!q.empty()) {
 		guess = q.front();
@@ -2334,9 +2334,9 @@ int HardProtester::CalculateSteps(int x, int y)
 		//            continue;
 		if (guess->xco == x && guess->yco == y) { //once destination is found return;
 			
-			cout << "FOUND FINAL POSITION OF DIGGERMAN" << endl;
+//			cout << "FOUND FINAL POSITION OF DIGGERMAN" << endl;
 			//q.pop();
-			cout << "we pop the last position" << endl;
+//			cout << "we pop the last position" << endl;
 			break;
 		}
 
@@ -2349,9 +2349,9 @@ int HardProtester::CalculateSteps(int x, int y)
 			guess->up = newGuess;
 			vecPair.push_back(make_pair(newGuess->xco, newGuess->yco));
 			q.push(newGuess);
-			cout << "up node" << endl;
-			cout << newGuess->xco << endl;
-			cout << newGuess->yco << endl;
+//			cout << "up node" << endl;
+//			cout << newGuess->xco << endl;
+//			cout << newGuess->yco << endl;
 
 		}
 		//        if(AllowMove(guess->xco+1, guess->yco, right) == true && guess->rightPath == false){ //right
@@ -2363,9 +2363,9 @@ int HardProtester::CalculateSteps(int x, int y)
 			guess->right = newGuess;
 			vecPair.push_back(make_pair(newGuess->xco, newGuess->yco));
 			q.push(newGuess);
-			cout << "right node" << endl;
-			cout << newGuess->xco << endl;
-			cout << newGuess->yco << endl;
+//			cout << "right node" << endl;
+//			cout << newGuess->xco << endl;
+//			cout << newGuess->yco << endl;
 		}
 		//        if(AllowMove(guess->xco-1, guess->yco, left) == true && guess->leftPath == false){ //left
 		if (AllowMove(guess->xco - 1, guess->yco, left) == true && find(vecPair.begin(), vecPair.end(), make_pair(guess->xco - 1, guess->yco)) != vecPair.end() == false) { //left
@@ -2376,9 +2376,9 @@ int HardProtester::CalculateSteps(int x, int y)
 			guess->left = newGuess;
 			vecPair.push_back(make_pair(newGuess->xco, newGuess->yco));
 			q.push(newGuess);
-			cout << "left node" << endl;
-			cout << newGuess->xco << endl;
-			cout << newGuess->yco << endl;
+//			cout << "left node" << endl;
+//			cout << newGuess->xco << endl;
+//			cout << newGuess->yco << endl;
 
 		}
 		//        if(AllowMove(guess->xco, guess->yco-1, down) == true && guess->downPath == false){ //down
@@ -2391,14 +2391,14 @@ int HardProtester::CalculateSteps(int x, int y)
 			guess->down = newGuess;
 			vecPair.push_back(make_pair(newGuess->xco, newGuess->yco));
 			q.push(newGuess);
-			cout << "down node" << endl;
-			cout << newGuess->xco << endl;
-			cout << newGuess->yco << endl;
+//			cout << "down node" << endl;
+//			cout << newGuess->xco << endl;
+//			cout << newGuess->yco << endl;
 
 		}
 		//guess->path = true;
 	}
-	cout << "node path created" << endl;
+//	cout << "node path created" << endl;
 
 	deque<upNode> correctPath;
 	head->visited = true;
@@ -2451,7 +2451,7 @@ int HardProtester::CalculateSteps(int x, int y)
 		setDirection(up);
 	//setDirection(up);
 	//   cout << "move " << resultX << " " << resultY << endl;
-	cout << "Steps::: " << stepsToReachPoint << endl;
+//	cout << "Steps::: " << stepsToReachPoint << endl;
 
 
 	//moveTo(resultX, resultY);
