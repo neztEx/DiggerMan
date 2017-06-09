@@ -2054,10 +2054,11 @@ void HardProtester::doSomething()
 					//ANNOY THE DIGGERMAN
 				}
 
-				
-				else if (M >= CalculateSteps(getWorld()->getPlayer()->getX(), getWorld()->getPlayer()->getY())) //chek if the player is near 
+				else if (M >= CalculateSteps(getWorld()->getPlayer()->getX(), getWorld()->getPlayer()->getY())) //chek if the player is near
 				{
-					cout << "gets HERE BEFORE IT CRASHES!!!" << endl;
+                    cout << "M : " << CalculateSteps(getWorld()->getPlayer()->getX(), getWorld()->getPlayer()->getY()) << endl;
+                    cout << "M : " << M << endl;
+                    cout << "gets HERE BEFORE IT CRASHES!!!" << endl;
 					bfs(getWorld()->getPlayer()->getX(), getWorld()->getPlayer()->getY());
 					cout << "PASSED THE FUNCTION!!!" << endl;
 				}

@@ -378,7 +378,7 @@ void StudentWorld::addNewObjects(){
     
     
 //need to change
-    if(random < 10){ //1 in G chance to add a new object to the game
+    if(random < 2){ //1 in G chance to add a new object to the game
        // cout << "goodie to be added!" << endl;
         while(goodieAdded != true){ //while the item hasnt been added continue to loop until a location can be found
             int random2 = rand() % 5;
