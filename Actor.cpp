@@ -1269,7 +1269,7 @@ Protester::Direction Protester::PlayerPosition(int x, int y)
 Protester::Direction Protester::getNewDirection()
 {
 	bool moveApproved = false;
-	srand(time(NULL));
+	srand(time(NULL)+getWorld()->getTickCounter());
 	while (!moveApproved)
 	{
 		int random = rand() % 4 + 1;
