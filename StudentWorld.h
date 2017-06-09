@@ -38,7 +38,6 @@ public:
     bool digging(DiggerMan *z);
     void createGameObjects();
     void addNewObjects();
-	//void fillObjectCoord(DiggerMan *z);
 	void UpdateVector();
 	DiggerMan* getPlayer();
 	void setPlayer( DiggerMan *z);
@@ -52,7 +51,7 @@ public:
     void setTickCounter();
     int getTickCounter();
     void resetTickCounter();
-    //Dirt *gameMap[VIEW_WIDTH][DIRT_HEIGHT];
+  
 
 
     
@@ -61,12 +60,10 @@ private:
     Dirt *gameMap[VIEW_WIDTH][DIRT_HEIGHT];
     vector<BaseObject*> gameObjects;
 	int MaxBarrels; //max barrels per level
-	//int numObjects; //store de num of objects in map
 	DiggerMan *m_player;
     int current_level_number = 0;
     int tickCounter;
-	//int *ObjectCoord[VIEW_WIDTH][VIEW_HEIGHT]; //2d ARRAy that keeps track of the position of all the objects in the map
-	//BaseObject::name *ObjectCoord[VIEW_WIDTH][VIEW_HEIGHT];
+	
 };
 
 #endif // STUDENTWORLD_H_

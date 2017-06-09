@@ -2,11 +2,10 @@
 #define ACTOR_H_
 
 #include "GraphObject.h"
-//#include "GameWorld.h"g
 #include "StudentWorld.h"
 
 class StudentWorld;  //forward declaration
-//enum state;
+
 //********************************************************************
 //**************** BASEOBJECT CLASS (Base class) *********************
 //********************************************************************
@@ -37,7 +36,6 @@ public:
 	name getName();
 	void setSpace(); //fill the x_space and y_space arrays
 	bool ObjectInMap(int x, int y);// checks if the map is in the x,y coord provided
-    //virtual void updateTickCounter();
 	name HittingSomething(int x, int y); //Send coord x,y and check if there is another object in the oilfield
 
 	BaseObject::name HittingSomething2(int x, int y);
@@ -117,7 +115,7 @@ private:
 	int Gold_num;
 };
 
- //beggining comment for protester
+
 //*****************************************
 //****  PROTESTER CLASS  ******************
 //*****************************************
@@ -130,14 +128,11 @@ Protester(int imageID, int startX, int startY, Direction dir = left, double size
 : BaseObject(imageID, startX, startY, dir, size, depth)
 {
 setVisible(true);
-//setName(regProt);
 setProtesterState(moving);
 setSpace();
 }
 
-//void doSomething();
 bool AllowMove(int x, int y, Direction dir);
-//void Initialize(StudentWorld *m_gw);
 void decreaseHealth(int x);
 int getHealth();
 void setHealth(int x);
@@ -155,7 +150,6 @@ int getCounterTicks();
 int getCounterNoRestTicks();
 void decreaseCounterNoRest();
 void resetCounterNoRest();
-//void GetAnnoyed(int x);
 Direction PlayerPosition(int x, int y);
 bool FollowPlayer();
 bool CheckIfPathIsEmpty(int x1, int y1, int x2, int y2);
@@ -177,13 +171,6 @@ int counterTicksRest;
 int counterNoRestTicks;
 int perpendicularMovements;
 };
-
-
-
-
-
- //end comment for protester
-
 
 
 //****************************
@@ -238,84 +225,6 @@ private:
 	
 
 };
-
-
-
-
-
-//old regular protester
-/*  
-
-
-//****************************
-//****	REGULAR PROTESTER CLASS  ******************
-//****************************
-
-class RegProtester : public BaseObject
-{
-public:
-enum Protesterstate { rest, leaveOil, moving};
-RegProtester()
-: BaseObject(IMID_PROTESTER, 60, 60, left, 1.0, 0)
-{
-setVisible(true);
-setName(regProt);
-setProtesterState(moving);
-setSpace();
-}
-
-void doSomething();
-bool AllowMove(int x, int y, Direction dir);
-void Initialize(StudentWorld *m_gw);
-//void addSquirtGun();
-//void decraseSquirtGun();
-//int getSquirtNum();
-//void addSonarKit();
-//void decreaseSonarKit();
-//int getSonarKit();
-//int getGoldNum();
-//void AddGoldNum();
-//void decreaseGoldNum();
-//void discoverObjects(); //for sonarkit
-void decreaseHealth(int x);
-//void increaseHealth();
-int getHealth();
-//void ResetHealth();
-void setProtesterState(Protesterstate x);
-Protesterstate getProt_State();
-int calculateSquarestoMove(); //returns a value between 8 and 60
-void resetSquarestoMove();
-int getSquaresToMove();
-void setSquarestoMove();
-void decreaseSquaresToMove();
-Direction getNewDirection();
-void resetCounterTicks();
-void decreaseCounterTicks();
-int getCounterTicks();
-int getCounterNoRestTicks();
-void decreaseCounterNoRest();
-void resetCounterNoRest();
-void GetAnnoyed(int x);
-Direction PlayerPosition(int x, int y);
-bool FollowPlayer();
-bool CheckIfPathIsEmpty(int x1, int y1, int x2, int y2);
-int getPerpMovements();
-void decreasePerpMovements();
-void setPerpMovements();
-void ActivatePerpMovement();
-
-private:
-int health;
-Protesterstate p_state;
-int squareToMoveinDir;
-int ticksToWait;
-int counterTicksRest;
-int counterNoRestTicks;
-int perpendicularMovements;
-};
-
-
-*/
 
 //****************************
 //**** SQUIRT CLASS  ******************
@@ -389,11 +298,9 @@ public:
 		: BaseObject(imageID, startX, startY, dir, size, depth)
 	{
 		setVisible(true);
-		//setName(waterPool);
 	}
 
 	void doSomething();
-	//int HittingPlayer(int x, int y);
 	void addCounter();
 	int getTickCounter();
 	void setmaxT(int max);
@@ -418,7 +325,6 @@ public:
 	{
 		setVisible(false);
 		setPickable(true);
-		//setName(waterPool);
 	}
 	void activateSonar();
 	bool getPickable();

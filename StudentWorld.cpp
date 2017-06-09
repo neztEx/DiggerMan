@@ -7,14 +7,7 @@
 #include <sstream>
 #include <random>
 #include <math.h>
-//#include <windows.h>
 
-
-using namespace std;
-//const int DIRT_HEIGHT = 60;
-
-//declaration of player
-//DiggerMan *player = new DiggerMan();
 string intToString(int x);
 string twoDigits(int x);
 string threeDigits(int x);
@@ -60,7 +53,6 @@ int StudentWorld::move()
     }
     for (int i = 0; i < getSizeVector(); i++)
     {
-        //cout << "vector doSomething" << endl;
         getObject(i)->doSomething();
     }
     addNewObjects();
@@ -113,7 +105,7 @@ BaseObject* StudentWorld::getObject(int i)
 
 bool StudentWorld::dirtAlive(int x,int y)
 {
-   // cout << "returning dirt location " << gameMap[x][y]->isVisible() << endl;
+
 	if ((x >= VIEW_WIDTH) || (y >= DIRT_HEIGHT))
 		return false;
     return gameMap[x][y]->isVisible();
@@ -153,10 +145,7 @@ bool StudentWorld::digging(DiggerMan *z)
                 {
                     dig = true;
                     gameMap[z->getX() + x][z->getY() + y]->setVisible(false);
-                    
-                    //for testing
-                    //cout << "x cord: " << z->getX() + x << " Y cord: " << z->getY() + y << endl;
-                    
+                   
                 }
             }
         }
@@ -242,17 +231,7 @@ void StudentWorld::createGameObjects() {
             }
             insertObject(bl);
         }
-        
-//        Boulder *bl = new Boulder(x,y);
-//        bl->setWorld(this);
-		//delete the line below
-//		cout << "boulder X: "<<bl->getX() << " y: " << bl->getY() << endl;
-//        for(int x1 = 0; x1<4;x1++){
-//            for(int y1 = 0; y1<4; y1++){
-//                gameMap[x+x1][y+y1]->setVisible(false);
-//            }
-//        }
-//        insertObject(bl);
+ 
     }
     for (int i = 0; i < G; i++) { //CREATE GOLD NUGGET
         int x = rand() % 60;
@@ -298,53 +277,17 @@ void StudentWorld::createGameObjects() {
     insertObject(prot);
     
 
-	//HardProtester *prot2 = new HardProtester;
-	//prot2->Initialize(this);
-	//insertObject(prot2);
-	//
-	
-	/*
-	WaterPool *w1 = new WaterPool(6, 10);
-	//WaterPool *w1 = new WaterPool(30, 10);
-	w1->initialize(this);
-	insertObject(w1);
-	SonarKit *sk1 = new SonarKit(8, 30);
-	sk1->initialize(this);
-	insertObject(sk1);
-
-*/
-
-	//Boulder *b4 = new Boulder(15, 40);
-	//b4->setWorld(this);
-	//insertObject(b4);
-	//WaterPool *w2 = new WaterPool(34, 45);
-	////WaterPool *w1 = new WaterPool(30, 10);
-	//w2->initialize(this);
-	//insertObject(w2);
-	//SonarKit *sk2 = new SonarKit(3, 22);
-	//sk2->initialize(this);
-	//insertObject(sk2);
 }
 
 //functions to add new objects after certain amount of ticks have occured in the game
 void StudentWorld::addNewObjects(){
 
-    int current_level_number = getLevel()+2;
+    int current_level_number = getLevel();
     bool goodieAdded = false;
     int G = (current_level_number * 25 + 300);
     int T = max(25, 200-current_level_number); //ticks for protesters
     int P = min(15,2+current_level_number*2); //number of protesters should be 1.5
     int probabilityOfHardcore = min(90, current_level_number * 10 + 30);
-    
-    //windows code for time
-
-    ////Mac code for time
-    
-//     LARGE_INTEGER cicles;   
-//     QueryPerformanceCounter(&cicles);   
-//     srand (cicles.QuadPart);
-
-    
     srand(time(NULL)+getTickCounter());
     
     int random = rand() % G;
@@ -354,12 +297,8 @@ void StudentWorld::addNewObjects(){
         if(gameObjects[i]->getID() == 1)
             numberOfProtesters++;
     }
-//    cout << getTickCounter() << endl;
     if(getTickCounter() > T && numberOfProtesters < P){
-       // cout << numberOfProtesters << endl;
-        
         int randomPro = rand() % probabilityOfHardcore;
-        cout << randomPro << endl;
         if(randomPro > 30 && randomPro < 40){
 
             HardProtester *prot2 = new HardProtester;
@@ -379,7 +318,6 @@ void StudentWorld::addNewObjects(){
     
 //need to change
     if(random < 3){ //1 in G chance to add a new object to the game
-       // cout << "goodie to be added!" << endl;
         while(goodieAdded != true){ //while the item hasnt been added continue to loop until a location can be found
             int random2 = rand() % 5;
 
@@ -491,9 +429,6 @@ void StudentWorld::UpdateVector()
 	{
 		gameObjects.pop_back();
 	}
-	
-	//cout << "size of the VEctor!!!" << getSizeVector() << endl;
-
 }
 
 DiggerMan * StudentWorld::getPlayer()
@@ -564,10 +499,7 @@ string formatString(int level, int lives, int health, int squirts, int gold, int
 }
 
 bool StudentWorld::ecludianDistance(int x,int y){
-    //cout << x << " " << y << endl;
-    //cout << gameObjects.back()->getX() << " " << gameObjects.back()->getY() << endl;
-    
-    for(int i = 0; i < gameObjects.size(); i++){
+     for(int i = 0; i < gameObjects.size(); i++){
 
         double sumX = (x - gameObjects[i]->getX());
         double sumY = (y - gameObjects[i]->getY());
@@ -576,9 +508,7 @@ bool StudentWorld::ecludianDistance(int x,int y){
         int result = sqrt(sumX + sumY);
         if(result < 6){
             return false;
-        }
-      //  cout << result << endl;
-        
+        }    
     }
     return true;
 }
